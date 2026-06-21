@@ -3,10 +3,10 @@
 import { useOnboardingAgentState } from "../model/useOnboardingAgentState";
 import { CompetencyMapStep } from "./steps/CompetencyMapStep";
 import { DiagnosticIntroStep } from "./steps/DiagnosticIntroStep";
-import { DiagnosticPlaceholderStep } from "./steps/DiagnosticPlaceholderStep";
 import { DiagnosticResultStep } from "./steps/DiagnosticResultStep";
 import { DiagnosticStep } from "./steps/DiagnosticStep";
 import { EmployeeProfileStep } from "./steps/EmployeeProfileStep";
+import { LearningPathStep } from "./steps/LearningPathStep";
 import { WelcomeStep } from "./steps/WelcomeStep";
 import { StepProgress } from "./components";
 import styles from "./OnboardingAgentPage.module.css";
@@ -64,17 +64,20 @@ export function OnboardingAgentPage() {
               employee={state.employee}
               result={state.diagnosticResult}
               onBackToDiagnostic={() => actions.goToStep("diagnostic")}
-              onBuildRoute={() => actions.goToStep("learning_path_placeholder")}
+              onBuildRoute={actions.buildPersonalLearningPath}
             />
           )}
 
-        {state.currentStep === "learning_path_placeholder" && state.employee && (
-          <DiagnosticPlaceholderStep
-            employee={state.employee}
-            onBack={() => actions.goToStep("diagnostic_result")}
-            onReset={actions.reset}
-          />
-        )}
+        {state.currentStep === "learning_path" &&
+          state.employee &&
+          state.learningPath && (
+            <LearningPathStep
+              employee={state.employee}
+              learningPath={state.learningPath}
+              onBack={() => actions.goToStep("diagnostic_result")}
+              onReset={actions.reset}
+            />
+          )}
       </div>
     </main>
   );

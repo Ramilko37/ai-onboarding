@@ -862,6 +862,389 @@
   line-height: 1.45;
 }
 
+.learningPathPanel {
+  display: grid;
+  gap: 18px;
+}
+
+.learningPathSummaryCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.28fr);
+  gap: 24px;
+  align-items: stretch;
+  background: #173f45;
+  color: #ffffff;
+  padding: 36px;
+}
+
+.learningPathSummaryCard h1 {
+  margin: 0;
+  max-width: 820px;
+  font-size: 48px;
+  line-height: 1.04;
+}
+
+.learningPathSummaryCard p {
+  max-width: 860px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.learningPathEmployeeLine {
+  color: #f2b84b !important;
+  font-weight: 800;
+}
+
+.savedTimeBadge,
+.reinforcedTimeBadge {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #fff6df;
+  color: #173f45;
+  padding: 24px;
+}
+
+.reinforcedTimeBadge {
+  background: #f8e5df;
+}
+
+.savedTimeBadge span,
+.reinforcedTimeBadge span {
+  color: #7b560c;
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.reinforcedTimeBadge span {
+  color: #9f3725;
+}
+
+.savedTimeBadge strong,
+.reinforcedTimeBadge strong {
+  margin-top: 10px;
+  font-size: 38px;
+  line-height: 1;
+}
+
+.savedTimeBadge p,
+.reinforcedTimeBadge p {
+  margin: 12px 0 0;
+  color: #4c5d5f;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.learningPathMetrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.learningPathMetrics div {
+  min-height: 118px;
+  background: #ffffff;
+  border: 1px solid rgba(21, 35, 37, 0.1);
+  padding: 18px;
+}
+
+.learningPathMetrics span {
+  display: block;
+  color: #667072;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.learningPathMetrics strong {
+  display: block;
+  margin-top: 10px;
+  color: #173f45;
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.learningPathTwoColumn {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.74fr) minmax(0, 1.26fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.learningPathTopicGroups {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.learningPathTopicGroup,
+.managerRecommendationsCard,
+.learningPathDays {
+  background: #ffffff;
+  border: 1px solid rgba(21, 35, 37, 0.1);
+}
+
+.learningPathTopicGroup,
+.managerRecommendationsCard {
+  padding: 20px;
+}
+
+.learningPathTopicGroup h2,
+.learningPathSectionHeader h2 {
+  margin: 0;
+  color: #152325;
+  font-size: 22px;
+  line-height: 1.18;
+}
+
+.learningPathTopicGroup ul,
+.managerRecommendationList,
+.learningPathSources ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.learningPathTopicGroup li {
+  display: grid;
+  gap: 6px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(21, 35, 37, 0.1);
+}
+
+.learningPathTopicGroup li:first-child {
+  margin-top: 10px;
+}
+
+.learningPathTopicGroup strong {
+  color: #152325;
+}
+
+.learningPathTopicGroup span {
+  width: max-content;
+  background: #eef4f2;
+  color: #1b676f;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.learningPathTopicGroup p,
+.emptyStateText {
+  margin: 0;
+  color: #5d6769;
+  line-height: 1.5;
+}
+
+.learningPathSectionHeader {
+  margin-bottom: 16px;
+}
+
+.managerRecommendationList {
+  display: grid;
+  gap: 12px;
+}
+
+.managerRecommendationList li {
+  border-top: 1px solid rgba(21, 35, 37, 0.1);
+  padding-top: 14px;
+}
+
+.managerRecommendationList li > div:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.managerRecommendationList strong {
+  color: #152325;
+}
+
+.managerRecommendationList p {
+  color: #3c4a4c;
+  line-height: 1.55;
+}
+
+.managerRecommendationList small {
+  display: inline-flex;
+  margin-bottom: 10px;
+  color: #667072;
+  font-weight: 800;
+}
+
+.learningPathDays {
+  padding: 24px;
+}
+
+.learningPathDayGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.learningPathDayCard {
+  min-width: 0;
+  background: #fbfbf8;
+  border: 1px solid rgba(21, 35, 37, 0.1);
+  padding: 18px;
+}
+
+.learningPathDayCard > header {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(21, 35, 37, 0.12);
+}
+
+.learningPathDayCard header span {
+  color: #c9462a;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.learningPathDayCard h3 {
+  margin: 6px 0 0;
+  color: #152325;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.learningPathDayCard header strong {
+  flex: 0 0 auto;
+  color: #173f45;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.learningPathModuleList {
+  display: grid;
+  gap: 0;
+}
+
+.learningPathModuleCard {
+  min-width: 0;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(21, 35, 37, 0.1);
+}
+
+.learningPathModuleHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+}
+
+.learningPathModuleHeader h4 {
+  margin: 0;
+  color: #152325;
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.learningPathModuleHeader p {
+  margin: 8px 0 0;
+  color: #4d5a5c;
+  line-height: 1.5;
+}
+
+.learningPathModuleMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.learningPathModuleMeta span,
+.priorityHigh,
+.priorityMedium,
+.priorityLow {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 9px;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.learningPathModuleMeta span {
+  background: #eff2f5;
+  color: #45525a;
+}
+
+.priorityHigh {
+  background: #f8e5df;
+  color: #9f3725;
+}
+
+.priorityMedium {
+  background: #fff1c8;
+  color: #7b560c;
+}
+
+.priorityLow {
+  background: #e8f1f4;
+  color: #1b676f;
+}
+
+.learningPathSources,
+.learningPathSourcesFallback {
+  margin-top: 10px;
+  border-left: 4px solid #1b676f;
+  padding-left: 10px;
+}
+
+.learningPathSources span {
+  display: block;
+  color: #667072;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.learningPathSources li {
+  margin-top: 5px;
+  color: #314245;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.learningPathSources small {
+  margin-left: 8px;
+  color: #788183;
+  font-weight: 700;
+}
+
+.learningPathSourcesFallback {
+  color: #6a4b13;
+  line-height: 1.45;
+}
+
+.learningPathCheckpoint {
+  margin-top: 14px;
+  background: #edf7f4;
+  border-left: 5px solid #1b676f;
+  padding: 14px;
+}
+
+.learningPathCheckpoint strong {
+  color: #173f45;
+}
+
+.learningPathCheckpoint p {
+  margin: 6px 0 0;
+  color: #3c4a4c;
+  line-height: 1.45;
+}
+
 @media (max-width: 920px) {
   .page {
     padding: 16px;
@@ -873,15 +1256,20 @@
 
   .hero,
   .summaryCard,
-  .diagnosticHeader,
-  .diagnosticMetaGrid,
-  .resultSummaryCard,
-  .resultColumns,
-  .routeInsightGrid,
-  .formGrid,
-  .roleGrid,
-  .gradeGrid,
-  .milestoneGrid,
+    .diagnosticHeader,
+    .diagnosticMetaGrid,
+    .resultSummaryCard,
+    .resultColumns,
+    .routeInsightGrid,
+    .learningPathSummaryCard,
+    .learningPathMetrics,
+    .learningPathTwoColumn,
+    .learningPathTopicGroups,
+    .learningPathDayGrid,
+    .formGrid,
+    .roleGrid,
+    .gradeGrid,
+    .milestoneGrid,
   .topicGrid,
   .statsRow,
   .nextStageGrid {
@@ -894,9 +1282,24 @@
 
   .heroContent h1,
   .sectionHeader h1,
-  .placeholderPanel h1 {
+  .placeholderPanel h1,
+  .learningPathSummaryCard h1 {
     font-size: 40px;
     line-height: 1.06;
+  }
+
+  .learningPathSummaryCard,
+  .learningPathDays {
+    padding: 22px;
+  }
+
+  .savedTimeBadge,
+  .reinforcedTimeBadge {
+    min-height: auto;
+  }
+
+  .learningPathModuleHeader {
+    grid-template-columns: 1fr;
   }
 
   .actions {

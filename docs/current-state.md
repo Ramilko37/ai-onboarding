@@ -36,7 +36,8 @@ Current user flow:
 7. Diagnostic explanation screen.
 8. Diagnostic question flow.
 9. Topic-level diagnostic result.
-10. Placeholder for the future personal learning route.
+10. Personal learning route generation.
+11. 14-day learning route screen with time metrics, topic decisions, source-backed modules, checkpoints, and manager recommendations.
 
 ## Implemented Diagnostic Logic
 
@@ -68,7 +69,26 @@ A mock RAG-lite knowledge base has been added as TypeScript data. It contains 45
 
 The stronger document set includes scenario-based instructions, short checklists, escalation rules, RAG source-answering guidance, day 1 / day 7 / day 14 route logic, and manager-review triggers for high-risk cases.
 
-The knowledge base is not connected to UI search, mentor answers, diagnostic explanations, or learning-route generation yet.
+The knowledge base is now connected to learning-route generation through a lightweight local retrieval helper. It is not connected to UI search, mentor answers, or diagnostic explanations yet.
+
+## Implemented Learning Path Logic
+
+Stage 3 is implemented with mock logic and no backend, AI, LLM, embeddings, or vector database.
+
+Current learning-route behavior:
+
+- The route is built from `DiagnosticResult.topicScores`.
+- Required topics are never fully skipped.
+- Strong skippable topics can be removed from the detailed route.
+- Strong required or partially skippable topics are shortened to summary/check blocks.
+- Development-zone topics receive full modules and, when available, practice modules.
+- Critical or required development-zone topics receive mentor tasks.
+- Every route module attempts to attach 1-3 knowledge-base sources.
+- The route distributes modules across day 1 through day 14 with load limits and role-specific base days.
+- Day 7 has an intermediate checkpoint.
+- Day 14 has a final readiness checkpoint.
+- The route calculates standard time, personalized time, saved minutes, and saved percent.
+- Manager recommendations are generated for high-risk or mentor-supported topics and keep HR guardrail wording.
 
 ## Important Files
 
@@ -79,16 +99,21 @@ src/modules/onboarding-agent/
   model/types.ts
   model/mockData.ts
   model/knowledgeBase.mock.ts
+  model/learningModules.mock.ts
   model/diagnosticQuestions.ts
+  model/learningPathBuilder.test.ts
   model/useOnboardingAgentState.ts
+  lib/buildLearningPath.ts
   lib/getDiagnosticQuestions.ts
   lib/calculateDiagnosticResult.ts
   lib/getTopicStatus.ts
   lib/getTopicRecommendation.ts
   lib/getRecommendationLabel.ts
+  lib/retrieveKnowledge.ts
   ui/OnboardingAgentPage.tsx
   ui/steps/DiagnosticStep.tsx
   ui/steps/DiagnosticResultStep.tsx
+  ui/steps/LearningPathStep.tsx
 ```
 
 ## Verification
@@ -104,20 +129,25 @@ npm run build
 `npm run test:diagnostic` currently covers:
 
 - stable role and grade specific diagnostic question selection;
-- topic scoring and required-topic recommendation behavior.
+- topic scoring and required-topic recommendation behavior;
+- learning format decisions;
+- mandatory-topic preservation in personalized routes;
+- 14-day route creation;
+- day 7 and day 14 checkpoints;
+- source-backed module generation;
+- personalized time metrics;
+- manager recommendations for high-risk topics.
 
 ## Git State Note
 
-At the time of this snapshot, the repository appears to be untracked from git's perspective. Treat existing files as user/workspace state and do not remove or reset them unless explicitly asked.
+At the time of this snapshot, the repository has an active git worktree. Treat existing files as user/workspace state and do not remove or reset them unless explicitly asked.
 
 ## Next Product Stage
 
-The next stage should implement the personal learning route based on diagnostic results:
+The next stage can make the route more interactive:
 
-- day 1 route;
-- day 7 route;
-- day 14 route;
-- shortened modules for strong topics;
-- reinforced modules for development zones;
-- required safety and compliance blocks;
-- manager-facing recommendations for high-risk cases.
+- module completion states;
+- mentor chat answers grounded in the knowledge base;
+- manager dashboard view of progress and risks;
+- route adjustment after day 7 or day 14 checkpoint;
+- clearer source browsing or knowledge-base search from the route screen.

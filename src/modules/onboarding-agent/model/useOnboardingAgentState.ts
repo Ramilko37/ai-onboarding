@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { buildLearningPath } from "../lib/buildLearningPath";
 import { calculateDiagnosticResult } from "../lib/calculateDiagnosticResult";
 import { getDiagnosticQuestions } from "../lib/getDiagnosticQuestions";
+import { learningModules } from "./learningModules.mock";
 import { competencyTopics } from "./mockData";
 import type {
   DiagnosticAnswer,
@@ -21,6 +23,7 @@ const initialState: OnboardingState = {
   diagnosticQuestions: [],
   diagnosticAnswers: [],
   diagnosticResult: null,
+  learningPath: null,
   currentQuestionIndex: 0
 };
 
@@ -54,6 +57,7 @@ export function useOnboardingAgentState() {
           diagnosticQuestions: [],
           diagnosticAnswers: [],
           diagnosticResult: null,
+          learningPath: null,
           currentQuestionIndex: 0
         });
       },
@@ -72,6 +76,7 @@ export function useOnboardingAgentState() {
             }),
             diagnosticAnswers: [],
             diagnosticResult: null,
+            learningPath: null,
             currentQuestionIndex: 0
           };
         });
@@ -130,6 +135,7 @@ export function useOnboardingAgentState() {
           return {
             ...previous,
             currentStep: "diagnostic_result",
+            learningPath: null,
             diagnosticResult: calculateDiagnosticResult({
               employee: previous.employee,
               questions: previous.diagnosticQuestions,
@@ -146,8 +152,27 @@ export function useOnboardingAgentState() {
           diagnosticQuestions: [],
           diagnosticAnswers: [],
           diagnosticResult: null,
+          learningPath: null,
           currentQuestionIndex: 0
         }));
+      },
+      buildPersonalLearningPath() {
+        setState((previous) => {
+          if (!previous.employee || !previous.diagnosticResult) {
+            return previous;
+          }
+
+          return {
+            ...previous,
+            currentStep: "learning_path",
+            learningPath: buildLearningPath({
+              employee: previous.employee,
+              diagnosticResult: previous.diagnosticResult,
+              topics: competencyTopics,
+              learningModules
+            })
+          };
+        });
       },
       reset() {
         setState(initialState);

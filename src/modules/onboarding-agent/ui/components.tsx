@@ -19,7 +19,7 @@ const steps: Array<{ id: OnboardingStep; label: string }> = [
   { id: "diagnostic_intro", label: "Вводная" },
   { id: "diagnostic", label: "Вопросы" },
   { id: "diagnostic_result", label: "Результат" },
-  { id: "learning_path_placeholder", label: "Маршрут" }
+  { id: "learning_path", label: "Маршрут" }
 ];
 
 type ButtonProps = {
