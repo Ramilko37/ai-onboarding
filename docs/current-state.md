@@ -58,6 +58,18 @@ Current question bank:
 - Cook: 16 mock questions.
 - Administrator: 16 mock questions.
 
+## Mock Knowledge Base
+
+A mock RAG-lite knowledge base has been added as TypeScript data. It contains 45 source documents:
+
+- 9 general onboarding, quality, safety, source-backed answer, escalation, and route-logic documents.
+- 18 cook documents mapped to cook competency topics.
+- 18 administrator documents mapped to administrator competency topics.
+
+The stronger document set includes scenario-based instructions, short checklists, escalation rules, RAG source-answering guidance, day 1 / day 7 / day 14 route logic, and manager-review triggers for high-risk cases.
+
+The knowledge base is not connected to UI search, mentor answers, diagnostic explanations, or learning-route generation yet.
+
 ## Important Files
 
 ```text
@@ -66,6 +78,7 @@ app/onboarding-agent/page.tsx
 src/modules/onboarding-agent/
   model/types.ts
   model/mockData.ts
+  model/knowledgeBase.mock.ts
   model/diagnosticQuestions.ts
   model/useOnboardingAgentState.ts
   lib/getDiagnosticQuestions.ts
@@ -84,6 +97,7 @@ Known passing commands:
 
 ```bash
 npm run test:diagnostic
+npx tsc --noEmit --ignoreDeprecations 6.0
 npm run build
 ```
 
