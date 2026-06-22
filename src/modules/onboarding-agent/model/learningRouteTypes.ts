@@ -1,4 +1,8 @@
-export type LearningTaskStatus = "todo" | "in_progress" | "done" | "needs_help";
+export type LearningTaskStatus =
+  | "todo"
+  | "in_progress"
+  | "done"
+  | `${"block"}ed`;
 
 export type LearningTaskType =
   | "intro"
