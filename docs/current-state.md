@@ -11,6 +11,17 @@ The project is a Next.js prototype of an AI onboarding agent for a HORECA franch
 
 The prototype demonstrates personalization without backend, LLM, RAG, chat, or real integrations: a new employee selects a role and grade, passes a soft knowledge diagnostic, sees topic-level results, and receives an automatically generated personal learning route.
 
+## Current UI Direction
+
+The onboarding agent UI has been restyled into a lighter operational app shell:
+
+- Light background, white work surfaces, subtle borders, and restrained teal status accents.
+- Compact header with current employee/location context.
+- Compact step progress that stays readable on desktop and becomes horizontally scrollable on mobile.
+- Reduced visual weight: no glassmorphism, oversized purple/blue gradients, or nested decorative hero cards.
+- Route, diagnostic, result, and profile screens use clearer typography, smaller radii, and calmer cards/tables.
+- Step changes reset scroll to the top so the next screen does not open underneath the sticky header.
+
 ## Implemented Flow
 
 The main prototype is available on the root route:
@@ -111,6 +122,7 @@ Expected passing commands:
 
 ```bash
 npm run test:diagnostic
+npm run test:learning-route
 npm run build
 ```
 

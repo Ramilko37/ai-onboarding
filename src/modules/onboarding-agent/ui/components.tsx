@@ -35,15 +35,28 @@ export function StepProgress({ currentStep }: { currentStep: OnboardingStep }) {
 
   return (
     <nav className={styles.progress} aria-label="Прогресс сценария">
-      {steps.map((step, index) => (
-        <div
-          className={index <= currentIndex ? styles.progressItemActive : styles.progressItem}
-          key={step.id}
-        >
-          <span>{index + 1}</span>
-          <p>{step.label}</p>
-        </div>
-      ))}
+      <ol className={styles.progressList}>
+        {steps.map((step, index) => {
+          const isActive = index === currentIndex;
+          const isDone = index < currentIndex;
+          const className = isActive
+            ? styles.progressItemActive
+            : isDone
+              ? styles.progressItemDone
+              : styles.progressItem;
+
+          return (
+            <li
+              aria-current={isActive ? "step" : undefined}
+              className={className}
+              key={step.id}
+            >
+              <span>{index + 1}</span>
+              <p>{step.label}</p>
+            </li>
+          );
+        })}
+      </ol>
     </nav>
   );
 }
@@ -99,8 +112,10 @@ export function RoleCard({
 }) {
   return (
     <button
+      aria-checked={selected}
       className={selected ? styles.optionCardSelected : styles.optionCard}
       onClick={() => onSelect(value)}
+      role="radio"
       type="button"
     >
       <span>{title}</span>
@@ -123,14 +138,16 @@ export function GradeSelector({
   onChange: (value: EmployeeGrade) => void;
 }) {
   return (
-    <div className={styles.gradeGrid}>
+    <div className={styles.gradeGrid} role="radiogroup" aria-label="Стартовый уровень">
       {options.map((option) => (
         <button
+          aria-checked={option.value === value}
           className={
             option.value === value ? styles.gradeOptionSelected : styles.gradeOption
           }
           key={option.value}
           onClick={() => onChange(option.value)}
+          role="radio"
           type="button"
         >
           <span>{option.label}</span>

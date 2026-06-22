@@ -84,7 +84,7 @@ export function EmployeeProfileStep({
 
         <div className={styles.fullWidth}>
           <span className={styles.fieldLabel}>Роль</span>
-          <div className={styles.roleGrid}>
+          <div className={styles.roleGrid} role="radiogroup" aria-label="Роль">
             {roleOptions.map((option) => (
               <RoleCard
                 description={option.description}

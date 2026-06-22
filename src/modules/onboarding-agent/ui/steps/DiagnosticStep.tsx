@@ -130,7 +130,7 @@ export function DiagnosticQuestionCard({
         {question.source && <span>{question.source}</span>}
       </div>
       <h2>{question.question}</h2>
-      <div className={styles.optionList} role="list">
+      <div className={styles.optionList} role="radiogroup" aria-label="Варианты ответа">
         {question.options.map((option) => (
           <DiagnosticOption
             key={option.id}
@@ -158,9 +158,10 @@ export function DiagnosticOption({
 }) {
   return (
     <button
-      aria-pressed={selected}
+      aria-checked={selected}
       className={selected ? styles.answerOptionSelected : styles.answerOption}
       onClick={onSelect}
+      role="radio"
       type="button"
     >
       <span>{optionId.toUpperCase()}</span>

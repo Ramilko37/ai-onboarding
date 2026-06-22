@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useOnboardingAgentState } from "../model/useOnboardingAgentState";
 import { CompetencyMapStep } from "./steps/CompetencyMapStep";
 import { DiagnosticIntroStep } from "./steps/DiagnosticIntroStep";
@@ -13,9 +14,32 @@ import styles from "./OnboardingAgentPage.module.css";
 
 export function OnboardingAgentPage() {
   const { state, actions } = useOnboardingAgentState();
+  const headerMeta = state.employee
+    ? `${state.employee.name} · ${state.employee.location}`
+    : "Демо без backend, RAG и внешних интеграций";
+  const locationLabel = state.employee?.location ?? "Точка не выбрана";
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [state.currentStep]);
 
   return (
     <main className={styles.page}>
+      <header className={styles.appHeader}>
+        <div className={styles.brand} aria-label="Onboard Horeca">
+          <span className={styles.brandMark}>OH</span>
+          <div>
+            <strong className={styles.brandName}>Onboard</strong>
+            <span className={styles.brandMeta}>HORECA</span>
+          </div>
+        </div>
+        <div>
+          <p className={styles.headerTitle}>Маршрут адаптации</p>
+          <span className={styles.headerMeta}>{headerMeta}</span>
+        </div>
+        <span className={styles.locationPill}>{locationLabel}</span>
+      </header>
+
       <div className={styles.shell}>
         <StepProgress currentStep={state.currentStep} />
 
