@@ -68,6 +68,16 @@
   --aurora-2: oklch(0.9 0.06 150);
   --aurora-3: oklch(0.91 0.05 76);
 
+  /* Deep teal surface for immersive panels (kept calm, never harsh) */
+  --deep: oklch(0.34 0.045 205);
+  --deep-foreground: oklch(0.97 0.012 200);
+  --deep-muted: oklch(0.78 0.03 200);
+  --deep-border: color-mix(in oklch, var(--deep-foreground) 22%, transparent);
+
+  /* Soft, tinted shadow */
+  --shadow-soft: 0 20px 50px color-mix(in oklch, var(--primary) 14%, transparent);
+  --shadow-card: 0 10px 30px color-mix(in oklch, var(--primary) 9%, transparent);
+
   color-scheme: light;
 }
 

@@ -1,17 +1,26 @@
 .learningRoutePanel {
   display: grid;
   gap: 18px;
-  background: rgba(255, 255, 255, 0.86);
-  border: 1px solid rgba(21, 35, 37, 0.1);
-  box-shadow: 0 24px 70px rgba(21, 35, 37, 0.08);
+  background: color-mix(in oklch, var(--card) 90%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(8px);
   padding: clamp(22px, 4vw, 48px);
 }
 
 .kicker {
-  margin: 0 0 12px;
-  color: #c9462a !important;
-  font-size: 13px !important;
+  margin: 0 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-foreground) !important;
+  background: color-mix(in oklch, var(--accent) 55%, transparent);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12px !important;
   font-weight: 800;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
@@ -19,8 +28,11 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
   gap: 24px;
-  background: #173f45;
-  color: #ffffff;
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(70% 90% at 0% 0%, color-mix(in oklch, var(--primary) 32%, transparent), transparent 60%),
+    var(--deep);
+  color: var(--deep-foreground);
   padding: clamp(22px, 4vw, 36px);
 }
 
@@ -28,15 +40,16 @@
 .routeProgressCard h2 {
   margin: 0;
   line-height: 1.05;
+  letter-spacing: -0.02em;
 }
 
 .learningRouteSummaryCard h1 {
-  font-size: clamp(30px, 4vw, 54px);
+  font-size: clamp(28px, 4vw, 48px);
 }
 
 .learningRouteSummaryCard p {
   max-width: 780px;
-  color: rgba(255, 255, 255, 0.78);
+  color: color-mix(in oklch, var(--deep-foreground) 80%, transparent);
   font-size: 17px;
   line-height: 1.6;
 }
@@ -54,12 +67,12 @@
 }
 
 .learningRouteSummaryCard dl div {
-  border-top: 1px solid rgba(255, 255, 255, 0.26);
+  border-top: 1px solid var(--deep-border);
   padding-top: 12px;
 }
 
 .learningRouteSummaryCard dt {
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--deep-muted);
   font-size: 12px;
 }
 
@@ -73,28 +86,31 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(320px, 0.5fr);
   gap: 18px;
-  background: #ffffff;
-  border: 1px solid rgba(21, 35, 37, 0.1);
-  padding: 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
 }
 
 .routeProgressCard h2 {
-  font-size: clamp(24px, 3vw, 36px);
+  font-size: clamp(22px, 3vw, 32px);
 }
 
 .progressMeter {
-  height: 14px;
+  height: 12px;
   overflow: hidden;
-  background: #e5e8e1;
-  border: 1px solid rgba(21, 35, 37, 0.08);
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 999px;
   margin-top: 16px;
 }
 
 .progressMeter span {
   display: block;
   height: 100%;
-  background: #1b676f;
-  transition: width 180ms ease;
+  background: linear-gradient(90deg, var(--primary), color-mix(in oklch, var(--primary) 70%, var(--accent)));
+  border-radius: 999px;
+  transition: width 220ms ease;
 }
 
 .routeProgressFacts {
@@ -104,33 +120,38 @@
 }
 
 .routeProgressFacts div {
-  background: #f7f6f1;
-  border-top: 4px solid #1b676f;
-  padding: 14px;
+  background: color-mix(in oklch, var(--primary) 6%, var(--card));
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--primary);
+  border-radius: var(--radius-md);
+  padding: 16px;
 }
 
 .routeProgressFacts dt,
 .learningTaskMeta dt,
 .taskStatusField span {
-  color: #667072;
+  color: var(--muted-foreground);
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .routeProgressFacts dd {
   margin: 6px 0 0;
-  color: #c9462a;
+  color: var(--primary);
   font-size: 30px;
   font-weight: 900;
 }
 
 .routeWarning {
-  border-left: 6px solid #f2b84b;
-  background: #fff6df;
-  color: #5f4511;
+  border: 1px solid color-mix(in oklch, var(--accent) 60%, transparent);
+  border-left: 5px solid var(--accent);
+  background: color-mix(in oklch, var(--accent) 35%, var(--card));
+  color: var(--accent-foreground);
+  border-radius: var(--radius-md);
   padding: 16px 18px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.45;
 }
 
@@ -144,25 +165,39 @@
 .routeDayCard {
   display: grid;
   gap: 16px;
-  background: #ffffff;
-  border: 1px solid rgba(21, 35, 37, 0.1);
-  padding: 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+.routeDayCard:hover {
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
 }
 
 .routeDayCard header span {
-  color: #1b676f;
-  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  background: color-mix(in oklch, var(--primary) 12%, transparent);
+  color: var(--primary);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-weight: 800;
+  font-size: 13px;
 }
 
 .routeDayCard h2 {
-  margin: 8px 0;
+  margin: 10px 0 0;
   font-size: 22px;
   line-height: 1.18;
+  letter-spacing: -0.01em;
 }
 
 .routeDayCard p,
 .learningTaskCard p {
-  color: #4d5a5c;
+  color: var(--muted-foreground);
   line-height: 1.55;
 }
 
@@ -174,9 +209,10 @@
 .learningTaskCard {
   display: grid;
   gap: 12px;
-  background: #fbfbf8;
-  border: 1px solid rgba(21, 35, 37, 0.1);
-  padding: 16px;
+  background: color-mix(in oklch, var(--muted) 50%, var(--card));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
 }
 
 .learningTaskHeader {
@@ -190,6 +226,7 @@
   margin: 0;
   font-size: 18px;
   line-height: 1.24;
+  letter-spacing: -0.01em;
 }
 
 .taskStatusTodo,
@@ -200,31 +237,32 @@
   display: inline-flex;
   align-items: center;
   min-height: 28px;
-  padding: 0 10px;
+  padding: 0 12px;
+  border-radius: 999px;
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 800;
   line-height: 1.2;
   white-space: nowrap;
 }
 
 .taskStatusTodo {
-  background: #edf0ed;
-  color: #45525a;
+  background: var(--secondary);
+  color: var(--secondary-foreground);
 }
 
 .taskStatusInProgress {
-  background: #fff1c8;
-  color: #7b560c;
+  background: color-mix(in oklch, var(--accent) 60%, transparent);
+  color: var(--accent-foreground);
 }
 
 .taskStatusDone {
-  background: #e5f3ec;
-  color: #176344;
+  background: color-mix(in oklch, oklch(0.7 0.12 160) 22%, transparent);
+  color: oklch(0.45 0.1 160);
 }
 
 .taskStatusSupport {
-  background: #f8e5df;
-  color: #9f3725;
+  background: color-mix(in oklch, oklch(0.7 0.13 35) 22%, transparent);
+  color: oklch(0.5 0.13 32);
 }
 
 .learningTaskBadges {
@@ -234,8 +272,8 @@
 }
 
 .learningTaskBadges span {
-  background: #eef4f2;
-  color: #1b676f;
+  background: color-mix(in oklch, var(--primary) 12%, transparent);
+  color: var(--primary);
 }
 
 .learningTaskMeta {
@@ -244,13 +282,13 @@
 }
 
 .learningTaskMeta div {
-  border-top: 1px solid rgba(21, 35, 37, 0.1);
+  border-top: 1px solid var(--border);
   padding-top: 10px;
 }
 
 .learningTaskMeta dd {
   margin: 4px 0 0;
-  color: #314245;
+  color: color-mix(in oklch, var(--foreground) 82%, transparent);
   line-height: 1.45;
 }
 
@@ -260,16 +298,22 @@
 }
 
 .taskStatusField select {
-  min-height: 42px;
-  border: 1px solid rgba(21, 35, 37, 0.16);
-  background: #ffffff;
-  color: #152325;
-  padding: 0 12px;
+  min-height: 44px;
+  border: 1px solid var(--input);
+  background: var(--card);
+  color: var(--foreground);
+  padding: 0 14px;
+  border-radius: var(--radius-md);
   font: inherit;
+  transition: border-color 160ms ease;
 }
 
-.taskStatusField select:focus {
-  outline: 3px solid rgba(242, 184, 75, 0.55);
+.taskStatusField select:hover {
+  border-color: color-mix(in oklch, var(--primary) 35%, var(--input));
+}
+
+.taskStatusField select:focus-visible {
+  outline: 3px solid color-mix(in oklch, var(--ring) 45%, transparent);
   outline-offset: 2px;
 }
 
