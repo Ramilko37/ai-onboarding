@@ -1,4 +1,4 @@
-import { MvpOnboardingPage } from "@/modules/onboarding-agent/ui/MvpOnboardingPage";
+import { MvpOnboardingPage } from "@/modules/onboarding-agent";
 import { demoEmployees } from "@/modules/onboarding-agent/model/mvpDemoData";
 
 export function generateStaticParams() {
