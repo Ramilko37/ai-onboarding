@@ -22,6 +22,12 @@ import styles from "./MvpOnboardingPage.module.css";
 
 type AppView = "employee" | "manager";
 
+export type MvpOnboardingPageProps = {
+  initialEmployeeId?: string;
+  initialView?: AppView;
+  allowModeSwitch?: boolean;
+};
+
 type ChatMessage = {
   id: string;
   author: "newcomer" | "assistant";
@@ -49,6 +55,13 @@ const employeeStatusActions: Array<{ status: TaskStatus; label: string }> = [
   { status: "done", label: "Готово" },
   { status: "blocked", label: "Нужна помощь" }
 ];
+
+const employeeStatusLabels: Record<TaskStatus, string> = {
+  todo: "К выполнению",
+  in_progress: "В работе",
+  done: "Готово",
+  blocked: "Нужна помощь"
+};
 
 const initialEscalations: DemoEscalation[] = [
   {
@@ -136,10 +149,14 @@ function getEscalationOwner(task?: DemoTask): DemoEscalation["owner"] {
   return "HR";
 }
 
-export function MvpOnboardingPage() {
-  const [view, setView] = useState<AppView>("employee");
+export function MvpOnboardingPage({
+  initialEmployeeId = demoEmployees[0]?.id ?? "",
+  initialView = "employee",
+  allowModeSwitch = true
+}: MvpOnboardingPageProps = {}) {
+  const [view, setView] = useState<AppView>(initialView);
   const [employees, setEmployees] = useState<DemoEmployee[]>(demoEmployees);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState(demoEmployees[0]?.id ?? "");
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(initialEmployeeId);
   const [question, setQuestion] = useState("");
   const [messagesByEmployee, setMessagesByEmployee] = useState<Record<string, ChatMessage[]>>(
     getInitialMessagesByEmployee
@@ -287,22 +304,26 @@ export function MvpOnboardingPage() {
           <span>AI Onboarding MVP</span>
           <strong>{view === "employee" ? "Личный портал сотрудника" : "Служебный режим HR / руководителя"}</strong>
         </div>
-        <nav aria-label="Режим прототипа">
-          <button
-            className={view === "employee" ? styles.viewButtonActive : styles.viewButton}
-            type="button"
-            onClick={() => setView("employee")}
-          >
-            Портал сотрудника
-          </button>
-          <button
-            className={view === "manager" ? styles.viewButtonActive : styles.viewButton}
-            type="button"
-            onClick={() => setView("manager")}
-          >
-            HR / руководитель
-          </button>
-        </nav>
+        {allowModeSwitch ? (
+          <nav aria-label="Режим прототипа">
+            <button
+              className={view === "employee" ? styles.viewButtonActive : styles.viewButton}
+              type="button"
+              onClick={() => setView("employee")}
+            >
+              Портал сотрудника
+            </button>
+            <button
+              className={view === "manager" ? styles.viewButtonActive : styles.viewButton}
+              type="button"
+              onClick={() => setView("manager")}
+            >
+              HR / руководитель
+            </button>
+          </nav>
+        ) : (
+          <p className={styles.personalRouteNote}>Личная ссылка сотрудника · служебная панель скрыта</p>
+        )}
       </header>
 
       {view === "employee" ? (
@@ -409,7 +430,7 @@ export function MvpOnboardingPage() {
                         <div className={styles.taskCard} key={task.id}>
                           <div className={styles.taskTopline}>
                             <strong>{task.title}</strong>
-                            <span className={styles[`status_${task.status}`]}>{statusLabels[task.status]}</span>
+                            <span className={styles[`status_${task.status}`]}>{employeeStatusLabels[task.status]}</span>
                           </div>
                           <p>{task.description}</p>
                           <div className={styles.taskMeta}>
