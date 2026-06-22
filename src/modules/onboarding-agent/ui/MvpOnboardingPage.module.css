@@ -1,0 +1,630 @@
+.page {
+  min-height: 100vh;
+  padding: 28px;
+  background:
+    radial-gradient(circle at top left, rgba(28, 103, 112, 0.14), transparent 34%),
+    radial-gradient(circle at top right, rgba(201, 70, 42, 0.12), transparent 32%),
+    #f7f6f1;
+  color: #152325;
+}
+
+.hero,
+.personaBar,
+.routePanel,
+.chatPanel,
+.dashboardPanel {
+  width: min(1580px, 100%);
+  margin: 0 auto;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  gap: 24px;
+  align-items: stretch;
+  margin-bottom: 18px;
+  padding: clamp(28px, 5vw, 56px);
+  border: 1px solid rgba(21, 35, 37, 0.1);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 24px 70px rgba(21, 35, 37, 0.08);
+}
+
+.hero h1 {
+  max-width: 980px;
+  margin: 0;
+  font-size: clamp(34px, 5vw, 70px);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.hero p {
+  max-width: 860px;
+  color: #4d5a5c;
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.kicker {
+  margin: 0 0 10px;
+  color: #c9462a;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heroMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.heroMetrics div,
+.progressCard div,
+.dashboardStats div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 120px;
+  padding: 18px;
+  background: #173f45;
+  color: #ffffff;
+}
+
+.heroMetrics strong,
+.progressCard strong,
+.dashboardStats strong {
+  font-size: 38px;
+  line-height: 1;
+}
+
+.heroMetrics span,
+.progressCard span,
+.dashboardStats span {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.personaBar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.personaButton,
+.personaButtonActive {
+  border: 1px solid rgba(21, 35, 37, 0.12);
+  background: rgba(255, 255, 255, 0.78);
+  color: #152325;
+  min-height: 96px;
+  padding: 16px;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.personaButtonActive {
+  border-color: #1b676f;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 2px rgba(27, 103, 111, 0.18);
+}
+
+.personaButton span,
+.personaButtonActive span,
+.employeeRow span,
+.employeeRowActive span {
+  display: block;
+  font-weight: 900;
+}
+
+.personaButton small,
+.personaButtonActive small,
+.employeeRow small,
+.employeeRowActive small {
+  display: block;
+  margin-top: 6px;
+  color: #5d6769;
+}
+
+.personaButton em,
+.personaButtonActive em {
+  display: inline-flex;
+  margin-top: 10px;
+  color: #c9462a;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.workspace {
+  width: min(1580px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(340px, 0.95fr) minmax(420px, 1.18fr) minmax(320px, 0.87fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.routePanel,
+.chatPanel,
+.dashboardPanel {
+  min-width: 0;
+  border: 1px solid rgba(21, 35, 37, 0.1);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 24px 70px rgba(21, 35, 37, 0.08);
+  padding: 22px;
+}
+
+.panelHeader {
+  margin-bottom: 18px;
+}
+
+.panelHeader h2 {
+  margin: 0;
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.panelHeader p:not(.kicker) {
+  margin: 10px 0 0;
+  color: #5d6769;
+  line-height: 1.55;
+}
+
+.profileCard,
+.progressCard,
+.guardrailCard,
+.dashboardStats,
+.dashboardSection {
+  margin-bottom: 14px;
+}
+
+.profileCard {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  background: #173f45;
+  color: #ffffff;
+}
+
+.profileCard strong {
+  display: block;
+  font-size: 24px;
+}
+
+.profileCard span {
+  display: block;
+  margin-top: 4px;
+  color: #f2b84b;
+  font-weight: 900;
+}
+
+.profileCard dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.profileCard dt {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+}
+
+.profileCard dd {
+  margin: 3px 0 0;
+  font-weight: 800;
+}
+
+.progressCard,
+.dashboardStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.progressCard div,
+.dashboardStats div {
+  min-height: 96px;
+  background: #ffffff;
+  color: #152325;
+  border: 1px solid rgba(21, 35, 37, 0.1);
+}
+
+.progressCard span,
+.dashboardStats span {
+  color: #607073;
+}
+
+.competencyList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.competencyList span,
+.taskMeta span,
+.answerSources span,
+.integrationCard span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  background: #eef4f2;
+  color: #1b676f;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.phaseList {
+  display: grid;
+  gap: 14px;
+}
+
+.phaseCard {
+  display: grid;
+  gap: 10px;
+}
+
+.phaseCard h3,
+.dashboardSection h3 {
+  margin: 0;
+  color: #152325;
+  font-size: 18px;
+}
+
+.taskCard,
+.escalationCard,
+.integrationCard,
+.guardrailCard {
+  padding: 16px;
+  border: 1px solid rgba(21, 35, 37, 0.1);
+  background: #ffffff;
+}
+
+.taskTopline {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.taskTopline strong {
+  line-height: 1.25;
+}
+
+.taskCard p,
+.escalationCard p,
+.integrationCard p {
+  margin: 10px 0 0;
+  color: #526164;
+  line-height: 1.5;
+}
+
+.status_todo,
+.status_in_progress,
+.status_done,
+.status_blocked {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.status_todo {
+  background: #edf0ed;
+  color: #536062;
+}
+
+.status_in_progress {
+  background: #fff1c8;
+  color: #7b560c;
+}
+
+.status_done {
+  background: #e5f3ec;
+  color: #176344;
+}
+
+.status_blocked {
+  background: #f8e5df;
+  color: #9f3725;
+}
+
+.taskMeta,
+.sourceList,
+.statusButtons,
+.quickQuestions,
+.answerSources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.sourceList small {
+  display: inline-flex;
+  color: #617174;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.statusButton,
+.statusButtonActive,
+.quickQuestions button,
+.chatForm button,
+.employeeRow,
+.employeeRowActive {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.statusButton,
+.statusButtonActive,
+.quickQuestions button {
+  min-height: 34px;
+  padding: 0 10px;
+  background: #edf0ed;
+  color: #1f3437;
+  font-size: 12px;
+}
+
+.statusButtonActive {
+  background: #1b676f;
+  color: #ffffff;
+}
+
+.guardrailCard {
+  display: grid;
+  gap: 6px;
+  background: #fff6df;
+  border-color: rgba(242, 184, 75, 0.42);
+}
+
+.guardrailCard strong {
+  color: #7b560c;
+}
+
+.guardrailCard span {
+  color: #4f4631;
+  line-height: 1.45;
+}
+
+.quickQuestions {
+  margin-bottom: 14px;
+}
+
+.quickQuestions button:hover,
+.statusButton:hover,
+.employeeRow:hover,
+.employeeRowActive:hover,
+.personaButton:hover,
+.personaButtonActive:hover {
+  filter: brightness(0.98);
+}
+
+.chatFeed {
+  display: grid;
+  gap: 12px;
+  max-height: 720px;
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid rgba(21, 35, 37, 0.1);
+  background: #fbfbf8;
+}
+
+.assistantMessage,
+.userMessage {
+  padding: 16px;
+  border: 1px solid rgba(21, 35, 37, 0.1);
+}
+
+.assistantMessage {
+  margin-right: 24px;
+  background: #ffffff;
+}
+
+.userMessage {
+  margin-left: 24px;
+  background: #edf7f4;
+}
+
+.messageMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.messageMeta span {
+  font-weight: 900;
+}
+
+.messageMeta small {
+  color: #667072;
+}
+
+.assistantMessage p,
+.userMessage p {
+  margin: 0;
+  color: #314245;
+  line-height: 1.55;
+}
+
+.answerSources span {
+  align-items: flex-start;
+  height: auto;
+  min-height: 30px;
+  padding: 8px 10px;
+  line-height: 1.3;
+}
+
+.escalationNotice {
+  margin-top: 10px;
+  padding: 10px;
+  background: #f8e5df;
+  color: #9f3725;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.chatForm {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.chatForm label {
+  display: grid;
+  gap: 8px;
+  color: #314245;
+  font-weight: 900;
+}
+
+.chatForm textarea {
+  width: 100%;
+  min-height: 96px;
+  resize: vertical;
+  border: 1px solid rgba(21, 35, 37, 0.16);
+  background: #ffffff;
+  color: #152325;
+  padding: 12px;
+  font: inherit;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.chatForm button {
+  min-height: 48px;
+  background: #c9462a;
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.dashboardSection {
+  padding: 16px;
+  border: 1px solid rgba(21, 35, 37, 0.1);
+  background: #ffffff;
+}
+
+.employeeRow,
+.employeeRowActive {
+  width: 100%;
+  display: block;
+  margin-top: 10px;
+  padding: 12px;
+  background: #fbfbf8;
+  color: #152325;
+  text-align: left;
+}
+
+.employeeRowActive {
+  background: #edf7f4;
+  box-shadow: inset 0 0 0 2px rgba(27, 103, 111, 0.18);
+}
+
+.escalationCard {
+  margin-top: 10px;
+  background: #fffaf7;
+  border-color: rgba(201, 70, 42, 0.2);
+}
+
+.escalationCard span {
+  display: block;
+  margin-top: 6px;
+  color: #9f3725;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.emptyState {
+  color: #667072;
+}
+
+.intentList {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: #314245;
+  line-height: 1.55;
+}
+
+.integrationGrid {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.integrationCard strong {
+  display: block;
+}
+
+.integrationCard span {
+  margin-top: 8px;
+  min-height: 24px;
+  background: #f4eee9;
+  color: #77513e;
+}
+
+.personaButton:focus,
+.personaButtonActive:focus,
+.statusButton:focus,
+.statusButtonActive:focus,
+.quickQuestions button:focus,
+.chatForm textarea:focus,
+.chatForm button:focus,
+.employeeRow:focus,
+.employeeRowActive:focus {
+  outline: 3px solid rgba(242, 184, 75, 0.62);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1280px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chatFeed {
+    max-height: none;
+  }
+}
+
+@media (max-width: 840px) {
+  .page {
+    padding: 14px;
+  }
+
+  .hero,
+  .personaBar,
+  .heroMetrics,
+  .progressCard,
+  .dashboardStats,
+  .profileCard dl {
+    grid-template-columns: 1fr;
+  }
+
+  .hero h1 {
+    font-size: 38px;
+  }
+
+  .routePanel,
+  .chatPanel,
+  .dashboardPanel {
+    padding: 16px;
+  }
+
+  .assistantMessage,
+  .userMessage {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
