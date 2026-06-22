@@ -10,9 +10,9 @@ This follows the MVP principle that the main value for employees is a guided per
 
 The current MVP intentionally uses mock data and local deterministic retrieval. It does not use a backend, real LLM, real RAG infrastructure, HRIS, LMS, SSO, calendar, service desk, or messaging APIs.
 
-## Implemented Demo Flow
+## Routes
 
-The main prototype is available on the root route:
+The general demo route is available at:
 
 ```text
 /
@@ -23,6 +23,24 @@ The legacy route is still available and renders the same MVP workspace:
 ```text
 /onboarding-agent
 ```
+
+Direct employee-only demo routes are available at:
+
+```text
+/employee/employee-anna
+/employee/employee-timur
+/employee/employee-lera
+```
+
+On these employee routes, the HR/manager mode switch is hidden. This better represents a real employee-facing path.
+
+The service route for HR/manager demo mode is available at:
+
+```text
+/hr
+```
+
+## Implemented Demo Flow
 
 Current employee-first flow:
 
@@ -65,6 +83,8 @@ The local curated knowledge base contains 20 articles/FAQ entries. Each assistan
 Implemented from the MVP brief and latest product feedback:
 
 - employee-first portal as the default experience;
+- direct employee-only routes via `/employee/[employeeId]`;
+- separate HR/manager service route via `/hr`;
 - personal onboarding route with Day 0, Day 1, Week 1 and Month 1 phases;
 - task statuses mapped to employee-friendly actions: `Начать`, `Готово`, `Нужна помощь`;
 - personal assistant panel with source-grounded answers;
@@ -82,6 +102,8 @@ Implemented from the MVP brief and latest product feedback:
 ```text
 app/page.tsx
 app/onboarding-agent/page.tsx
+app/employee/[employeeId]/page.tsx
+app/hr/page.tsx
 app/layout.tsx
 src/modules/onboarding-agent/
   index.ts
@@ -114,15 +136,15 @@ The MVP assistant smoke test covers:
 Manual employee-flow smoke test:
 
 ```text
-1. Open /
-2. Confirm the default screen is Портал сотрудника.
+1. Open /employee/employee-anna
+2. Confirm there is no HR/manager mode switch on this route.
 3. Confirm the employee sees only their own route, assistant, materials and support contacts.
 4. Confirm no other employee list appears in employee mode.
 5. Click Начать / Готово / Нужна помощь on a task.
 6. Ask: Что мне сделать в первый день?
 7. Ask: Как получить доступ к CRM?
 8. Ask: Какая у меня зарплата?
-9. Switch to HR / руководитель and confirm the service dashboard reflects help requests and escalations.
+9. Open /hr and confirm the service dashboard reflects help requests and escalations.
 ```
 
 ## Explicitly Not Implemented Yet
@@ -135,14 +157,14 @@ The current prototype still does not include:
 - authentication and RBAC;
 - persistent storage;
 - production security controls;
-- role-based URL/session separation beyond the demo view switch;
+- auth-backed employee sessions beyond the demo employee URL;
 - screenshots/video backup demo.
 
 ## Next Product Stage
 
 Recommended next stage:
 
-- add actual employee URL/session routing, for example `/employee/[id]` or auth-backed personal home;
+- add auth-backed personal employee home instead of demo employee IDs in the URL;
 - persist demo state in localStorage for presenter continuity;
 - add scripted presenter mode for the 5–7 minute demo;
 - prepare backup screenshots/video for the 25 June demo;
