@@ -64,11 +64,11 @@ export function OnboardingAgentPage() {
               employee={state.employee}
               result={state.diagnosticResult}
               onBackToDiagnostic={() => actions.goToStep("diagnostic")}
-              onBuildRoute={() => actions.goToStep("learning_path_placeholder")}
+              onBuildRoute={() => actions.goToStep("learning_route")}
             />
           )}
 
-        {state.currentStep === "learning_path_placeholder" && state.employee && (
+        {state.currentStep === "learning_route" && state.employee && (
           <DiagnosticPlaceholderStep
             employee={state.employee}
             onBack={() => actions.goToStep("diagnostic_result")}
