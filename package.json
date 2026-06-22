@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:diagnostic": "rm -rf .diagnostic-test-build && tsc --ignoreConfig --module Node16 --moduleResolution Node16 --target ES2020 --lib ES2020,DOM --types node --outDir .diagnostic-test-build --noEmit false --rootDir . src/modules/onboarding-agent/model/diagnosticScoring.test.ts && node .diagnostic-test-build/src/modules/onboarding-agent/model/diagnosticScoring.test.js"
+    "test:diagnostic": "rm -rf .diagnostic-test-build && tsc --ignoreConfig --module Node16 --moduleResolution Node16 --target ES2020 --lib ES2020,DOM --types node --outDir .diagnostic-test-build --noEmit false --rootDir . src/modules/onboarding-agent/model/diagnosticScoring.test.ts && node .diagnostic-test-build/src/modules/onboarding-agent/model/diagnosticScoring.test.js",
+    "test:learning-route": "tsc --ignoreConfig --module Node16 --moduleResolution Node16 --target ES2020 --lib ES2020,DOM --types node --outDir .learning-route-test-build --noEmit false --rootDir . src/modules/onboarding-agent/model/learningRouteBuilder.test.ts && node .learning-route-test-build/src/modules/onboarding-agent/model/learningRouteBuilder.test.js"
   },
   "dependencies": {
     "next": "latest",

@@ -1,15 +1,15 @@
 # Current Project State
 
-Last updated: 2026-06-21
+Last updated: 2026-06-22
 
 ## Product Scope
 
-The project is a Next.js prototype of an AI onboarding agent for a HORECA franchise network. The first iteration remains focused on two roles:
+The project is a Next.js prototype of an AI onboarding agent for a HORECA franchise network. The current iteration remains focused on two roles:
 
 - Cook.
 - Cafe / shift administrator.
 
-The prototype should demonstrate that onboarding is personalized: a new employee selects a role and grade, passes a soft knowledge diagnostic, sees topic-level gaps, and then moves toward a personal learning route.
+The prototype demonstrates personalization without backend, LLM, RAG, chat, or real integrations: a new employee selects a role and grade, passes a soft knowledge diagnostic, sees topic-level results, and receives an automatically generated personal learning route.
 
 ## Implemented Flow
 
@@ -36,7 +36,8 @@ Current user flow:
 7. Diagnostic explanation screen.
 8. Diagnostic question flow.
 9. Topic-level diagnostic result.
-10. Placeholder for the future personal learning route.
+10. Automatically generated personal learning route for day 1, day 7, and day 14.
+11. Task status updates and progress recalculation inside the route.
 
 ## Implemented Diagnostic Logic
 
@@ -58,6 +59,25 @@ Current question bank:
 - Cook: 16 mock questions.
 - Administrator: 16 mock questions.
 
+## Implemented Personal Learning Route
+
+The placeholder after diagnostic results is no longer part of the main user flow. The button “Сформировать персональный маршрут” now builds a real `LearningRoute` from `DiagnosticResult` and opens the `learning_route` step.
+
+Implemented route behavior:
+
+- Route is generated automatically by `buildPersonalLearningRoute`.
+- Route uses employee role, grade, total diagnostic score, topic scores, strong topics, weak topics, critical topics, required topics, and topic recommendations.
+- Route has three blocks: day 1, day 7, and day 14.
+- Required topics always stay in the route.
+- Strong topics receive a short summary or control task instead of a full module.
+- Medium topics receive a short module and practice.
+- Weak topics receive a full module, practice, and repeated check.
+- Critical topics receive a full module, practice under manager or mentor supervision, and repeated check.
+- Each learning task has type, priority, status, estimated duration, source, and assignment reason.
+- Task statuses are editable: `todo`, `in_progress`, `done`, and blocked.
+- Route progress shows total tasks, completed tasks, blocked tasks, and completion percentage.
+- Blocked tasks are only displayed as blockers inside the prototype; they do not create escalations.
+
 ## Important Files
 
 ```text
@@ -65,45 +85,65 @@ app/page.tsx
 app/onboarding-agent/page.tsx
 src/modules/onboarding-agent/
   model/types.ts
+  model/learningRouteTypes.ts
   model/mockData.ts
   model/diagnosticQuestions.ts
+  model/learningRouteData.ts
   model/useOnboardingAgentState.ts
+  model/diagnosticScoring.test.ts
+  model/learningRouteBuilder.test.ts
   lib/getDiagnosticQuestions.ts
   lib/calculateDiagnosticResult.ts
+  lib/buildPersonalLearningRoute.ts
   lib/getTopicStatus.ts
   lib/getTopicRecommendation.ts
   lib/getRecommendationLabel.ts
   ui/OnboardingAgentPage.tsx
   ui/steps/DiagnosticStep.tsx
   ui/steps/DiagnosticResultStep.tsx
+  ui/steps/LearningRouteStep.tsx
+  ui/steps/LearningRouteStep.module.css
 ```
 
 ## Verification
 
-Known passing commands:
+Expected passing commands:
 
 ```bash
 npm run test:diagnostic
 npm run build
 ```
 
-`npm run test:diagnostic` currently covers:
+The route builder test covers:
 
-- stable role and grade specific diagnostic question selection;
-- topic scoring and required-topic recommendation behavior.
+- day 1 / day 7 / day 14 route structure;
+- required topics staying in the route;
+- strong topics receiving shortened learning tasks;
+- critical topics receiving reinforced tasks;
+- task reasons and topic sources;
+- deterministic builder output except `generatedAt`.
 
-## Git State Note
+## Explicitly Not Implemented Yet
 
-At the time of this snapshot, the repository appears to be untracked from git's perspective. Treat existing files as user/workspace state and do not remove or reset them unless explicitly asked.
+The current prototype still does not include:
+
+- AI assistant;
+- chat;
+- RAG;
+- answers over a knowledge base;
+- escalation to a human;
+- ticket creation;
+- HR / manager notifications;
+- backend;
+- LLM API;
+- real HRIS, LMS, SSO, calendar, service desk, or messaging integrations.
 
 ## Next Product Stage
 
-The next stage should implement the personal learning route based on diagnostic results:
+The next stage can add an assistive AI layer on top of the already implemented route:
 
-- day 1 route;
-- day 7 route;
-- day 14 route;
-- shortened modules for strong topics;
-- reinforced modules for development zones;
-- required safety and compliance blocks;
-- manager-facing recommendations for high-risk cases.
+- curated knowledge base and source-grounded answers;
+- safe fallback for unknown or sensitive questions;
+- HR / manager dashboard;
+- demo-only support queue, if it is explicitly in scope;
+- mock integrations for a broader end-to-end demo.

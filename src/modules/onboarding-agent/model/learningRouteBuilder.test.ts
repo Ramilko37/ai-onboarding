@@ -1,0 +1,185 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { buildPersonalLearningRoute } from "../lib/buildPersonalLearningRoute";
+import type { LearningRoute } from "./learningRouteTypes";
+import type { DiagnosticResult, EmployeeProfile, TopicScore } from "./types";
+
+const employee: EmployeeProfile = {
+  id: "emp-route-1",
+  name: "Анна",
+  role: "cook",
+  grade: "no_experience",
+  location: "Кафе Тверская",
+  startDate: "2026-06-22"
+};
+
+const topics: TopicScore[] = [
+  makeTopic({
+    topicId: "cook-labeling",
+    topicTitle: "Маркировка и сроки",
+    scorePercent: 90,
+    required: true,
+    status: "strong",
+    recommendation: "short_summary",
+    importance: "high"
+  }),
+  makeTopic({
+    topicId: "cook-packaging",
+    topicTitle: "Упаковка заказа",
+    scorePercent: 100,
+    required: false,
+    status: "strong",
+    recommendation: "skip_detailed_module",
+    importance: "medium",
+    skippable: true
+  }),
+  makeTopic({
+    topicId: "cook-hygiene",
+    topicTitle: "Гигиена и безопасность",
+    scorePercent: 0,
+    required: true,
+    status: "critical_gap",
+    recommendation: "full_module_with_mentor",
+    importance: "high"
+  }),
+  makeTopic({
+    topicId: "cook-tech-cards",
+    topicTitle: "Техкарты популярных роллов",
+    scorePercent: 65,
+    required: false,
+    status: "medium_gap",
+    recommendation: "short_module",
+    importance: "high",
+    skippable: "partial"
+  }),
+  makeTopic({
+    topicId: "cook-assembly",
+    topicTitle: "Стандарты нарезки и сборки",
+    scorePercent: 45,
+    required: false,
+    status: "medium_gap",
+    recommendation: "full_module",
+    importance: "high",
+    skippable: "partial"
+  })
+];
+
+const result: DiagnosticResult = {
+  employeeId: employee.id,
+  role: employee.role,
+  grade: employee.grade,
+  totalScorePercent: 55,
+  topicScores: topics,
+  strongTopics: topics.filter((topic) => topic.status === "strong"),
+  weakTopics: topics.filter(
+    (topic) => topic.status === "medium_gap" || topic.status === "critical_gap"
+  ),
+  criticalTopics: topics.filter((topic) => topic.status === "critical_gap"),
+  requiredTopics: topics.filter((topic) => topic.required),
+  completedAt: "2026-06-22T09:00:00.000Z"
+};
+
+test("buildPersonalLearningRoute creates day 1, day 7 and day 14 route", () => {
+  const route = buildPersonalLearningRoute({ employee, result });
+
+  assert.equal(route.employeeId, employee.id);
+  assert.equal(route.role, employee.role);
+  assert.equal(route.grade, employee.grade);
+  assert.equal(route.totalScorePercent, result.totalScorePercent);
+  assert.deepEqual(
+    route.days.map((day) => day.id),
+    ["day_1", "day_7", "day_14"]
+  );
+  assert.equal(route.days.every((day) => day.tasks.length > 0), true);
+});
+
+test("required topics always stay in the route", () => {
+  const route = buildPersonalLearningRoute({ employee, result });
+  const taskTopicIds = new Set(getAllTasks(route).map((task) => task.topicId));
+
+  for (const topic of result.requiredTopics) {
+    assert.equal(taskTopicIds.has(topic.topicId), true);
+  }
+});
+
+test("strong topics are shortened and do not receive full modules", () => {
+  const route = buildPersonalLearningRoute({ employee, result });
+  const strongOptionalTasks = getAllTasks(route).filter(
+    (task) => task.topicId === "cook-packaging"
+  );
+
+  assert.equal(strongOptionalTasks.length, 1);
+  assert.equal(strongOptionalTasks[0].type, "summary");
+  assert.equal(
+    strongOptionalTasks.some((task) => task.title.includes("Полный модуль")),
+    false
+  );
+  assert.match(strongOptionalTasks[0].reason, /Тема сокращена/);
+});
+
+test("critical topics receive full module, practice and repeated check", () => {
+  const route = buildPersonalLearningRoute({ employee, result });
+  const criticalTasks = getAllTasks(route).filter(
+    (task) => task.topicId === "cook-hygiene"
+  );
+
+  assert.deepEqual(
+    criticalTasks.map((task) => task.type),
+    ["read", "practice", "check"]
+  );
+  assert.equal(
+    criticalTasks.some((task) => task.title.includes("под контролем управляющего")),
+    true
+  );
+});
+
+test("tasks explain why they were assigned and include topic sources", () => {
+  const route = buildPersonalLearningRoute({ employee, result });
+  const tasks = getAllTasks(route);
+
+  assert.equal(tasks.every((task) => task.reason.length > 0), true);
+  assert.equal(
+    tasks
+      .filter((task) => task.topicId)
+      .every((task) => Boolean(task.source)),
+    true
+  );
+});
+
+test("builder is deterministic except generatedAt", () => {
+  const first = withoutGeneratedAt(buildPersonalLearningRoute({ employee, result }));
+  const second = withoutGeneratedAt(buildPersonalLearningRoute({ employee, result }));
+
+  assert.deepEqual(first, second);
+});
+
+function makeTopic(
+  overrides: Partial<TopicScore> & Pick<TopicScore, "topicId" | "topicTitle">
+): TopicScore {
+  return {
+    topicId: overrides.topicId,
+    topicTitle: overrides.topicTitle,
+    role: "cook",
+    scorePercent: overrides.scorePercent ?? 0,
+    correctAnswers: 0,
+    totalQuestions: 2,
+    totalWeight: 2,
+    earnedWeight: 0,
+    importance: overrides.importance ?? "medium",
+    required: overrides.required ?? false,
+    skippable: overrides.skippable ?? false,
+    status: overrides.status ?? "medium_gap",
+    recommendation: overrides.recommendation ?? "full_module"
+  };
+}
+
+function getAllTasks(route: LearningRoute) {
+  return route.days.flatMap((day) => day.tasks);
+}
+
+function withoutGeneratedAt(route: LearningRoute) {
+  return {
+    ...route,
+    generatedAt: "<ignored>"
+  };
+}

@@ -1,3 +1,5 @@
+import type { LearningRoute } from "./learningRouteTypes";
+
 export type EmployeeRole = "cook" | "admin";
 
 export type EmployeeGrade =
@@ -115,7 +117,7 @@ export type OnboardingStep =
   | "diagnostic_intro"
   | "diagnostic"
   | "diagnostic_result"
-  | "learning_path_placeholder";
+  | "learning_route";
 
 export type OnboardingState = {
   employee: EmployeeProfile | null;
@@ -125,5 +127,6 @@ export type OnboardingState = {
   diagnosticQuestions: DiagnosticQuestion[];
   diagnosticAnswers: DiagnosticAnswer[];
   diagnosticResult: DiagnosticResult | null;
+  learningRoute: LearningRoute | null;
   currentQuestionIndex: number;
 };

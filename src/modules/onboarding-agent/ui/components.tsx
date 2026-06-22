@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type {
   CompetencyMilestone,
   CompetencyTopic,
@@ -19,11 +20,11 @@ const steps: Array<{ id: OnboardingStep; label: string }> = [
   { id: "diagnostic_intro", label: "Вводная" },
   { id: "diagnostic", label: "Вопросы" },
   { id: "diagnostic_result", label: "Результат" },
-  { id: "learning_path_placeholder", label: "Маршрут" }
+  { id: "learning_route", label: "Маршрут" }
 ];
 
 type ButtonProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   onClick?: () => void;
   type?: "button" | "submit";
   disabled?: boolean;
@@ -140,11 +141,7 @@ export function GradeSelector({
   );
 }
 
-export function EmployeeSummaryCard({
-  employee
-}: {
-  employee: EmployeeProfile;
-}) {
+export function EmployeeSummaryCard({ employee }: { employee: EmployeeProfile }) {
   return (
     <section className={styles.summaryCard} aria-label="Профиль сотрудника">
       <div>
