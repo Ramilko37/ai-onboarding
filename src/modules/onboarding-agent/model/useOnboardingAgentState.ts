@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { buildPersonalLearningRoute } from "../lib/buildPersonalLearningRoute";
 import { calculateDiagnosticResult } from "../lib/calculateDiagnosticResult";
 import { getDiagnosticQuestions } from "../lib/getDiagnosticQuestions";
+import type { LearningTaskStatus } from "./learningRouteTypes";
 import { competencyTopics } from "./mockData";
 import type {
   DiagnosticAnswer,
@@ -21,6 +23,7 @@ const initialState: OnboardingState = {
   diagnosticQuestions: [],
   diagnosticAnswers: [],
   diagnosticResult: null,
+  learningRoute: null,
   currentQuestionIndex: 0
 };
 
@@ -54,6 +57,7 @@ export function useOnboardingAgentState() {
           diagnosticQuestions: [],
           diagnosticAnswers: [],
           diagnosticResult: null,
+          learningRoute: null,
           currentQuestionIndex: 0
         });
       },
@@ -72,6 +76,7 @@ export function useOnboardingAgentState() {
             }),
             diagnosticAnswers: [],
             diagnosticResult: null,
+            learningRoute: null,
             currentQuestionIndex: 0
           };
         });
@@ -102,7 +107,8 @@ export function useOnboardingAgentState() {
                 (answer) => answer.questionId !== questionId
               ),
               nextAnswer
-            ]
+            ],
+            learningRoute: null
           };
         });
       },
@@ -135,7 +141,44 @@ export function useOnboardingAgentState() {
               questions: previous.diagnosticQuestions,
               answers: previous.diagnosticAnswers,
               topics: competencyTopics
+            }),
+            learningRoute: null
+          };
+        });
+      },
+      buildLearningRoute() {
+        setState((previous) => {
+          if (!previous.employee || !previous.diagnosticResult) {
+            return previous;
+          }
+
+          return {
+            ...previous,
+            currentStep: "learning_route",
+            learningRoute: buildPersonalLearningRoute({
+              employee: previous.employee,
+              result: previous.diagnosticResult
             })
+          };
+        });
+      },
+      updateLearningTaskStatus(taskId: string, status: LearningTaskStatus) {
+        setState((previous) => {
+          if (!previous.learningRoute) {
+            return previous;
+          }
+
+          return {
+            ...previous,
+            learningRoute: {
+              ...previous.learningRoute,
+              days: previous.learningRoute.days.map((day) => ({
+                ...day,
+                tasks: day.tasks.map((task) =>
+                  task.id === taskId ? { ...task, status } : task
+                )
+              }))
+            }
           };
         });
       },
@@ -146,6 +189,7 @@ export function useOnboardingAgentState() {
           diagnosticQuestions: [],
           diagnosticAnswers: [],
           diagnosticResult: null,
+          learningRoute: null,
           currentQuestionIndex: 0
         }));
       },
