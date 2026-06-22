@@ -1,5 +1,5 @@
-import { OnboardingAgentPage } from "@/modules/onboarding-agent";
+import { PersonalSpace } from "@/modules/personal-space";
 
 export default function Home() {
-  return <OnboardingAgentPage />;
+  return <PersonalSpace />;
 }
