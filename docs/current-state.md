@@ -4,14 +4,11 @@ Last updated: 2026-06-22
 
 ## Product Scope
 
-The project is a Next.js prototype of an AI onboarding agent for a HORECA franchise network. The current iteration remains focused on two roles:
+The project is now a demo-first Next.js MVP of an AI onboarding layer. It follows the uploaded MVP brief: a newcomer sees a personal onboarding route, asks an AI assistant questions, receives source-grounded answers from a curated knowledge base, updates task statuses, and HR/manager sees progress, blockers and escalations.
 
-- Cook.
-- Cafe / shift administrator.
+The current MVP intentionally uses mock data and local deterministic retrieval. It does not use a backend, real LLM, real RAG infrastructure, HRIS, LMS, SSO, calendar, service desk, or messaging APIs.
 
-The prototype demonstrates personalization without backend, LLM, RAG, chat, or real integrations: a new employee selects a role and grade, passes a soft knowledge diagnostic, sees topic-level results, and receives an automatically generated personal learning route.
-
-## Implemented Flow
+## Implemented Demo Flow
 
 The main prototype is available on the root route:
 
@@ -19,131 +16,111 @@ The main prototype is available on the root route:
 /
 ```
 
-The older route is still available:
+The legacy route is still available and renders the same MVP workspace:
 
 ```text
 /onboarding-agent
 ```
 
-Current user flow:
+Current demo flow:
 
-1. Welcome screen.
-2. Employee profile form.
-3. Role selection: cook or administrator.
-4. Grade selection: no experience, HORECA experience, or network experience.
-5. Employee summary card.
-6. Competency map for day 1, day 7, and day 14.
-7. Diagnostic explanation screen.
-8. Diagnostic question flow.
-9. Topic-level diagnostic result.
-10. Automatically generated personal learning route for day 1, day 7, and day 14.
-11. Task status updates and progress recalculation inside the route.
+1. HR or presenter selects one of three demo newcomers.
+2. The newcomer panel shows a personalized route by phase: Day 0, Day 1, Week 1, Month 1.
+3. Each route task has owner, due label, mock integration, source articles and status buttons.
+4. Supported statuses are `todo`, `in_progress`, `done`, and `blocked`.
+5. Marking a task as `blocked` creates a demo escalation.
+6. The AI assistant answers questions from the curated knowledge base and shows sources.
+7. Unknown or sensitive questions trigger safe fallback and create a HR escalation.
+8. The HR/manager dashboard shows aggregate completion, blocked tasks, open escalations, newcomers, search intents and mocked integrations.
 
-## Implemented Diagnostic Logic
+## Seed Data
 
-Stage 2 is implemented with mock logic and no backend, AI, LLM, or RAG.
+The MVP includes three role/persona tracks:
 
-Current diagnostic behavior:
+- `Support Specialist` — CRM, SLA, tone of voice, escalation and customer support onboarding.
+- `Sales Manager` — pipeline, discovery, demo shadowing, CRM hygiene and handoff.
+- `Developer` — environment setup, Git flow, code review, CI/CD, release and incident basics.
 
-- Questions are selected by role.
-- Questions are selected by grade difficulty.
-- Selection is stable and predictable for demo use.
-- Only `single_choice` questions are implemented in the UI.
-- Data types leave room for future question types.
-- Answers are scored by topic, not only by total score.
-- Topic status is calculated from weighted score.
-- Recommendations preserve required topics even when an employee scores highly.
+The local curated knowledge base contains 20 articles/FAQ entries. Each assistant answer can return up to two sources. The source-grounding is demo-level retrieval over article titles, tags, body and role scope.
 
-Current question bank:
+## Implemented MVP Capabilities
 
-- Cook: 16 mock questions.
-- Administrator: 16 mock questions.
+Implemented from the MVP brief:
 
-## Implemented Personal Learning Route
-
-The placeholder after diagnostic results is no longer part of the main user flow. The button “Сформировать персональный маршрут” now builds a real `LearningRoute` from `DiagnosticResult` and opens the `learning_route` step.
-
-Implemented route behavior:
-
-- Route is generated automatically by `buildPersonalLearningRoute`.
-- Route uses employee role, grade, total diagnostic score, topic scores, strong topics, weak topics, critical topics, required topics, and topic recommendations.
-- Route has three blocks: day 1, day 7, and day 14.
-- Required topics always stay in the route.
-- Strong topics receive a short summary or control task instead of a full module.
-- Medium topics receive a short module and practice.
-- Weak topics receive a full module, practice, and repeated check.
-- Critical topics receive a full module, practice under manager or mentor supervision, and repeated check.
-- Each learning task has type, priority, status, estimated duration, source, and assignment reason.
-- Task statuses are editable: `todo`, `in_progress`, `done`, and blocked.
-- Route progress shows total tasks, completed tasks, blocked tasks, and completion percentage.
-- Blocked tasks are only displayed as blockers inside the prototype; they do not create escalations.
+- web prototype with three main zones: newcomer route, AI assistant, HR/manager dashboard;
+- seed data for 3 roles and 3 newcomers;
+- local knowledge base with 20 source-backed articles;
+- onboarding route phases: Day 0, Day 1, Week 1, Month 1;
+- task statuses: `todo`, `in_progress`, `done`, `blocked`;
+- assistant answers only from allowed local sources;
+- visible sources for confident answers;
+- fallback for unknown or sensitive questions;
+- demo escalations to HR, IT, manager or mentor;
+- dashboard with progress, blockers, open escalations, newcomers, frequent questions and mock integrations;
+- mocked HRIS, LMS, SSO, Service Desk, Calendar and Messaging cards.
 
 ## Important Files
 
 ```text
 app/page.tsx
 app/onboarding-agent/page.tsx
+app/layout.tsx
 src/modules/onboarding-agent/
-  model/types.ts
-  model/learningRouteTypes.ts
-  model/mockData.ts
-  model/diagnosticQuestions.ts
-  model/learningRouteData.ts
-  model/useOnboardingAgentState.ts
-  model/diagnosticScoring.test.ts
-  model/learningRouteBuilder.test.ts
-  lib/getDiagnosticQuestions.ts
-  lib/calculateDiagnosticResult.ts
-  lib/buildPersonalLearningRoute.ts
-  lib/getTopicStatus.ts
-  lib/getTopicRecommendation.ts
-  lib/getRecommendationLabel.ts
+  index.ts
+  model/mvpDemoData.ts
+  lib/answerOnboardingQuestion.ts
   ui/OnboardingAgentPage.tsx
-  ui/steps/DiagnosticStep.tsx
-  ui/steps/DiagnosticResultStep.tsx
-  ui/steps/LearningRouteStep.tsx
-  ui/steps/LearningRouteStep.module.css
+  ui/MvpOnboardingPage.tsx
+  ui/MvpOnboardingPage.module.css
 ```
+
+Legacy diagnostic and learning-route files still remain in the repository for reference, but the visible route now uses the demo-first MVP workspace.
 
 ## Verification
 
-Expected passing commands:
+Expected verification commands after pulling the branch locally:
 
 ```bash
-npm run test:diagnostic
 npm run build
 ```
 
-The route builder test covers:
+The previous diagnostic tests may still be useful for legacy logic, but the MVP workspace itself currently has no dedicated automated test. The assistant retrieval is deterministic and can be manually smoke-tested with these demo questions:
 
-- day 1 / day 7 / day 14 route structure;
-- required topics staying in the route;
-- strong topics receiving shortened learning tasks;
-- critical topics receiving reinforced tasks;
-- task reasons and topic sources;
-- deterministic builder output except `generatedAt`.
+```text
+Что мне сделать в первый день?
+Как получить доступ к CRM?
+Что делать, если SSO не работает?
+Когда нужна эскалация к человеку?
+Как проходит review через месяц?
+```
+
+Expected fallback smoke test:
+
+```text
+Какая у меня зарплата?
+```
+
+Expected result: the assistant does not answer directly and creates a HR escalation.
 
 ## Explicitly Not Implemented Yet
 
 The current prototype still does not include:
 
-- AI assistant;
-- chat;
-- RAG;
-- answers over a knowledge base;
-- escalation to a human;
-- ticket creation;
-- HR / manager notifications;
-- backend;
-- LLM API;
-- real HRIS, LMS, SSO, calendar, service desk, or messaging integrations.
+- hosted LLM or production RAG;
+- real ticket creation;
+- real HRIS/LMS/SSO/calendar/service desk/messaging integrations;
+- authentication and RBAC;
+- persistent storage;
+- production security controls;
+- automated tests for the MVP workspace;
+- screenshots/video backup demo.
 
 ## Next Product Stage
 
-The next stage can add an assistive AI layer on top of the already implemented route:
+Recommended next stage:
 
-- curated knowledge base and source-grounded answers;
-- safe fallback for unknown or sensitive questions;
-- HR / manager dashboard;
-- demo-only support queue, if it is explicitly in scope;
-- mock integrations for a broader end-to-end demo.
+- add a small automated test around `answerOnboardingQuestion` fallback/source behavior;
+- add persistent mock state or localStorage for demo continuity;
+- add a scripted presenter mode for the 5–7 minute demo;
+- prepare backup screenshots/video for the 25 June demo;
+- connect the assistant to a real RAG pipeline only after the demo flow is validated.
