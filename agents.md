@@ -6,16 +6,17 @@ This file defines the working rules for AI agents and developers in this reposit
 
 The product is a demo-first MVP of an AI onboarding layer. It should closely follow the MVP brief in `mvp.md` from the task context and the implementation snapshot in `docs/current-state.md`.
 
-The main demo flow is:
+The main employee-first demo flow is:
 
-1. A newcomer gets a personal onboarding route by role.
-2. The route is split into Day 0, Day 1, Week 1 and Month 1.
-3. The newcomer asks an AI assistant questions.
-4. The assistant answers only from a curated knowledge base and shows sources.
-5. Unknown or sensitive questions are escalated to a human.
-6. The newcomer updates task statuses: `todo`, `in_progress`, `done`, `blocked`.
-7. HR/manager sees progress, blockers, frequent questions and open escalations.
-8. External systems are mocked: HRIS, LMS, SSO, service desk, calendar and messaging.
+1. A newcomer opens a personal onboarding portal.
+2. The newcomer sees only their own route, start context, mentor, manager, materials and assistant.
+3. The route is split into Day 0, Day 1, Week 1 and Month 1.
+4. The route uses simple employee actions: start, done, need help.
+5. The newcomer asks an AI assistant questions.
+6. The assistant answers only from a curated knowledge base and shows sources.
+7. Unknown or sensitive questions are escalated to a human.
+8. HR/manager has a separate service mode for progress, blockers, frequent questions and open escalations.
+9. External systems are mocked: HRIS, LMS, SSO, service desk, calendar and messaging.
 
 The current demo roles are:
 
@@ -23,7 +24,7 @@ The current demo roles are:
 - Sales Manager.
 - Developer.
 
-The prototype should demonstrate operational onboarding value, not become a generic marketing landing page.
+The prototype should demonstrate operational onboarding value for the employee first. HR transparency is important, but it must not dominate the employee experience.
 
 ## Start Of Work
 
@@ -77,8 +78,12 @@ Keep business rules out of deeply nested JSX when they are reusable or testable.
 ## UI Guidelines
 
 - Build the actual prototype experience, not a marketing landing page.
-- Keep the three MVP zones visible and usable: newcomer route, AI assistant, HR/manager dashboard.
-- Prioritize operational clarity: role/persona selection, route tasks, statuses, source-backed answers, fallback and escalations.
+- Make the employee portal the default screen.
+- In employee mode, do not show other employees, aggregate dashboards, competency labels, test levels, weak/strong zones, or good/bad performance wording.
+- Employee-facing progress should be framed as route navigation, not assessment.
+- Keep employee UI focused on: next step, personal track, learning materials, assistant, mentor/manager/HR help.
+- Keep HR/manager dashboard separate as a service mode.
+- Prioritize operational clarity: route tasks, statuses, source-backed answers, fallback and escalations.
 - Use dense but readable interfaces for dashboards and admin views.
 - Keep copy specific to onboarding and the demo roles.
 - Use accessible semantic HTML, keyboard-friendly controls and visible focus states.
@@ -97,7 +102,7 @@ Use consistent domain language:
 - `knowledgeArticle`: source-backed FAQ/policy/playbook article.
 - `assistant`: AI-like helper that answers from allowed sources.
 - `escalation`: handoff to HR, IT, manager or mentor when the agent is unsure or a task is blocked.
-- `dashboard`: HR/manager view of progress, blockers, questions and escalations.
+- `dashboard`: HR/manager service view of progress, blockers, questions and escalations.
 - `mockIntegration`: demo substitute for HRIS, LMS, SSO, service desk, calendar or messaging.
 
 Do not hard-code new business rules in UI components if they belong in `model/` or `lib/`.
@@ -118,6 +123,7 @@ Do not hard-code new business rules in UI components if they belong in `model/` 
 - Keep all current users, roles, tasks and integrations as demo data.
 - Avoid collecting sensitive personal data unless a future roadmap explicitly requires it.
 - Treat employee progress, blocked tasks, assistant questions and escalation notes as confidential.
+- Employee mode must not expose other employees or manager-facing analytics.
 - Do not log private employee answers, free-text concerns or manager notes in plain debug logs.
 
 ## Quality Guidelines
