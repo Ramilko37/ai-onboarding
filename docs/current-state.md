@@ -60,7 +60,7 @@ Practical roadmap position: the prototype is ready to demo the path from employe
 
 ## Implemented Diagnostic Logic
 
-Stage 2 is implemented with mock logic and no backend, AI, LLM, or RAG.
+Stage 2 is implemented with mock logic and no backend, AI, LLM, embeddings, or vector database.
 
 Current diagnostic behavior:
 
@@ -88,7 +88,14 @@ A mock RAG-lite knowledge base has been added as TypeScript data. It contains 45
 
 The stronger document set includes scenario-based instructions, short checklists, escalation rules, RAG source-answering guidance, day 1 / day 7 / day 14 route logic, and manager-review triggers for high-risk cases.
 
-The knowledge base is now connected to learning-route generation through a lightweight local retrieval helper. It is not connected to UI search, mentor answers, or diagnostic explanations yet.
+The knowledge base is now connected to learning-route generation and a lightweight source-backed answer helper. It is not connected to UI search, mentor chat UI, or diagnostic explanations yet.
+
+The current RAG-lite contract supports:
+
+- retrieving role/topic documents for learning modules;
+- answering operational smoke-test questions with a visible source label;
+- returning the fallback text when no exact knowledge-base answer is found;
+- preserving explicit topic-source mappings for diagnostic topics such as `cook-labeling`, `cook-tech-cards`, `admin-refunds`, and `admin-complaints`.
 
 ## Implemented Learning Path Logic
 
@@ -102,6 +109,7 @@ Current learning-route behavior:
 - Strong required or partially skippable topics are shortened to summary/check blocks.
 - Development-zone topics receive full modules and, when available, practice modules.
 - Critical or required development-zone topics receive mentor tasks.
+- Module selection falls back from an exact format to `short_module` and then `summary` for core learning blocks, so missing optional catalog entries do not break route generation.
 - Every route module attempts to attach 1-3 knowledge-base sources.
 - The route distributes modules across day 1 through day 14 with load limits and role-specific base days.
 - Day 7 has an intermediate checkpoint.
@@ -120,8 +128,10 @@ src/modules/onboarding-agent/
   model/knowledgeBase.mock.ts
   model/learningModules.mock.ts
   model/diagnosticQuestions.ts
+  model/knowledgeRetrieval.test.ts
   model/learningPathBuilder.test.ts
   model/useOnboardingAgentState.ts
+  lib/answerKnowledgeQuestion.ts
   lib/buildLearningPath.ts
   lib/getDiagnosticQuestions.ts
   lib/calculateDiagnosticResult.ts
@@ -145,21 +155,30 @@ npx tsc --noEmit --ignoreDeprecations 6.0
 npm run build
 ```
 
+Last verified locally on 2026-06-22 after adding RAG smoke checks and Learning Path Builder contract tests.
+
 `npm run test:diagnostic` currently covers:
 
 - stable role and grade specific diagnostic question selection;
 - topic scoring and required-topic recommendation behavior;
+- RAG smoke answers for cook and administrator operational questions;
+- visible source labels in RAG-style answers;
+- diagnostic topic to knowledge-base source mapping;
+- no-answer fallback when the knowledge base does not contain an exact rule;
 - learning format decisions;
+- learning module fallback selection;
+- mentor-task threshold rules for critical and required topics;
 - mandatory-topic preservation in personalized routes;
 - 14-day route creation;
 - day 7 and day 14 checkpoints;
 - source-backed module generation;
+- primary RAG source mapping inside learning-route modules;
 - personalized time metrics;
 - manager recommendations for high-risk topics.
 
 ## Git State Note
 
-At the time of this snapshot, the repository has an active git worktree. Treat existing files as user/workspace state and do not remove or reset them unless explicitly asked.
+Git state is intentionally not assumed from this document. Agents must run `git status --short` before editing or committing and must not remove or reset user/workspace changes unless explicitly asked.
 
 ## Next Product Stage
 

@@ -256,7 +256,7 @@ export function shouldAddMentorTask(params: {
   return (
     params.scorePercent < 40 ||
     (params.required && params.scorePercent < 60) ||
-    (isCriticalTopic(params.topicId, params.role) && params.scorePercent < 80)
+    (isCriticalTopic(params.topicId, params.role) && params.scorePercent < 60)
   );
 }
 
@@ -517,17 +517,45 @@ function buildTopicPlan(params: {
   };
 }
 
-function selectLearningModule(params: {
+export function selectLearningModule(params: {
   modules: LearningModule[];
   role: EmployeeRole;
   topicId: string;
   format: LearningModuleFormat;
-}) {
-  return params.modules.find(
+}): LearningModule | null {
+  const exactMatch = params.modules.find(
     (module) =>
       module.role === params.role &&
       module.topicId === params.topicId &&
       module.format === params.format
+  );
+
+  if (exactMatch) {
+    return exactMatch;
+  }
+
+  if (params.format === "practice" || params.format === "mentor_task") {
+    return null;
+  }
+
+  const shortModule = params.modules.find(
+    (module) =>
+      module.role === params.role &&
+      module.topicId === params.topicId &&
+      module.format === "short_module"
+  );
+
+  if (shortModule) {
+    return shortModule;
+  }
+
+  return (
+    params.modules.find(
+      (module) =>
+        module.role === params.role &&
+        module.topicId === params.topicId &&
+        module.format === "summary"
+    ) ?? null
   );
 }
 

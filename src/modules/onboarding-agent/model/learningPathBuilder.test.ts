@@ -1,9 +1,20 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildLearningPath, getLearningFormat } from "../lib/buildLearningPath";
+import {
+  buildLearningPath,
+  getLearningFormat,
+  selectLearningModule,
+  shouldAddMentorTask
+} from "../lib/buildLearningPath";
 import { learningModules } from "./learningModules.mock";
 import { competencyTopics } from "./mockData";
-import type { DiagnosticResult, EmployeeProfile, TopicScore } from "./types";
+import type {
+  DiagnosticResult,
+  EmployeeProfile,
+  LearningModule,
+  LearningPath,
+  TopicScore
+} from "./types";
 
 const employee: EmployeeProfile = {
   id: "emp-learning-1",
@@ -38,6 +49,102 @@ test("getLearningFormat keeps required topics in the route and skips only fully 
       skippable: "partial"
     }),
     "full_module"
+  );
+});
+
+test("selectLearningModule falls back to short and summary modules without breaking the route", () => {
+  const modules: LearningModule[] = [
+    {
+      id: "fallback-summary",
+      role: "cook",
+      topicId: "cook-labeling",
+      title: "Краткий чек по маркировке",
+      format: "summary",
+      durationMinutes: 7,
+      description: "Короткая проверка маркировки.",
+      content: "Проверь дату, время, срок и ответственного.",
+      required: true
+    },
+    {
+      id: "fallback-short",
+      role: "cook",
+      topicId: "cook-labeling",
+      title: "Короткий блок по маркировке",
+      format: "short_module",
+      durationMinutes: 18,
+      description: "Освежить стандарт маркировки.",
+      content: "Ингредиент без маркировки не используется до проверки.",
+      required: true
+    }
+  ];
+
+  assert.equal(
+    selectLearningModule({
+      modules,
+      role: "cook",
+      topicId: "cook-labeling",
+      format: "full_module"
+    })?.id,
+    "fallback-short"
+  );
+
+  assert.equal(
+    selectLearningModule({
+      modules: modules.filter((module) => module.format !== "short_module"),
+      role: "cook",
+      topicId: "cook-labeling",
+      format: "full_module"
+    })?.id,
+    "fallback-summary"
+  );
+
+  assert.equal(
+    selectLearningModule({
+      modules: [],
+      role: "cook",
+      topicId: "cook-labeling",
+      format: "full_module"
+    }),
+    null
+  );
+});
+
+test("shouldAddMentorTask follows critical topic and required topic thresholds", () => {
+  assert.equal(
+    shouldAddMentorTask({
+      topicId: "admin-refunds",
+      role: "admin",
+      scorePercent: 70,
+      required: false
+    }),
+    false
+  );
+  assert.equal(
+    shouldAddMentorTask({
+      topicId: "admin-refunds",
+      role: "admin",
+      scorePercent: 59,
+      required: false
+    }),
+    true
+  );
+  assert.equal(
+    shouldAddMentorTask({
+      topicId: "admin-reporting",
+      role: "admin",
+      scorePercent: 59,
+      required: true
+    }),
+    true
+  );
+  assert.equal(
+    shouldAddMentorTask({
+      topicId: "cook-shift",
+      role: "cook",
+      scorePercent: 39,
+      required: false
+    }),
+    true
   );
 });
 
@@ -78,8 +185,16 @@ test("buildLearningPath creates a sourced 14 day route with checkpoints, metrics
   assert.equal(path.totalStandardMinutes, 400);
   assert.equal(path.totalPersonalizedMinutes > 0, true);
   assert.equal(path.savedMinutes, path.totalStandardMinutes - path.totalPersonalizedMinutes);
+  assert.equal(
+    path.savedPercent,
+    Math.round((path.savedMinutes / path.totalStandardMinutes) * 100)
+  );
 
   const allModules = path.days.flatMap((day) => day.modules);
+  assert.equal(
+    allModules.every((module) => module.sources.length > 0),
+    true
+  );
   const refundsModules = allModules.filter(
     (module) => module.topicId === "admin-refunds"
   );
@@ -125,11 +240,77 @@ test("buildLearningPath creates a sourced 14 day route with checkpoints, metrics
   );
 });
 
-function createDiagnosticResult(topicScores: TopicScore[]): DiagnosticResult {
+test("buildLearningPath attaches expected RAG sources for mapped diagnostic topics", () => {
+  const cookEmployee: EmployeeProfile = {
+    ...employee,
+    id: "emp-cook-sources",
+    role: "cook",
+    grade: "no_experience"
+  };
+  const cookResult = createDiagnosticResult(
+    [
+      createTopicScore("cook-labeling", 30, {
+        required: true,
+        skippable: false
+      }),
+      createTopicScore("cook-tech-cards", 45, {
+        required: true,
+        skippable: "partial"
+      })
+    ],
+    cookEmployee
+  );
+  const cookPath = buildLearningPath({
+    employee: cookEmployee,
+    diagnosticResult: cookResult,
+    topics: competencyTopics,
+    learningModules
+  });
+
+  assert.equal(
+    getPrimarySourceTitle(cookPath, "cook-labeling"),
+    "Маркировка и сроки хранения"
+  );
+  assert.equal(
+    getPrimarySourceTitle(cookPath, "cook-tech-cards"),
+    "Работа с техкартами"
+  );
+
+  const adminResult = createDiagnosticResult([
+    createTopicScore("admin-refunds", 30, {
+      required: true,
+      skippable: false
+    }),
+    createTopicScore("admin-complaints", 45, {
+      required: true,
+      skippable: false
+    })
+  ]);
+  const adminPath = buildLearningPath({
+    employee,
+    diagnosticResult: adminResult,
+    topics: competencyTopics,
+    learningModules
+  });
+
+  assert.equal(
+    getPrimarySourceTitle(adminPath, "admin-refunds"),
+    "Отмена и возврат заказа"
+  );
+  assert.equal(
+    getPrimarySourceTitle(adminPath, "admin-complaints"),
+    "Работа с претензиями"
+  );
+});
+
+function createDiagnosticResult(
+  topicScores: TopicScore[],
+  targetEmployee: EmployeeProfile = employee
+): DiagnosticResult {
   return {
-    employeeId: employee.id,
-    role: employee.role,
-    grade: employee.grade,
+    employeeId: targetEmployee.id,
+    role: targetEmployee.role,
+    grade: targetEmployee.grade,
     totalScorePercent: Math.round(
       topicScores.reduce((sum, topic) => sum + topic.scorePercent, 0) /
         topicScores.length
@@ -185,4 +366,10 @@ function createTopicScore(
             ? "full_module"
             : "full_module_with_mentor"
   };
+}
+
+function getPrimarySourceTitle(path: LearningPath, topicId: string) {
+  return path.days
+    .flatMap((day) => day.modules)
+    .find((module) => module.topicId === topicId)?.sources[0]?.title;
 }
