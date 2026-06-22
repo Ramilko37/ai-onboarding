@@ -1,6 +1,6 @@
 # Current Project State
 
-Last updated: 2026-06-21
+Last updated: 2026-06-22
 
 ## Product Scope
 
@@ -38,6 +38,25 @@ Current user flow:
 9. Topic-level diagnostic result.
 10. Personal learning route generation.
 11. 14-day learning route screen with time metrics, topic decisions, source-backed modules, checkpoints, and manager recommendations.
+
+## Roadmap Position
+
+The application is currently at the end of roadmap stage 6: personal learning route generation is implemented for the demo flow.
+
+Current roadmap status:
+
+| Roadmap stage | Status |
+|---|---|
+| Stage 1. Discovery and task framing | Covered for the prototype scope through documented roles, grades, and demo flow. |
+| Stage 2. Knowledge base preparation | Implemented as a mock TypeScript knowledge base with role/topic/source mapping. |
+| Stage 3. Competency map | Implemented for cook and administrator roles across day 1, day 7, and day 14. |
+| Stage 4. Diagnostic test generation | Implemented as a deterministic mock question bank and selector by role and grade, not as real AI generation. |
+| Stage 5. Skill gap analysis | Implemented with topic-level scoring, strong zones, development zones, required-topic logic, and recommendations. |
+| Stage 6. Personal learning route | Implemented with mock learning modules, RAG-lite source lookup, 14-day distribution, time metrics, checkpoints, and manager recommendations. |
+| Stage 7. AI mentor | Not implemented yet. |
+| Stage 8. Manager/franchise/UK dashboards | Not implemented yet as separate dashboard screens. |
+
+Practical roadmap position: the prototype is ready to demo the path from employee profile through diagnostic results to a personalized 14-day route. It is not yet the full P0 prototype from the roadmap because mentor chat, module progress, manager dashboards, UK analytics, stress pulse checks, and repeat diagnostics are still pending.
 
 ## Implemented Diagnostic Logic
 
@@ -144,7 +163,7 @@ At the time of this snapshot, the repository has an active git worktree. Treat e
 
 ## Next Product Stage
 
-The next stage can make the route more interactive:
+The next roadmap stage is Stage 7, AI mentor support, with a small amount of route interactivity needed before or alongside it:
 
 - module completion states;
 - mentor chat answers grounded in the knowledge base;
