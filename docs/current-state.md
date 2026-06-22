@@ -4,7 +4,9 @@ Last updated: 2026-06-22
 
 ## Product Scope
 
-The project is now a demo-first Next.js MVP of an AI onboarding layer. It follows the uploaded MVP brief: a newcomer sees a personal onboarding route, asks an AI assistant questions, receives source-grounded answers from a curated knowledge base, updates task statuses, and HR/manager sees progress, blockers and escalations.
+The project is a demo-first Next.js MVP of an AI onboarding layer. The visible product is now employee-first: a newcomer sees only their own onboarding route, assistant, learning materials and support contacts. HR/manager analytics are still present, but they are separated into a service mode and are not part of the employee screen.
+
+This follows the MVP principle that the main value for employees is a guided personal track, not a performance dashboard. The employee portal must not expose other employees, competency scores, test levels, weak/strong labels, or “good/bad” performance judgement.
 
 The current MVP intentionally uses mock data and local deterministic retrieval. It does not use a backend, real LLM, real RAG infrastructure, HRIS, LMS, SSO, calendar, service desk, or messaging APIs.
 
@@ -22,16 +24,31 @@ The legacy route is still available and renders the same MVP workspace:
 /onboarding-agent
 ```
 
-Current demo flow:
+Current employee-first flow:
 
-1. HR or presenter selects one of three demo newcomers.
-2. The newcomer panel shows a personalized route by phase: Day 0, Day 1, Week 1, Month 1.
-3. Each route task has owner, due label, mock integration, source articles and status buttons.
-4. Supported statuses are `todo`, `in_progress`, `done`, and `blocked`.
-5. Marking a task as `blocked` creates a demo escalation.
-6. The AI assistant answers questions from the curated knowledge base and shows sources.
-7. Unknown or sensitive questions trigger safe fallback and create a HR escalation.
-8. The HR/manager dashboard shows aggregate completion, blocked tasks, open escalations, newcomers, search intents and mocked integrations.
+1. The default mode is `Портал сотрудника`.
+2. The employee sees a personal welcome screen with only their own start date, team, manager and mentor.
+3. The employee sees the next onboarding step and simple actions: `Начать`, `Готово`, `Нужна помощь`.
+4. The employee sees their personal learning track by phase: Day 0, Day 1, Week 1, Month 1.
+5. Each track item shows practical task text, owner, due label and related learning materials.
+6. The employee sees progress only as onboarding navigation: completed steps, steps in work and help requests. It is explicitly not shown as a knowledge score or performance judgement.
+7. The employee asks the AI assistant questions and receives source-grounded answers from the curated knowledge base.
+8. Unknown or sensitive questions trigger safe fallback and create a HR escalation.
+9. Clicking `Нужна помощь` on a task creates a demo escalation to HR, IT, manager or mentor.
+10. `HR / руководитель` is a separate service mode for demo transparency, not the employee experience.
+
+## HR / Manager Service Mode
+
+The HR/manager mode shows:
+
+- aggregate completion across demo newcomers;
+- tasks requiring help;
+- open escalations;
+- list of newcomers for the service user;
+- frequent questions / search intents;
+- mocked integrations: HRIS, LMS, SSO, Service Desk, Calendar and Messaging.
+
+This mode is intentionally separated from the employee portal so that employees do not see other employees' data or manager-facing analytics.
 
 ## Seed Data
 
@@ -45,18 +62,19 @@ The local curated knowledge base contains 20 articles/FAQ entries. Each assistan
 
 ## Implemented MVP Capabilities
 
-Implemented from the MVP brief:
+Implemented from the MVP brief and latest product feedback:
 
-- web prototype with three main zones: newcomer route, AI assistant, HR/manager dashboard;
+- employee-first portal as the default experience;
+- personal onboarding route with Day 0, Day 1, Week 1 and Month 1 phases;
+- task statuses mapped to employee-friendly actions: `Начать`, `Готово`, `Нужна помощь`;
+- personal assistant panel with source-grounded answers;
+- personal materials list derived from the employee route;
+- support contacts: mentor, manager and HR/help route;
+- safe fallback for unknown or sensitive questions;
+- demo escalations to HR, IT, manager or mentor;
+- separate HR/manager service mode with progress, blockers, open escalations, newcomers, frequent questions and mock integrations;
 - seed data for 3 roles and 3 newcomers;
 - local knowledge base with 20 source-backed articles;
-- onboarding route phases: Day 0, Day 1, Week 1, Month 1;
-- task statuses: `todo`, `in_progress`, `done`, `blocked`;
-- assistant answers only from allowed local sources;
-- visible sources for confident answers;
-- fallback for unknown or sensitive questions;
-- demo escalations to HR, IT, manager or mentor;
-- dashboard with progress, blockers, open escalations, newcomers, frequent questions and mock integrations;
 - mocked HRIS, LMS, SSO, Service Desk, Calendar and Messaging cards.
 
 ## Important Files
@@ -68,39 +86,44 @@ app/layout.tsx
 src/modules/onboarding-agent/
   index.ts
   model/mvpDemoData.ts
+  model/mvpAssistant.test.ts
   lib/answerOnboardingQuestion.ts
   ui/OnboardingAgentPage.tsx
   ui/MvpOnboardingPage.tsx
   ui/MvpOnboardingPage.module.css
 ```
 
-Legacy diagnostic and learning-route files still remain in the repository for reference, but the visible route now uses the demo-first MVP workspace.
+Legacy diagnostic and learning-route files still remain in the repository for reference, but the visible route now uses the employee-first MVP workspace.
 
 ## Verification
 
 Expected verification commands after pulling the branch locally:
 
 ```bash
+npm run test:mvp-assistant
 npm run build
 ```
 
-The previous diagnostic tests may still be useful for legacy logic, but the MVP workspace itself currently has no dedicated automated test. The assistant retrieval is deterministic and can be manually smoke-tested with these demo questions:
+The MVP assistant smoke test covers:
+
+- source-grounded first-day answer;
+- source-grounded CRM answer;
+- sensitive payroll-like question fallback;
+- unknown question fallback.
+
+Manual employee-flow smoke test:
 
 ```text
-Что мне сделать в первый день?
-Как получить доступ к CRM?
-Что делать, если SSO не работает?
-Когда нужна эскалация к человеку?
-Как проходит review через месяц?
+1. Open /
+2. Confirm the default screen is Портал сотрудника.
+3. Confirm the employee sees only their own route, assistant, materials and support contacts.
+4. Confirm no other employee list appears in employee mode.
+5. Click Начать / Готово / Нужна помощь on a task.
+6. Ask: Что мне сделать в первый день?
+7. Ask: Как получить доступ к CRM?
+8. Ask: Какая у меня зарплата?
+9. Switch to HR / руководитель and confirm the service dashboard reflects help requests and escalations.
 ```
-
-Expected fallback smoke test:
-
-```text
-Какая у меня зарплата?
-```
-
-Expected result: the assistant does not answer directly and creates a HR escalation.
 
 ## Explicitly Not Implemented Yet
 
@@ -112,15 +135,16 @@ The current prototype still does not include:
 - authentication and RBAC;
 - persistent storage;
 - production security controls;
-- automated tests for the MVP workspace;
+- role-based URL/session separation beyond the demo view switch;
 - screenshots/video backup demo.
 
 ## Next Product Stage
 
 Recommended next stage:
 
-- add a small automated test around `answerOnboardingQuestion` fallback/source behavior;
-- add persistent mock state or localStorage for demo continuity;
-- add a scripted presenter mode for the 5–7 minute demo;
+- add actual employee URL/session routing, for example `/employee/[id]` or auth-backed personal home;
+- persist demo state in localStorage for presenter continuity;
+- add scripted presenter mode for the 5–7 minute demo;
 - prepare backup screenshots/video for the 25 June demo;
-- connect the assistant to a real RAG pipeline only after the demo flow is validated.
+- add privacy copy explaining that employee progress is onboarding navigation, not a score;
+- connect the assistant to a real RAG pipeline only after the employee-first demo flow is validated.
