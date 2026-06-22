@@ -44,75 +44,94 @@ export function EmployeeProfileStep({
   return (
     <section className={styles.stepPanel}>
       <div className={styles.sectionHeader}>
-        <p className={styles.kicker}>Шаг 1</p>
-        <h1>Соберём профиль адаптации</h1>
+        <p className={styles.kicker}>Профиль сотрудника</p>
+        <h1>Сначала задаём контекст, а не сразу тестируем</h1>
         <p>
-          Выберите роль и стартовый уровень сотрудника. На следующем шаге агент
-          покажет, какие компетенции важно пройти в первые две недели.
+          Роль, опыт и точка влияют на то, какие темы стоит проверить, какие можно
+          сократить и где лучше дать больше поддержки.
         </p>
       </div>
 
-      <form className={styles.formGrid} onSubmit={handleSubmit}>
-        <label className={styles.field}>
-          <span>Имя сотрудника</span>
-          <input
-            onChange={(event) => setName(event.target.value)}
-            placeholder="Например, Мария Иванова"
-            type="text"
-            value={name}
-          />
-        </label>
+      <div className={styles.profileWorkspace}>
+        <form className={styles.formGrid} onSubmit={handleSubmit}>
+          <label className={styles.field}>
+            <span>Имя сотрудника</span>
+            <input
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Например, Мария Иванова"
+              type="text"
+              value={name}
+            />
+          </label>
 
-        <label className={styles.field}>
-          <span>Точка</span>
-          <input
-            onChange={(event) => setLocation(event.target.value)}
-            placeholder="Например, Франчайзи №12"
-            type="text"
-            value={location}
-          />
-        </label>
+          <label className={styles.field}>
+            <span>Точка</span>
+            <input
+              onChange={(event) => setLocation(event.target.value)}
+              placeholder="Например, Франчайзи №12"
+              type="text"
+              value={location}
+            />
+          </label>
 
-        <label className={styles.field}>
-          <span>Дата выхода</span>
-          <input
-            onChange={(event) => setStartDate(event.target.value)}
-            type="date"
-            value={startDate}
-          />
-        </label>
+          <label className={styles.field}>
+            <span>Дата выхода</span>
+            <input
+              onChange={(event) => setStartDate(event.target.value)}
+              type="date"
+              value={startDate}
+            />
+          </label>
 
-        <div className={styles.fullWidth}>
-          <span className={styles.fieldLabel}>Роль</span>
-          <div className={styles.roleGrid}>
-            {roleOptions.map((option) => (
-              <RoleCard
-                description={option.description}
-                key={option.value}
-                onSelect={setRole}
-                selected={option.value === role}
-                title={option.label}
-                value={option.value}
-              />
-            ))}
+          <div className={styles.fullWidth}>
+            <span className={styles.fieldLabel}>Роль</span>
+            <div className={styles.roleGrid}>
+              {roleOptions.map((option) => (
+                <RoleCard
+                  description={option.description}
+                  key={option.value}
+                  onSelect={setRole}
+                  selected={option.value === role}
+                  title={option.label}
+                  value={option.value}
+                />
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className={styles.fullWidth}>
-          <span className={styles.fieldLabel}>Грейд</span>
-          <GradeSelector
-            onChange={setGrade}
-            options={gradeOptions}
-            value={grade}
-          />
-        </div>
+          <div className={styles.fullWidth}>
+            <span className={styles.fieldLabel}>Стартовый уровень</span>
+            <GradeSelector
+              onChange={setGrade}
+              options={gradeOptions}
+              value={grade}
+            />
+          </div>
 
-        <div className={styles.actions}>
-          <PrimaryButton disabled={!canSubmit} type="submit">
-            Сформировать профиль адаптации
-          </PrimaryButton>
-        </div>
-      </form>
+          <div className={styles.actions}>
+            <PrimaryButton disabled={!canSubmit} type="submit">
+              Собрать профиль и карту компетенций
+            </PrimaryButton>
+          </div>
+        </form>
+
+        <aside className={styles.profilePreview} aria-label="Как профиль влияет на маршрут">
+          <p className={styles.kicker}>Как это повлияет</p>
+          <h2>Маршрут будет собран из роли, опыта и диагностики</h2>
+          <div>
+            <span>01</span>
+            <p>Для новичка без опыта маршрут начнётся с базовых процессов.</p>
+          </div>
+          <div>
+            <span>02</span>
+            <p>Для опытного сотрудника сеть проверит стандарты и сократит лишнее.</p>
+          </div>
+          <div>
+            <span>03</span>
+            <p>Обязательные блоки безопасности останутся в программе всегда.</p>
+          </div>
+        </aside>
+      </div>
     </section>
   );
 }
