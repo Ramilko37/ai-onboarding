@@ -1,3 +1,5 @@
+import { ArrowLeft, CheckCircle2, Compass, RefreshCcw } from "lucide-react";
+import Link from "next/link";
 import type { EmployeeProfile } from "../../model/types";
 import type {
   LearningRoute,
@@ -139,8 +141,16 @@ export function LearningRouteStep({
       </div>
 
       <div className={styles.actions}>
-        <SecondaryButton onClick={onBack}>Вернуться к результату</SecondaryButton>
-        <PrimaryButton onClick={onReset}>Начать заново</PrimaryButton>
+        <SecondaryButton icon={<ArrowLeft aria-hidden="true" />} onClick={onBack}>
+          Вернуться к результату
+        </SecondaryButton>
+        <Link className={styles.mayakLink} href="/mayak">
+          <Compass aria-hidden="true" />
+          Открыть Маяк
+        </Link>
+        <PrimaryButton icon={<RefreshCcw aria-hidden="true" />} onClick={onReset}>
+          Начать заново
+        </PrimaryButton>
       </div>
     </section>
   );
@@ -158,6 +168,7 @@ function LearningTaskCard({
       <div className={styles.learningTaskHeader}>
         <h3>{task.title}</h3>
         <span className={getStatusClassName(task.status)}>
+          {task.status === "done" && <CheckCircle2 aria-hidden="true" />}
           {getStatusLabel(task.status)}
         </span>
       </div>

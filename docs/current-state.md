@@ -13,17 +13,32 @@ The prototype demonstrates personalization without backend, LLM, RAG, chat, or r
 
 ## Implemented Flow
 
-The main prototype is available on the root route:
+The main onboarding prototype is available on the root route:
 
 ```text
 /
 ```
 
-The older route is still available:
+The same diagnostic and learning-route prototype is still available on the compatibility route:
 
 ```text
 /onboarding-agent
 ```
+
+The Mayak personal space demo is available after route generation:
+
+```text
+/mayak
+```
+
+The onboarding flow has been migrated to the “Маяк” design system:
+
+- ambient Mayak background and compact route progress shell;
+- token-based colors, typography, shadows, radii, and focus states from `app/globals.css`;
+- mobile-first layouts for forms, diagnostic questions, result cards, and the personal route;
+- lucide icons for role cards, progress states, actions, and task/status cues;
+- topic-level diagnostic results are rendered as adaptive cards instead of a heavy table.
+- the final learning-route step links to `/mayak` as the personal space after the MVP diagnostic flow.
 
 Current user flow:
 
@@ -82,7 +97,9 @@ Implemented route behavior:
 
 ```text
 app/page.tsx
+app/mayak/page.tsx
 app/onboarding-agent/page.tsx
+src/modules/personal-space/
 src/modules/onboarding-agent/
   model/types.ts
   model/learningRouteTypes.ts
@@ -99,6 +116,8 @@ src/modules/onboarding-agent/
   lib/getTopicRecommendation.ts
   lib/getRecommendationLabel.ts
   ui/OnboardingAgentPage.tsx
+  ui/OnboardingAgentPage.module.css
+  ui/components.tsx
   ui/steps/DiagnosticStep.tsx
   ui/steps/DiagnosticResultStep.tsx
   ui/steps/LearningRouteStep.tsx
@@ -111,6 +130,7 @@ Expected passing commands:
 
 ```bash
 npm run test:diagnostic
+npm run test:learning-route
 npm run build
 ```
 

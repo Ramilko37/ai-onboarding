@@ -79,7 +79,7 @@ export const journeyStages: JourneyStage[] = [
     caption: "Спокойный разбор того, что уже знаете — без оценок.",
     status: "active",
     day: "Сегодня",
-    href: "/onboarding-agent",
+    href: "/",
     cta: "Пройти диагностику",
   },
   {

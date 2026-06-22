@@ -1,3 +1,4 @@
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getGradeLabel } from "../../lib/getGradeLabel";
 import { getMilestonesByRole, getTopicsByRole } from "../../lib/getTopicsByRole";
 import { getRoleLabel } from "../../lib/getRoleLabel";
@@ -79,8 +80,10 @@ export function CompetencyMapStep({
       </section>
 
       <div className={styles.actions}>
-        <SecondaryButton onClick={onBack}>Назад к профилю</SecondaryButton>
-        <PrimaryButton onClick={onNext}>
+        <SecondaryButton icon={<ArrowLeft aria-hidden="true" />} onClick={onBack}>
+          Назад к профилю
+        </SecondaryButton>
+        <PrimaryButton icon={<ArrowRight aria-hidden="true" />} onClick={onNext}>
           Перейти к объяснению диагностики
         </PrimaryButton>
       </div>

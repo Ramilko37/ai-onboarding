@@ -1,56 +1,57 @@
 .learningRoutePanel {
   display: grid;
-  gap: 18px;
-  background: color-mix(in oklch, var(--card) 90%, transparent);
+  gap: 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
+  background: color-mix(in oklch, var(--card) 86%, transparent);
   box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(8px);
-  padding: clamp(22px, 4vw, 48px);
+  backdrop-filter: blur(0.75rem);
+  padding: clamp(1rem, 5vw, 3rem);
 }
 
 .kicker {
-  margin: 0 0 14px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: var(--accent-foreground) !important;
-  background: color-mix(in oklch, var(--accent) 55%, transparent);
+  gap: 0.5rem;
+  width: fit-content;
+  margin: 0;
   border-radius: 999px;
-  padding: 6px 14px;
-  font-size: 12px !important;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  background: color-mix(in oklch, var(--accent) 55%, transparent);
+  color: var(--accent-foreground) !important;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.72rem !important;
+  font-weight: 900;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
 .learningRouteSummaryCard {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
-  gap: 24px;
+  gap: 1.25rem;
   border-radius: var(--radius-xl);
   background:
-    radial-gradient(70% 90% at 0% 0%, color-mix(in oklch, var(--primary) 32%, transparent), transparent 60%),
+    radial-gradient(70% 90% at 0% 0%, color-mix(in oklch, var(--primary) 32%, transparent), transparent 62%),
     var(--deep);
   color: var(--deep-foreground);
-  padding: clamp(22px, 4vw, 36px);
+  padding: clamp(1.25rem, 4vw, 2rem);
 }
 
 .learningRouteSummaryCard h1,
 .routeProgressCard h2 {
   margin: 0;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  line-height: 1.08;
+  letter-spacing: 0;
+  text-wrap: balance;
 }
 
 .learningRouteSummaryCard h1 {
-  font-size: clamp(28px, 4vw, 48px);
+  font-size: clamp(1.8rem, 8vw, 3rem);
 }
 
 .learningRouteSummaryCard p {
-  max-width: 780px;
-  color: color-mix(in oklch, var(--deep-foreground) 80%, transparent);
-  font-size: 17px;
+  max-width: 48rem;
+  color: color-mix(in oklch, var(--deep-foreground) 82%, transparent);
+  font-size: 1rem;
   line-height: 1.6;
 }
 
@@ -62,137 +63,140 @@
 
 .learningRouteSummaryCard dl {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
 }
 
 .learningRouteSummaryCard dl div {
   border-top: 1px solid var(--deep-border);
-  padding-top: 12px;
+  padding-top: 0.85rem;
 }
 
 .learningRouteSummaryCard dt {
   color: var(--deep-muted);
-  font-size: 12px;
+  font-size: 0.78rem;
+  font-weight: 800;
 }
 
 .learningRouteSummaryCard dd {
-  margin: 4px 0 0;
-  font-size: 22px;
-  font-weight: 900;
+  margin: 0.25rem 0 0;
+  font-size: 1.2rem;
+  font-weight: 950;
+}
+
+.routeProgressCard,
+.routeDayCard,
+.learningTaskCard {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklch, var(--card) 90%, transparent);
+  box-shadow: var(--shadow-card);
 }
 
 .routeProgressCard {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.5fr);
-  gap: 18px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 24px;
+  gap: 1rem;
+  padding: 1.15rem;
 }
 
 .routeProgressCard h2 {
-  font-size: clamp(22px, 3vw, 32px);
+  font-size: clamp(1.4rem, 6vw, 2rem);
 }
 
 .progressMeter {
-  height: 12px;
+  height: 0.75rem;
   overflow: hidden;
-  background: var(--secondary);
   border: 1px solid var(--border);
   border-radius: 999px;
-  margin-top: 16px;
+  background: var(--secondary);
+  margin-top: 1rem;
 }
 
 .progressMeter span {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, var(--primary), color-mix(in oklch, var(--primary) 70%, var(--accent)));
   border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), color-mix(in oklch, var(--primary) 70%, var(--accent)));
   transition: width 220ms ease;
 }
 
 .routeProgressFacts {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
 }
 
 .routeProgressFacts div {
-  background: color-mix(in oklch, var(--primary) 6%, var(--card));
   border: 1px solid var(--border);
-  border-top: 3px solid var(--primary);
+  border-top: 0.2rem solid var(--primary);
   border-radius: var(--radius-md);
-  padding: 16px;
+  background: color-mix(in oklch, var(--primary) 6%, var(--card));
+  padding: 0.9rem;
 }
 
 .routeProgressFacts dt,
 .learningTaskMeta dt,
 .taskStatusField span {
   color: var(--muted-foreground);
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
 }
 
 .routeProgressFacts dd {
-  margin: 6px 0 0;
+  margin: 0.35rem 0 0;
   color: var(--primary);
-  font-size: 30px;
-  font-weight: 900;
+  font-size: 2rem;
+  font-weight: 950;
 }
 
 .routeWarning {
   border: 1px solid color-mix(in oklch, var(--accent) 60%, transparent);
-  border-left: 5px solid var(--accent);
+  border-left: 0.35rem solid var(--accent);
+  border-radius: var(--radius-md);
   background: color-mix(in oklch, var(--accent) 35%, var(--card));
   color: var(--accent-foreground);
-  border-radius: var(--radius-md);
-  padding: 16px 18px;
-  font-weight: 700;
+  padding: 1rem;
+  font-weight: 800;
   line-height: 1.45;
 }
 
 .routeDayGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
   align-items: start;
 }
 
 .routeDayCard {
   display: grid;
-  gap: 16px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 22px;
+  gap: 1rem;
+  padding: 1.15rem;
   transition: box-shadow 180ms ease, transform 180ms ease;
 }
 
 .routeDayCard:hover {
-  box-shadow: var(--shadow-card);
-  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-0.125rem);
 }
 
 .routeDayCard header span {
   display: inline-flex;
   align-items: center;
+  border-radius: 999px;
   background: color-mix(in oklch, var(--primary) 12%, transparent);
   color: var(--primary);
-  border-radius: 999px;
-  padding: 4px 12px;
-  font-weight: 800;
-  font-size: 13px;
+  padding: 0.3rem 0.75rem;
+  font-weight: 900;
+  font-size: 0.82rem;
 }
 
 .routeDayCard h2 {
-  margin: 10px 0 0;
-  font-size: 22px;
-  line-height: 1.18;
-  letter-spacing: -0.01em;
+  margin: 0.75rem 0 0;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  letter-spacing: 0;
 }
 
 .routeDayCard p,
@@ -203,30 +207,26 @@
 
 .routeTaskList {
   display: grid;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .learningTaskCard {
   display: grid;
-  gap: 12px;
-  background: color-mix(in oklch, var(--muted) 50%, var(--card));
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 18px;
+  gap: 0.85rem;
+  background: color-mix(in oklch, var(--muted) 46%, var(--card));
+  padding: 1rem;
 }
 
 .learningTaskHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+  display: grid;
+  gap: 0.75rem;
 }
 
 .learningTaskHeader h3 {
   margin: 0;
-  font-size: 18px;
-  line-height: 1.24;
-  letter-spacing: -0.01em;
+  font-size: 1.05rem;
+  line-height: 1.28;
+  letter-spacing: 0;
 }
 
 .taskStatusTodo,
@@ -234,15 +234,17 @@
 .taskStatusDone,
 .taskStatusSupport,
 .learningTaskBadges span {
+  min-height: 1.8rem;
   display: inline-flex;
   align-items: center;
-  min-height: 28px;
-  padding: 0 12px;
+  justify-content: center;
+  gap: 0.35rem;
+  width: fit-content;
   border-radius: 999px;
-  font-size: 12px;
-  font-weight: 800;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 900;
   line-height: 1.2;
-  white-space: nowrap;
 }
 
 .taskStatusTodo {
@@ -256,19 +258,24 @@
 }
 
 .taskStatusDone {
-  background: color-mix(in oklch, oklch(0.7 0.12 160) 22%, transparent);
-  color: oklch(0.45 0.1 160);
+  background: color-mix(in oklch, var(--aurora-2) 30%, transparent);
+  color: color-mix(in oklch, var(--primary) 72%, var(--foreground));
+}
+
+.taskStatusDone svg {
+  width: 0.9rem;
+  height: 0.9rem;
 }
 
 .taskStatusSupport {
-  background: color-mix(in oklch, oklch(0.7 0.13 35) 22%, transparent);
-  color: oklch(0.5 0.13 32);
+  background: color-mix(in oklch, var(--accent) 72%, transparent);
+  color: var(--accent-foreground);
 }
 
 .learningTaskBadges {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .learningTaskBadges span {
@@ -278,32 +285,32 @@
 
 .learningTaskMeta {
   display: grid;
-  gap: 10px;
+  gap: 0.65rem;
 }
 
 .learningTaskMeta div {
   border-top: 1px solid var(--border);
-  padding-top: 10px;
+  padding-top: 0.65rem;
 }
 
 .learningTaskMeta dd {
-  margin: 4px 0 0;
+  margin: 0.25rem 0 0;
   color: color-mix(in oklch, var(--foreground) 82%, transparent);
   line-height: 1.45;
 }
 
 .taskStatusField {
   display: grid;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .taskStatusField select {
-  min-height: 44px;
+  min-height: 2.75rem;
   border: 1px solid var(--input);
+  border-radius: var(--radius-md);
   background: var(--card);
   color: var(--foreground);
-  padding: 0 14px;
-  border-radius: var(--radius-md);
+  padding: 0 0.9rem;
   font: inherit;
   transition: border-color 160ms ease;
 }
@@ -319,24 +326,78 @@
 
 .actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 8px;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
 }
 
-@media (max-width: 920px) {
-  .learningRouteSummaryCard,
-  .routeProgressCard,
-  .routeProgressFacts,
-  .routeDayGrid {
-    grid-template-columns: 1fr;
+.mayakLink {
+  min-height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: var(--shadow-card);
+  padding: 0.75rem 1.15rem;
+  font-size: 0.95rem;
+  font-weight: 900;
+  text-decoration: none;
+  transition: background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.mayakLink:hover {
+  background: color-mix(in oklch, var(--primary) 88%, var(--foreground));
+  transform: translateY(-0.0625rem);
+}
+
+.mayakLink:focus-visible {
+  outline: 3px solid color-mix(in oklch, var(--ring) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.mayakLink svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+@media (min-width: 640px) {
+  .actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .learningRouteSummaryCard dl,
+  .routeProgressFacts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .learningTaskHeader {
-    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+}
+
+@media (min-width: 768px) {
+  .learningRouteSummaryCard {
+    grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.42fr);
+    align-items: start;
   }
 
-  .actions {
-    flex-direction: column;
+  .routeProgressCard {
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.5fr);
+    align-items: center;
+  }
+
+  .routeProgressFacts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .routeDayGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

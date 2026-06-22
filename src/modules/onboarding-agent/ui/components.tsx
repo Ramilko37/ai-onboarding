@@ -1,4 +1,18 @@
 import type { ReactNode } from "react";
+import {
+  BookOpen,
+  CalendarDays,
+  Check,
+  ChefHat,
+  Circle,
+  ClipboardList,
+  Compass,
+  Flag,
+  MapPin,
+  ShieldCheck,
+  Sparkles,
+  UserRound
+} from "lucide-react";
 import type {
   CompetencyMilestone,
   CompetencyTopic,
@@ -28,22 +42,49 @@ type ButtonProps = {
   onClick?: () => void;
   type?: "button" | "submit";
   disabled?: boolean;
+  icon?: ReactNode;
 };
 
 export function StepProgress({ currentStep }: { currentStep: OnboardingStep }) {
   const currentIndex = steps.findIndex((step) => step.id === currentStep);
 
   return (
-    <nav className={styles.progress} aria-label="Прогресс сценария">
+    <nav className={styles.progressShell} aria-label="Прогресс сценария">
+      <div className={styles.progressIntro}>
+        <span>
+          <Compass aria-hidden="true" />
+        </span>
+        <div>
+          <p>Маяк</p>
+          <strong>Карта адаптации</strong>
+        </div>
+      </div>
+      <ol className={styles.progress}>
       {steps.map((step, index) => (
-        <div
-          className={index <= currentIndex ? styles.progressItemActive : styles.progressItem}
+        <li
+          aria-current={index === currentIndex ? "step" : undefined}
+          className={
+            index < currentIndex
+              ? styles.progressItemDone
+              : index === currentIndex
+                ? styles.progressItemActive
+                : styles.progressItem
+          }
           key={step.id}
         >
-          <span>{index + 1}</span>
+          <span>
+            {index < currentIndex ? (
+              <Check aria-hidden="true" />
+            ) : index === currentIndex ? (
+              <Circle aria-hidden="true" />
+            ) : (
+              index + 1
+            )}
+          </span>
           <p>{step.label}</p>
-        </div>
+        </li>
       ))}
+      </ol>
     </nav>
   );
 }
@@ -52,7 +93,8 @@ export function PrimaryButton({
   children,
   onClick,
   type = "button",
-  disabled
+  disabled,
+  icon
 }: ButtonProps) {
   return (
     <button
@@ -61,6 +103,7 @@ export function PrimaryButton({
       onClick={onClick}
       type={type}
     >
+      {icon && <span className={styles.buttonIcon}>{icon}</span>}
       {children}
     </button>
   );
@@ -70,7 +113,8 @@ export function SecondaryButton({
   children,
   onClick,
   type = "button",
-  disabled
+  disabled,
+  icon
 }: ButtonProps) {
   return (
     <button
@@ -79,6 +123,7 @@ export function SecondaryButton({
       onClick={onClick}
       type={type}
     >
+      {icon && <span className={styles.buttonIcon}>{icon}</span>}
       {children}
     </button>
   );
@@ -103,6 +148,13 @@ export function RoleCard({
       onClick={() => onSelect(value)}
       type="button"
     >
+      <span className={styles.optionIcon}>
+        {value === "cook" ? (
+          <ChefHat aria-hidden="true" />
+        ) : (
+          <ClipboardList aria-hidden="true" />
+        )}
+      </span>
       <span>{title}</span>
       <p>{description}</p>
     </button>
@@ -133,6 +185,9 @@ export function GradeSelector({
           onClick={() => onChange(option.value)}
           type="button"
         >
+          <span className={styles.optionIcon}>
+            <Sparkles aria-hidden="true" />
+          </span>
           <span>{option.label}</span>
           <p>{option.description}</p>
         </button>
@@ -150,19 +205,19 @@ export function EmployeeSummaryCard({ employee }: { employee: EmployeeProfile })
       </div>
       <dl>
         <div>
-          <dt>Роль</dt>
+          <dt><UserRound aria-hidden="true" />Роль</dt>
           <dd>{getRoleLabel(employee.role)}</dd>
         </div>
         <div>
-          <dt>Грейд</dt>
+          <dt><Sparkles aria-hidden="true" />Грейд</dt>
           <dd>{getGradeLabel(employee.grade)}</dd>
         </div>
         <div>
-          <dt>Точка</dt>
+          <dt><MapPin aria-hidden="true" />Точка</dt>
           <dd>{employee.location}</dd>
         </div>
         <div>
-          <dt>Дата выхода</dt>
+          <dt><CalendarDays aria-hidden="true" />Дата выхода</dt>
           <dd>{formatDate(employee.startDate)}</dd>
         </div>
       </dl>
@@ -182,7 +237,7 @@ export function CompetencyMilestoneCard({
 }) {
   return (
     <article className={styles.milestoneCard}>
-      <span>День {milestone.day}</span>
+      <span><Flag aria-hidden="true" />День {milestone.day}</span>
       <h3>{getMilestoneTitle(milestone.day)}</h3>
       <p>{milestone.goal}</p>
       <ul>
@@ -197,6 +252,13 @@ export function CompetencyMilestoneCard({
 export function CompetencyTopicCard({ topic }: { topic: CompetencyTopic }) {
   return (
     <article className={styles.topicCard}>
+      <span className={styles.topicIcon}>
+        {topic.required ? (
+          <ShieldCheck aria-hidden="true" />
+        ) : (
+          <BookOpen aria-hidden="true" />
+        )}
+      </span>
       <div>
         <h3>{topic.title}</h3>
         <div className={styles.badges}>

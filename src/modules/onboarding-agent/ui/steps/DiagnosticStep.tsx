@@ -1,3 +1,4 @@
+import { ArrowLeft, ArrowRight, CheckCircle2, HelpCircle } from "lucide-react";
 import type {
   DiagnosticAnswer,
   DiagnosticQuestion,
@@ -42,7 +43,12 @@ export function DiagnosticStep({
           <h1>Не удалось собрать вопросы диагностики</h1>
           <p>Вернитесь к объяснению диагностики и запустите её ещё раз.</p>
         </div>
-        <SecondaryButton onClick={onBackToIntro}>Вернуться назад</SecondaryButton>
+        <SecondaryButton
+          icon={<ArrowLeft aria-hidden="true" />}
+          onClick={onBackToIntro}
+        >
+          Вернуться назад
+        </SecondaryButton>
       </section>
     );
   }
@@ -163,7 +169,13 @@ export function DiagnosticOption({
       onClick={onSelect}
       type="button"
     >
-      <span>{optionId.toUpperCase()}</span>
+      <span>
+        {selected ? (
+          <CheckCircle2 aria-hidden="true" />
+        ) : (
+          <HelpCircle aria-hidden="true" />
+        )}
+      </span>
       <p>{text}</p>
     </button>
   );
@@ -184,10 +196,14 @@ export function DiagnosticNavigation({
 }) {
   return (
     <div className={styles.actions}>
-      <SecondaryButton onClick={onBack}>
+      <SecondaryButton icon={<ArrowLeft aria-hidden="true" />} onClick={onBack}>
         {canGoBack ? "Назад к вопросу" : "Назад к объяснению"}
       </SecondaryButton>
-      <PrimaryButton disabled={!canContinue} onClick={onNext}>
+      <PrimaryButton
+        disabled={!canContinue}
+        icon={<ArrowRight aria-hidden="true" />}
+        onClick={onNext}
+      >
         {isLastQuestion ? "Завершить диагностику" : "Далее"}
       </PrimaryButton>
     </div>

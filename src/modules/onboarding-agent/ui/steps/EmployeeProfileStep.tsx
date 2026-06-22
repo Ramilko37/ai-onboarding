@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import { FormEvent, useMemo, useState } from "react";
 import { gradeOptions, roleOptions } from "../../model/mockData";
 import type { EmployeeGrade, EmployeeRole } from "../../model/types";
@@ -108,7 +109,11 @@ export function EmployeeProfileStep({
         </div>
 
         <div className={styles.actions}>
-          <PrimaryButton disabled={!canSubmit} type="submit">
+          <PrimaryButton
+            disabled={!canSubmit}
+            icon={<ArrowRight aria-hidden="true" />}
+            type="submit"
+          >
             Сформировать профиль адаптации
           </PrimaryButton>
         </div>

@@ -2,227 +2,387 @@
   min-height: 100vh;
   position: relative;
   isolation: isolate;
-  background:
-    radial-gradient(70% 55% at 12% 8%, color-mix(in oklch, var(--aurora-1) 55%, transparent), transparent 60%),
-    radial-gradient(60% 50% at 92% 4%, color-mix(in oklch, var(--aurora-3) 50%, transparent), transparent 58%),
-    radial-gradient(80% 60% at 80% 100%, color-mix(in oklch, var(--aurora-2) 45%, transparent), transparent 62%),
-    var(--background);
+  overflow-x: hidden;
+  background: var(--background);
   color: var(--foreground);
-  padding: clamp(20px, 4vw, 40px);
+  padding: 1rem;
+}
+
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ambient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in oklch, var(--foreground) 8%, transparent) 1px,
+    transparent 0
+  );
+  background-size: 2rem 2rem;
+  mask-image: radial-gradient(ellipse 82% 58% at 50% 0%, var(--foreground) 28%, transparent 75%);
+  opacity: 0.35;
+}
+
+.ambient span {
+  position: absolute;
+  display: block;
+  border-radius: 999px;
+  filter: blur(3rem);
+  opacity: 0.48;
+  animation: aurora-drift 16s ease-in-out infinite;
+}
+
+.ambient span:nth-child(1) {
+  top: -8rem;
+  left: -7rem;
+  width: 26rem;
+  height: 26rem;
+  background: var(--aurora-1);
+}
+
+.ambient span:nth-child(2) {
+  top: 24%;
+  right: -9rem;
+  width: 24rem;
+  height: 24rem;
+  background: var(--aurora-2);
+  animation-delay: -6s;
+}
+
+.ambient span:nth-child(3) {
+  bottom: -10rem;
+  left: 30%;
+  width: 24rem;
+  height: 24rem;
+  background: var(--aurora-3);
+  animation-delay: -3s;
 }
 
 .shell {
-  width: min(1180px, 100%);
+  width: min(72rem, 100%);
   margin: 0 auto;
-}
-
-.progress {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 28px;
+  gap: 1rem;
 }
 
-.progressItem,
-.progressItemActive {
-  min-height: 66px;
+.progressShell {
+  display: grid;
+  gap: 0.75rem;
   border: 1px solid var(--border);
-  background: color-mix(in oklch, var(--card) 70%, transparent);
-  border-radius: var(--radius-md);
-  padding: 12px;
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklch, var(--card) 82%, transparent);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(0.75rem);
+  padding: 0.75rem;
+}
+
+.progressIntro {
   display: flex;
   align-items: center;
-  gap: 10px;
-  backdrop-filter: blur(6px);
-  transition: border-color 200ms ease, background 200ms ease, box-shadow 200ms ease;
+  gap: 0.75rem;
+  min-width: 0;
 }
 
-.progressItemActive {
-  border-color: color-mix(in oklch, var(--primary) 45%, transparent);
-  background: var(--card);
-  box-shadow: var(--shadow-card);
-}
-
-.progressItem span,
-.progressItemActive span {
-  width: 30px;
-  height: 30px;
+.progressIntro span {
+  width: 2.75rem;
+  height: 2.75rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: var(--secondary);
-  color: var(--muted-foreground);
-  font-size: 13px;
-  font-weight: 700;
   flex: 0 0 auto;
-  transition: background 200ms ease, color 200ms ease;
-}
-
-.progressItemActive span {
+  border-radius: var(--radius-md);
   background: var(--primary);
   color: var(--primary-foreground);
 }
 
-.progressItem p,
-.progressItemActive p {
+.progressIntro svg,
+.buttonIcon svg,
+.optionIcon svg,
+.topicIcon svg,
+.heroPanel svg,
+.summaryCard dt svg,
+.milestoneCard span svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.progressIntro p {
   margin: 0;
-  font-size: 13px;
-  font-weight: 700;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.progressIntro strong {
+  display: block;
+  margin-top: 0.125rem;
+  font-size: 0.95rem;
+}
+
+.progress {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progressItem,
+.progressItemActive,
+.progressItemDone {
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  padding: 0.5rem 0.625rem;
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.progressItemActive {
+  border-color: color-mix(in oklch, var(--primary) 45%, var(--border));
+  background: color-mix(in oklch, var(--primary) 7%, var(--card));
+  box-shadow: var(--shadow-card);
+}
+
+.progressItemDone {
+  border-color: color-mix(in oklch, var(--primary) 28%, var(--border));
+  background: color-mix(in oklch, var(--secondary) 70%, var(--card));
+}
+
+.progressItem span,
+.progressItemActive span,
+.progressItemDone span {
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--secondary);
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.progressItemActive span {
+  color: var(--primary);
+  background: var(--card);
+  box-shadow: 0 0 0 0.25rem color-mix(in oklch, var(--primary) 10%, transparent);
+}
+
+.progressItemDone span {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.progressItem span svg,
+.progressItemActive span svg,
+.progressItemDone span svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.progressItem p,
+.progressItemActive p,
+.progressItemDone p {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 0.85rem;
+  font-weight: 800;
 }
 
 .hero,
 .stepPanel,
 .diagnosticPanel,
+.diagnosticRunPanel,
+.resultPanel,
 .placeholderPanel {
-  background: color-mix(in oklch, var(--card) 88%, transparent);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(8px);
-  overflow: hidden;
+  display: grid;
+  gap: 1rem;
 }
 
 .hero {
-  min-height: 600px;
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: color-mix(in oklch, var(--card) 86%, transparent);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(0.75rem);
 }
 
 .heroContent {
-  padding: clamp(40px, 7vw, 88px);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: flex-start;
+  gap: 1rem;
+  padding: clamp(1.5rem, 7vw, 4rem);
 }
 
 .heroContent h1,
 .sectionHeader h1,
 .placeholderPanel h1 {
+  max-width: 12ch;
   margin: 0;
-  font-size: clamp(36px, 5.5vw, 64px);
+  font-size: clamp(2rem, 11vw, 4rem);
   line-height: 1.02;
-  letter-spacing: -0.02em;
-  max-width: 760px;
+  letter-spacing: 0;
   text-wrap: balance;
 }
 
 .heroContent p,
 .sectionHeader p,
 .placeholderPanel p {
-  max-width: 680px;
+  max-width: 42rem;
+  margin: 0;
   color: var(--muted-foreground);
-  font-size: 18px;
-  line-height: 1.65;
+  font-size: 1rem;
+  line-height: 1.6;
   text-wrap: pretty;
 }
 
 .lead {
-  font-size: 22px !important;
   color: color-mix(in oklch, var(--foreground) 88%, transparent) !important;
+  font-size: clamp(1.05rem, 3vw, 1.35rem) !important;
 }
 
 .kicker {
-  margin: 0 0 14px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: var(--accent-foreground) !important;
-  background: color-mix(in oklch, var(--accent) 55%, transparent);
+  gap: 0.5rem;
+  width: fit-content;
+  margin: 0;
   border-radius: 999px;
-  padding: 6px 14px;
-  font-size: 12px !important;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  background: color-mix(in oklch, var(--accent) 55%, transparent);
+  color: var(--accent-foreground) !important;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.72rem !important;
+  font-weight: 900;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
 .heroPanel {
+  display: grid;
+  gap: 0.75rem;
   background:
-    radial-gradient(80% 60% at 80% 0%, color-mix(in oklch, var(--primary) 35%, transparent), transparent 60%),
+    radial-gradient(70% 80% at 100% 0%, color-mix(in oklch, var(--primary) 34%, transparent), transparent 64%),
     var(--deep);
   color: var(--deep-foreground);
-  padding: clamp(32px, 5vw, 64px);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 20px;
+  padding: clamp(1.25rem, 5vw, 3rem);
 }
 
-.heroPanel div,
-.nextStageGrid div,
-.statsRow div {
+.heroPanel div {
   border-top: 1px solid var(--deep-border);
-  padding-top: 18px;
+  padding-top: 0.95rem;
 }
 
-.heroPanel span,
-.nextStageGrid span {
+.heroPanel span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   color: var(--accent);
-  font-weight: 800;
+  font-size: 0.82rem;
+  font-weight: 900;
 }
 
 .heroPanel p {
-  margin: 8px 0 0;
-  font-size: 20px;
-  line-height: 1.35;
+  margin: 0.45rem 0 0;
+  color: color-mix(in oklch, var(--deep-foreground) 86%, transparent);
+  font-size: 1.05rem;
+  line-height: 1.45;
 }
 
 .stepPanel,
 .diagnosticPanel,
+.diagnosticRunPanel,
+.resultPanel,
 .placeholderPanel {
-  padding: clamp(24px, 5vw, 56px);
+  border-radius: var(--radius-xl);
+  background: color-mix(in oklch, var(--card) 86%, transparent);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(0.75rem);
+  padding: clamp(1rem, 5vw, 3rem);
+}
+
+.diagnosticPanel,
+.placeholderPanel {
+  max-width: 58rem;
+  margin: 0 auto;
 }
 
 .sectionHeader {
-  margin-bottom: 28px;
+  display: grid;
+  gap: 0.85rem;
+  margin-bottom: 0.5rem;
 }
 
 .sectionHeaderCompact {
-  margin: 42px 0 18px;
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
 }
 
 .sectionHeaderCompact h2 {
-  margin: 0 0 8px;
-  font-size: 28px;
-  letter-spacing: -0.01em;
+  margin: 0;
+  font-size: clamp(1.35rem, 5vw, 1.9rem);
+  letter-spacing: 0;
 }
 
 .sectionHeaderCompact p {
-  max-width: 760px;
+  max-width: 48rem;
   margin: 0;
   color: var(--muted-foreground);
   line-height: 1.6;
 }
 
-.formGrid {
+.formGrid,
+.roleGrid,
+.gradeGrid,
+.milestoneGrid,
+.topicGrid,
+.statsRow,
+.resultColumns,
+.routeInsightGrid,
+.nextStageGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: 1fr;
+  gap: 0.875rem;
 }
 
 .field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  gap: 0.5rem;
 }
 
 .field span,
 .fieldLabel {
-  color: color-mix(in oklch, var(--foreground) 85%, transparent);
-  font-size: 14px;
-  font-weight: 800;
+  color: color-mix(in oklch, var(--foreground) 86%, transparent);
+  font-size: 0.9rem;
+  font-weight: 900;
 }
 
 .field input {
   width: 100%;
+  min-height: 3rem;
   border: 1px solid var(--input);
+  border-radius: var(--radius-md);
   background: var(--card);
   color: var(--foreground);
-  min-height: 48px;
-  padding: 0 16px;
-  border-radius: var(--radius-md);
+  padding: 0 1rem;
   font: inherit;
   transition: border-color 160ms ease, box-shadow 160ms ease;
 }
@@ -245,39 +405,21 @@
 }
 
 .fullWidth {
-  grid-column: 1 / -1;
-}
-
-.roleGrid,
-.gradeGrid,
-.milestoneGrid,
-.topicGrid,
-.statsRow,
-.nextStageGrid {
   display: grid;
-  gap: 14px;
-}
-
-.roleGrid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-top: 8px;
-}
-
-.gradeGrid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-top: 8px;
+  grid-column: 1 / -1;
+  gap: 0.65rem;
 }
 
 .optionCard,
 .optionCardSelected,
 .gradeOption,
 .gradeOptionSelected {
-  min-height: 118px;
+  min-height: 8.25rem;
   border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--foreground);
-  padding: 20px;
   border-radius: var(--radius-lg);
+  background: color-mix(in oklch, var(--card) 88%, transparent);
+  color: var(--foreground);
+  padding: 1rem;
   text-align: left;
   cursor: pointer;
   font: inherit;
@@ -286,26 +428,45 @@
 
 .optionCard:hover,
 .gradeOption:hover {
-  border-color: color-mix(in oklch, var(--primary) 40%, var(--border));
+  border-color: color-mix(in oklch, var(--primary) 42%, var(--border));
   box-shadow: var(--shadow-card);
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
 }
 
 .optionCardSelected,
 .gradeOptionSelected {
-  border-color: var(--primary);
+  border-color: color-mix(in oklch, var(--primary) 70%, var(--border));
   background: color-mix(in oklch, var(--primary) 8%, var(--card));
-  box-shadow: inset 0 0 0 1px var(--primary), var(--shadow-card);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--primary) 70%, transparent), var(--shadow-card);
 }
 
-.optionCard span,
-.optionCardSelected span,
-.gradeOption span,
-.gradeOptionSelected span {
+.optionIcon,
+.topicIcon {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--secondary);
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+
+.optionCardSelected .optionIcon,
+.gradeOptionSelected .optionIcon {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.optionCard span:not(.optionIcon),
+.optionCardSelected span:not(.optionIcon),
+.gradeOption span:not(.optionIcon),
+.gradeOptionSelected span:not(.optionIcon) {
   display: block;
-  margin-bottom: 8px;
-  font-size: 17px;
-  font-weight: 800;
+  margin-bottom: 0.45rem;
+  font-size: 1rem;
+  font-weight: 900;
 }
 
 .optionCard p,
@@ -314,28 +475,31 @@
 .gradeOptionSelected p {
   margin: 0;
   color: var(--muted-foreground);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .actions {
-  grid-column: 1 / -1;
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 20px;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
 }
 
 .primaryButton,
 .secondaryButton {
-  min-height: 50px;
+  min-height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
   border: 0;
-  padding: 0 24px;
   border-radius: 999px;
+  padding: 0.75rem 1.15rem;
   font: inherit;
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 0.95rem;
+  font-weight: 900;
   cursor: pointer;
-  transition: background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  transition: background 160ms ease, box-shadow 160ms ease, transform 160ms ease, opacity 160ms ease;
 }
 
 .primaryButton {
@@ -350,146 +514,188 @@
 }
 
 .primaryButton:hover {
-  background: color-mix(in oklch, var(--primary) 88%, black);
-  transform: translateY(-1px);
+  background: color-mix(in oklch, var(--primary) 88%, var(--foreground));
+  transform: translateY(-0.0625rem);
 }
 
 .secondaryButton:hover {
-  background: color-mix(in oklch, var(--secondary) 80%, var(--primary));
+  background: color-mix(in oklch, var(--secondary) 82%, var(--primary));
 }
 
 .primaryButton:disabled,
 .secondaryButton:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.52;
   transform: none;
 }
 
-.summaryCard {
+.buttonIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  order: -1;
+}
+
+.summaryCard,
+.resultSummaryCard {
   display: grid;
-  grid-template-columns: minmax(220px, 0.6fr) minmax(280px, 1fr) minmax(260px, 0.9fr);
-  gap: 22px;
-  padding: 28px;
+  gap: 1.25rem;
   border-radius: var(--radius-xl);
   background:
-    radial-gradient(70% 80% at 0% 0%, color-mix(in oklch, var(--primary) 32%, transparent), transparent 60%),
+    radial-gradient(70% 90% at 0% 0%, color-mix(in oklch, var(--primary) 32%, transparent), transparent 62%),
     var(--deep);
   color: var(--deep-foreground);
+  padding: clamp(1.25rem, 4vw, 2rem);
 }
 
-.summaryCard h2 {
+.summaryCard h2,
+.resultSummaryCard h1 {
   margin: 0;
-  font-size: 30px;
-  letter-spacing: -0.01em;
+  font-size: clamp(1.6rem, 6vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: 0;
 }
 
-.summaryCard dl {
+.summaryCard dl,
+.resultFacts {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
   margin: 0;
 }
 
-.summaryCard dt {
-  color: var(--deep-muted);
-  font-size: 13px;
+.summaryCard dl div,
+.resultFacts div,
+.heroPanel div,
+.nextStageGrid div {
+  border-top: 1px solid var(--deep-border);
+  padding-top: 0.85rem;
 }
 
-.summaryCard dd {
-  margin: 4px 0 0;
+.summaryCard dt,
+.resultFacts dt {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--deep-muted);
+  font-size: 0.78rem;
   font-weight: 800;
 }
 
-.summaryCard p {
-  margin: 0;
-  color: color-mix(in oklch, var(--deep-foreground) 82%, transparent);
-  line-height: 1.55;
+.summaryCard dd,
+.resultFacts dd {
+  margin: 0.25rem 0 0;
+  font-size: 1.1rem;
+  font-weight: 900;
 }
 
-.statsRow {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin: 20px 0;
+.summaryCard p,
+.resultSummaryCard p {
+  margin: 0;
+  color: color-mix(in oklch, var(--deep-foreground) 82%, transparent);
+  line-height: 1.6;
+}
+
+.statsRow div,
+.milestoneCard,
+.topicCard,
+.diagnosticMetaGrid div,
+.questionCard,
+.diagnosticCopy,
+.topicListCard,
+.routeInsightGrid section,
+.topicScoreRow,
+.nextStageGrid div {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklch, var(--card) 90%, transparent);
+  box-shadow: var(--shadow-card);
 }
 
 .statsRow div {
-  border: 1px solid var(--border);
-  border-top: 1px solid var(--border);
-  background: var(--card);
-  padding: 20px;
-  border-radius: var(--radius-lg);
+  padding: 1rem;
 }
 
 .statsRow span {
   display: block;
   color: var(--primary);
-  font-size: 34px;
-  font-weight: 900;
+  font-size: 2rem;
+  font-weight: 950;
 }
 
 .statsRow p {
-  margin: 4px 0 0;
+  margin: 0.25rem 0 0;
   color: var(--muted-foreground);
 }
 
-.milestoneGrid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .milestoneCard,
-.topicCard {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  transition: box-shadow 180ms ease, transform 180ms ease;
-}
-
-.milestoneCard:hover,
-.topicCard:hover {
-  box-shadow: var(--shadow-card);
-  transform: translateY(-2px);
+.topicCard,
+.diagnosticCopy,
+.topicListCard,
+.routeInsightGrid section,
+.nextStageGrid div {
+  padding: 1.15rem;
 }
 
 .milestoneCard {
-  padding: 24px;
+  position: relative;
+}
+
+.milestoneCard::before {
+  content: "";
+  position: absolute;
+  left: 2.2rem;
+  top: 3.7rem;
+  bottom: 1rem;
+  width: 1px;
+  background: color-mix(in oklch, var(--primary) 28%, var(--border));
 }
 
 .milestoneCard span {
   display: inline-flex;
   align-items: center;
+  gap: 0.45rem;
+  border-radius: 999px;
   background: color-mix(in oklch, var(--primary) 12%, transparent);
   color: var(--primary);
-  border-radius: 999px;
-  padding: 4px 12px;
-  font-weight: 800;
-  font-size: 13px;
+  padding: 0.3rem 0.75rem;
+  font-weight: 900;
+  font-size: 0.82rem;
 }
 
 .milestoneCard h3,
 .topicCard h3 {
-  margin: 12px 0 8px;
-  font-size: 20px;
-  letter-spacing: -0.01em;
+  margin: 0.85rem 0 0.5rem;
+  font-size: 1.15rem;
+  letter-spacing: 0;
 }
 
 .milestoneCard p {
+  margin: 0;
   color: var(--muted-foreground);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .milestoneCard ul,
-.diagnosticCopy ul {
-  margin: 16px 0 0;
-  padding-left: 18px;
+.diagnosticCopy ul,
+.topicListCard ul,
+.routeInsightGrid ul {
+  margin: 0.9rem 0 0;
+  padding-left: 1.15rem;
   color: color-mix(in oklch, var(--foreground) 82%, transparent);
   line-height: 1.7;
 }
 
-.topicGrid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.topicSection {
+  display: grid;
+  gap: 1rem;
 }
 
 .topicCard {
-  padding: 20px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: start;
 }
 
 .topicCard h3 {
@@ -499,28 +705,36 @@
 .badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .importanceBadge,
 .requiredBadge,
 .partialBadge,
-.optionalBadge {
+.optionalBadge,
+.statusStrong,
+.statusGood,
+.statusMediumGap,
+.statusCriticalGap,
+.recommendationBadge {
+  min-height: 1.8rem;
   display: inline-flex;
   align-items: center;
-  min-height: 28px;
-  padding: 0 12px;
   border-radius: 999px;
-  font-size: 12px;
-  font-weight: 800;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 900;
+  line-height: 1.2;
 }
 
-.importanceBadge {
+.importanceBadge,
+.statusMediumGap {
   background: color-mix(in oklch, var(--accent) 60%, transparent);
   color: var(--accent-foreground);
 }
 
-.requiredBadge {
+.requiredBadge,
+.statusGood {
   background: color-mix(in oklch, var(--primary) 14%, transparent);
   color: var(--primary);
 }
@@ -530,142 +744,118 @@
   color: var(--secondary-foreground);
 }
 
-.optionalBadge {
+.optionalBadge,
+.recommendationBadge {
   background: var(--muted);
   color: var(--muted-foreground);
 }
 
-.diagnosticPanel {
-  max-width: 920px;
-  margin: 0 auto;
-}
-
-.diagnosticRunPanel,
-.resultPanel {
-  background: color-mix(in oklch, var(--card) 90%, transparent);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(8px);
-  padding: clamp(22px, 4vw, 48px);
-}
-
 .diagnosticHeader {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.35fr);
-  gap: 28px;
-  align-items: end;
-  margin-bottom: 24px;
+  gap: 1rem;
 }
 
 .diagnosticHeader h1 {
   margin: 0;
-  font-size: clamp(30px, 4vw, 48px);
-  line-height: 1.04;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.8rem, 8vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: 0;
 }
 
 .diagnosticHeader p {
-  max-width: 780px;
+  max-width: 48rem;
   color: var(--muted-foreground);
-  font-size: 17px;
+  font-size: 1rem;
   line-height: 1.6;
 }
 
 .progressMeter {
-  height: 12px;
+  height: 0.75rem;
   overflow: hidden;
-  background: var(--secondary);
   border: 1px solid var(--border);
   border-radius: 999px;
+  background: var(--secondary);
 }
 
 .progressMeter span {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, var(--primary), color-mix(in oklch, var(--primary) 70%, var(--accent)));
   border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), color-mix(in oklch, var(--primary) 70%, var(--accent)));
   transition: width 220ms ease;
 }
 
 .diagnosticMetaGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 18px;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
 }
 
 .diagnosticMetaGrid div {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 16px;
+  padding: 0.9rem;
 }
 
 .diagnosticMetaGrid span,
-.questionSource span {
+.questionSource span,
+.topicScoreLabel {
   display: block;
   color: var(--muted-foreground);
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
 }
 
 .diagnosticMetaGrid strong {
   display: block;
-  margin-top: 4px;
-  color: var(--foreground);
+  margin-top: 0.25rem;
 }
 
 .questionCard {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: clamp(20px, 4vw, 36px);
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1rem, 4vw, 2rem);
 }
 
 .questionSource {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 14px;
+  gap: 0.5rem;
 }
 
 .questionSource span {
   width: auto;
+  border-radius: 999px;
   background: color-mix(in oklch, var(--primary) 12%, transparent);
   color: var(--primary);
-  border-radius: 999px;
-  padding: 7px 12px;
-  letter-spacing: 0.02em;
+  padding: 0.45rem 0.7rem;
 }
 
 .questionCard h2 {
-  max-width: 900px;
-  margin: 0 0 22px;
-  font-size: clamp(22px, 3vw, 32px);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  max-width: 50rem;
+  margin: 0;
+  font-size: clamp(1.35rem, 6vw, 2rem);
+  line-height: 1.22;
+  letter-spacing: 0;
 }
 
 .optionList {
   display: grid;
-  gap: 10px;
+  gap: 0.65rem;
 }
 
 .answerOption,
 .answerOptionSelected {
+  min-height: 4rem;
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
-  gap: 14px;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 0.85rem;
   align-items: center;
-  min-height: 64px;
   border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   background: var(--card);
   color: var(--foreground);
-  padding: 14px;
-  border-radius: var(--radius-md);
+  padding: 0.85rem;
   text-align: left;
   cursor: pointer;
   font: inherit;
@@ -679,26 +869,30 @@
 .answerOptionSelected {
   border-color: var(--primary);
   background: color-mix(in oklch, var(--primary) 8%, var(--card));
-  box-shadow: inset 0 0 0 1px var(--primary);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--primary) 80%, transparent);
 }
 
 .answerOption span,
 .answerOptionSelected span {
-  width: 40px;
-  height: 40px;
+  width: 2.5rem;
+  height: 2.5rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: 999px;
   background: var(--secondary);
-  color: var(--secondary-foreground);
-  font-size: 13px;
-  font-weight: 900;
+  color: var(--primary);
 }
 
 .answerOptionSelected span {
   background: var(--primary);
   color: var(--primary-foreground);
+}
+
+.answerOption span svg,
+.answerOptionSelected span svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 .answerOption p,
@@ -709,139 +903,61 @@
 }
 
 .diagnosticCopy {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-left: 5px solid var(--primary);
-  border-radius: var(--radius-lg);
-  padding: clamp(24px, 4vw, 44px);
+  border-left: 0.35rem solid var(--primary);
 }
 
 .diagnosticCopy h2 {
-  margin: 0 0 16px;
-  font-size: 32px;
-  letter-spacing: -0.01em;
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.45rem, 6vw, 2rem);
+  letter-spacing: 0;
 }
 
 .diagnosticCopy p {
-  color: color-mix(in oklch, var(--foreground) 80%, transparent);
-  font-size: 18px;
+  color: color-mix(in oklch, var(--foreground) 82%, transparent);
+  font-size: 1rem;
   line-height: 1.65;
 }
 
-.placeholderPanel {
-  max-width: 880px;
-  margin: 0 auto;
-}
-
 .resultPanel {
-  display: grid;
-  gap: 18px;
-}
-
-.resultSummaryCard {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.28fr) minmax(260px, 0.38fr);
-  gap: 22px;
-  align-items: center;
-  border-radius: var(--radius-xl);
-  background:
-    radial-gradient(70% 90% at 0% 0%, color-mix(in oklch, var(--primary) 32%, transparent), transparent 60%),
-    var(--deep);
-  color: var(--deep-foreground);
-  padding: clamp(22px, 4vw, 36px);
-}
-
-.resultSummaryCard h1 {
-  margin: 0;
-  font-size: clamp(28px, 4vw, 48px);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-}
-
-.resultSummaryCard p {
-  max-width: 760px;
-  color: color-mix(in oklch, var(--deep-foreground) 80%, transparent);
-  font-size: 17px;
-  line-height: 1.6;
+  gap: 1rem;
 }
 
 .scoreDial {
-  min-height: 164px;
+  width: min(10.5rem, 100%);
+  min-height: 10.5rem;
+  aspect-ratio: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  border: 0.45rem solid color-mix(in oklch, var(--accent) 65%, transparent);
+  border-radius: 999px;
   background: color-mix(in oklch, var(--accent) 35%, var(--card));
   color: var(--deep);
-  border: 8px solid color-mix(in oklch, var(--accent) 65%, transparent);
-  border-radius: 50%;
-  aspect-ratio: 1;
 }
 
 .scoreDial strong {
-  font-size: 44px;
+  font-size: 2.6rem;
   line-height: 1;
 }
 
 .scoreDial span {
-  margin-top: 8px;
-  max-width: 120px;
-  text-align: center;
+  max-width: 8rem;
+  margin-top: 0.45rem;
   color: var(--muted-foreground);
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.resultFacts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0;
-}
-
-.resultFacts div {
-  border-top: 1px solid var(--deep-border);
-  padding-top: 12px;
-}
-
-.resultFacts dt {
-  color: var(--deep-muted);
-  font-size: 12px;
-}
-
-.resultFacts dd {
-  margin: 4px 0 0;
-  font-size: 24px;
+  font-size: 0.82rem;
   font-weight: 900;
-}
-
-.resultColumns,
-.routeInsightGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.routeInsightGrid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.topicListCard,
-.routeInsightGrid section {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 22px;
+  text-align: center;
 }
 
 .topicListCard h2,
 .routeInsightGrid span {
   display: block;
-  margin: 0 0 12px;
+  margin: 0 0 0.75rem;
   color: var(--foreground);
-  font-size: 18px;
-  font-weight: 900;
-  letter-spacing: -0.01em;
+  font-size: 1.05rem;
+  font-weight: 950;
+  letter-spacing: 0;
 }
 
 .topicListCard p,
@@ -851,40 +967,25 @@
   line-height: 1.5;
 }
 
-.topicListCard ul,
-.routeInsightGrid ul {
-  margin: 0;
-  padding-left: 18px;
-  color: color-mix(in oklch, var(--foreground) 82%, transparent);
-  line-height: 1.7;
-}
-
 .topicScoreTable {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-
-.topicScoreHeader,
-.topicScoreRow {
   display: grid;
-  grid-template-columns: minmax(220px, 1.2fr) minmax(100px, 0.35fr) minmax(160px, 0.5fr) minmax(220px, 0.8fr);
-  gap: 12px;
-  align-items: center;
+  gap: 0.75rem;
 }
 
 .topicScoreHeader {
-  background: var(--secondary);
-  color: var(--secondary-foreground);
-  padding: 14px 18px;
-  font-size: 13px;
-  font-weight: 900;
+  display: none;
 }
 
 .topicScoreRow {
-  padding: 16px 18px;
-  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.topicScoreRow > div {
+  display: grid;
+  gap: 0.35rem;
 }
 
 .topicScoreRow strong {
@@ -893,124 +994,153 @@
 
 .topicScoreRow small {
   display: block;
-  margin-top: 4px;
   color: var(--muted-foreground);
 }
 
-.statusStrong,
-.statusGood,
-.statusMediumGap,
-.statusCriticalGap,
-.recommendationBadge {
-  display: inline-flex;
-  align-items: center;
-  min-height: 30px;
-  padding: 0 12px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 800;
+.topicScoreLabel {
+  color: var(--muted-foreground);
 }
 
 .statusStrong {
-  background: color-mix(in oklch, oklch(0.7 0.12 160) 22%, transparent);
-  color: oklch(0.45 0.1 160);
-}
-
-.statusGood {
-  background: color-mix(in oklch, var(--primary) 14%, transparent);
-  color: var(--primary);
-}
-
-.statusMediumGap {
-  background: color-mix(in oklch, var(--accent) 60%, transparent);
-  color: var(--accent-foreground);
+  background: color-mix(in oklch, var(--aurora-2) 30%, transparent);
+  color: color-mix(in oklch, var(--primary) 72%, var(--foreground));
 }
 
 .statusCriticalGap {
-  background: color-mix(in oklch, oklch(0.7 0.13 35) 22%, transparent);
-  color: oklch(0.5 0.13 32);
-}
-
-.recommendationBadge {
-  background: var(--muted);
-  color: var(--muted-foreground);
-  line-height: 1.25;
+  background: color-mix(in oklch, var(--accent) 72%, transparent);
+  color: var(--accent-foreground);
 }
 
 .nextStageGrid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin: 28px 0;
+  margin: 1.25rem 0;
 }
 
 .nextStageGrid div {
-  border: 1px solid var(--border);
-  border-top: 1px solid var(--border);
-  background: var(--card);
-  padding: 20px;
-  border-radius: var(--radius-lg);
+  border-top-color: var(--border);
 }
 
 .nextStageGrid span {
   color: var(--primary);
+  font-weight: 900;
 }
 
 .nextStageGrid p {
-  margin: 8px 0 0;
+  margin: 0.5rem 0 0;
   color: color-mix(in oklch, var(--foreground) 82%, transparent);
   line-height: 1.45;
 }
 
-@media (max-width: 920px) {
+@media (min-width: 640px) {
   .page {
-    padding: 16px;
+    padding: 1.5rem;
   }
 
-  .progress {
-    grid-template-columns: 1fr;
+  .actions {
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 
-  .hero,
-  .summaryCard,
-  .diagnosticHeader,
-  .diagnosticMetaGrid,
-  .resultSummaryCard,
+  .primaryButton,
+  .secondaryButton {
+    width: auto;
+  }
+
+  .roleGrid,
+  .topicGrid,
   .resultColumns,
   .routeInsightGrid,
-  .formGrid,
-  .roleGrid,
-  .gradeGrid,
-  .milestoneGrid,
-  .topicGrid,
+  .summaryCard dl,
+  .resultFacts,
+  .diagnosticMetaGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .statsRow,
-  .nextStageGrid {
-    grid-template-columns: 1fr;
+  .milestoneGrid,
+  .gradeGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .topicScoreRow {
+    grid-template-columns: minmax(0, 1.2fr) minmax(7rem, 0.4fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .progress {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .formGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .hero {
-    min-height: auto;
+    grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.85fr);
+  }
+
+  .resultSummaryCard {
+    grid-template-columns: minmax(0, 1fr) minmax(10rem, 0.3fr);
+    align-items: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page {
+    padding: 2rem;
+  }
+
+  .progressShell {
+    grid-template-columns: minmax(13rem, 0.3fr) minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .progress {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  .progressItem,
+  .progressItemActive,
+  .progressItemDone {
+    min-height: 4.25rem;
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .heroContent h1,
   .sectionHeader h1,
   .placeholderPanel h1 {
-    font-size: 38px;
-    line-height: 1.06;
+    max-width: 16ch;
   }
 
-  .actions {
-    flex-direction: column;
+  .summaryCard {
+    grid-template-columns: minmax(14rem, 0.6fr) minmax(18rem, 1fr) minmax(17rem, 0.9fr);
+    align-items: start;
   }
 
-  .topicScoreHeader {
-    display: none;
+  .topicGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .resultSummaryCard {
+    grid-template-columns: minmax(0, 1fr) minmax(10.5rem, 0.28fr) minmax(16rem, 0.38fr);
+  }
+
+  .resultColumns {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .topicScoreRow {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(16rem, 1.2fr) minmax(7rem, 0.35fr) minmax(10rem, 0.5fr) minmax(14rem, 0.8fr);
+    align-items: center;
   }
 
-  .primaryButton,
-  .secondaryButton {
-    width: 100%;
+  .topicScoreLabel {
+    display: none;
+  }
+
+  .diagnosticHeader {
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.35fr);
+    align-items: end;
   }
 }

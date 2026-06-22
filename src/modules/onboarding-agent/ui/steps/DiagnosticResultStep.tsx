@@ -1,3 +1,4 @@
+import { ArrowLeft, Route } from "lucide-react";
 import type { DiagnosticResult, EmployeeProfile, TopicScore } from "../../model/types";
 import {
   getRecommendationLabel,
@@ -74,10 +75,13 @@ export function DiagnosticResultStep({
       </section>
 
       <div className={styles.actions}>
-        <SecondaryButton onClick={onBackToDiagnostic}>
+        <SecondaryButton
+          icon={<ArrowLeft aria-hidden="true" />}
+          onClick={onBackToDiagnostic}
+        >
           Вернуться к вопросам
         </SecondaryButton>
-        <PrimaryButton onClick={onBuildRoute}>
+        <PrimaryButton icon={<Route aria-hidden="true" />} onClick={onBuildRoute}>
           Сформировать персональный маршрут
         </PrimaryButton>
       </div>
@@ -141,20 +145,24 @@ export function TopicScoreCard({ topic }: { topic: TopicScore }) {
   return (
     <article className={styles.topicScoreRow}>
       <div>
+        <span className={styles.topicScoreLabel}>Тема</span>
         <strong>{topic.topicTitle}</strong>
         <small>
           {topic.correctAnswers} из {topic.totalQuestions} ответов по теме
         </small>
       </div>
       <div>
+        <span className={styles.topicScoreLabel}>Результат</span>
         <strong>{topic.scorePercent}%</strong>
       </div>
       <div>
+        <span className={styles.topicScoreLabel}>Статус</span>
         <span className={getStatusClassName(topic.status)}>
           {getStatusLabel(topic.status)}
         </span>
       </div>
       <div>
+        <span className={styles.topicScoreLabel}>Решение</span>
         <TopicRecommendationBadge topic={topic} />
       </div>
     </article>

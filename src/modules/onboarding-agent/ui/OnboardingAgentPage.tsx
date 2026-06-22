@@ -16,6 +16,11 @@ export function OnboardingAgentPage() {
 
   return (
     <main className={styles.page}>
+      <div className={styles.ambient} aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
       <div className={styles.shell}>
         <StepProgress currentStep={state.currentStep} />
 

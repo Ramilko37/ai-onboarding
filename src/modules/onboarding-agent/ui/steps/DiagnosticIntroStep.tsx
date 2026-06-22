@@ -1,3 +1,4 @@
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { EmployeeProfile } from "../../model/types";
 import { getRoleLabel } from "../../lib/getRoleLabel";
 import { PrimaryButton, SecondaryButton } from "../components";
@@ -39,8 +40,12 @@ export function DiagnosticIntroStep({
       </article>
 
       <div className={styles.actions}>
-        <SecondaryButton onClick={onBack}>Вернуться к карте</SecondaryButton>
-        <PrimaryButton onClick={onStart}>Начать диагностику</PrimaryButton>
+        <SecondaryButton icon={<ArrowLeft aria-hidden="true" />} onClick={onBack}>
+          Вернуться к карте
+        </SecondaryButton>
+        <PrimaryButton icon={<ArrowRight aria-hidden="true" />} onClick={onStart}>
+          Начать диагностику
+        </PrimaryButton>
       </div>
     </section>
   );
