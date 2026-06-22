@@ -1,0 +1,653 @@
+.page {
+  min-height: 100vh;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(27, 103, 111, 0.13), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(201, 70, 42, 0.1), transparent 30%),
+    #f7f6f1;
+  color: #152325;
+}
+
+.topBar,
+.employeeShell,
+.managerShell {
+  width: min(1480px, 100%);
+  margin: 0 auto;
+}
+
+.topBar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding: 14px;
+  border: 1px solid rgba(21, 35, 37, 0.1);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 44px rgba(21, 35, 37, 0.06);
+}
+
+.topBar div,
+.topBar nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.topBar span {
+  color: #c9462a;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.topBar strong {
+  font-size: 16px;
+}
+
+.viewButton,
+.viewButtonActive {
+  min-height: 40px;
+  border: 0;
+  padding: 0 14px;
+  background: #edf0ed;
+  color: #1f3437;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.viewButtonActive {
+  background: #1b676f;
+  color: #ffffff;
+}
+
+.employeeHero,
+.managerHero,
+.trackPanel,
+.chatPanel,
+.materialsCard,
+.supportCard,
+.todayCard,
+.progressForEmployee,
+.dashboardSection {
+  border: 1px solid rgba(21, 35, 37, 0.1);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 24px 70px rgba(21, 35, 37, 0.08);
+}
+
+.employeeHero,
+.managerHero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 22px;
+  align-items: stretch;
+  margin-bottom: 18px;
+  padding: clamp(26px, 5vw, 54px);
+}
+
+.employeeHero h1,
+.managerHero h1 {
+  max-width: 920px;
+  margin: 0;
+  font-size: clamp(36px, 5vw, 68px);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.employeeHero p:not(.kicker),
+.managerHero p:not(.kicker),
+.panelHeader p:not(.kicker) {
+  max-width: 820px;
+  color: #4d5a5c;
+  font-size: 17px;
+  line-height: 1.62;
+}
+
+.kicker {
+  margin: 0 0 10px;
+  color: #c9462a;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.employeeSummary {
+  display: grid;
+  align-content: space-between;
+  gap: 20px;
+  padding: 24px;
+  background: #173f45;
+  color: #ffffff;
+}
+
+.employeeSummary strong {
+  display: block;
+  font-size: 28px;
+  line-height: 1.08;
+}
+
+.employeeSummary > span {
+  display: block;
+  color: #f2b84b;
+  font-weight: 900;
+}
+
+.employeeSummary dl,
+.supportCard dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+}
+
+.employeeSummary dt,
+.supportCard dt {
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.employeeSummary dd,
+.supportCard dd {
+  margin: 4px 0 0;
+  font-weight: 900;
+}
+
+.employeeGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.todayCard,
+.progressForEmployee,
+.trackPanel,
+.chatPanel,
+.materialsCard,
+.supportCard,
+.dashboardSection {
+  padding: 22px;
+}
+
+.todayCard h2,
+.materialsCard h2,
+.supportCard h2,
+.panelHeader h2,
+.dashboardSection h2 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.todayCard p:not(.kicker),
+.taskCard p,
+.escalationCard p,
+.integrationCard p {
+  color: #526164;
+  line-height: 1.52;
+}
+
+.progressForEmployee {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.progressForEmployee .kicker,
+.progressForEmployee small {
+  grid-column: 1 / -1;
+}
+
+.progressForEmployee div,
+.managerStats div {
+  display: flex;
+  min-height: 94px;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  border: 1px solid rgba(21, 35, 37, 0.1);
+  background: #ffffff;
+}
+
+.progressForEmployee strong,
+.managerStats strong {
+  font-size: 34px;
+  line-height: 1;
+}
+
+.progressForEmployee span,
+.managerStats span,
+.progressForEmployee small {
+  color: #617174;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.employeeMainGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.58fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.employeeSidePanel {
+  display: grid;
+  gap: 18px;
+}
+
+.panelHeader {
+  margin-bottom: 18px;
+}
+
+.phaseList,
+.phaseCard,
+.chatFeed,
+.materialList,
+.integrationGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.phaseCard h3 {
+  margin: 0;
+  color: #152325;
+  font-size: 20px;
+}
+
+.taskCard,
+.escalationCard,
+.integrationCard,
+.materialList div {
+  padding: 16px;
+  border: 1px solid rgba(21, 35, 37, 0.1);
+  background: #ffffff;
+}
+
+.taskTopline {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.taskTopline strong,
+.materialList strong,
+.integrationCard strong,
+.escalationCard strong {
+  display: block;
+  line-height: 1.25;
+}
+
+.status_todo,
+.status_in_progress,
+.status_done,
+.status_blocked {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.status_todo {
+  background: #edf0ed;
+  color: #536062;
+}
+
+.status_in_progress {
+  background: #fff1c8;
+  color: #7b560c;
+}
+
+.status_done {
+  background: #e5f3ec;
+  color: #176344;
+}
+
+.status_blocked {
+  background: #f8e5df;
+  color: #9f3725;
+}
+
+.taskMeta,
+.sourceList,
+.statusButtons,
+.quickQuestions,
+.answerSources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.taskMeta span,
+.answerSources span,
+.integrationCard span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  background: #eef4f2;
+  color: #1b676f;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.sourceList small,
+.materialList span {
+  display: inline-flex;
+  margin-top: 6px;
+  color: #617174;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.statusButton,
+.statusButtonActive,
+.quickQuestions button,
+.chatForm button,
+.employeeRow,
+.employeeRowActive {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+}
+
+.statusButton,
+.statusButtonActive,
+.quickQuestions button {
+  min-height: 34px;
+  padding: 0 10px;
+  background: #edf0ed;
+  color: #1f3437;
+  font-size: 12px;
+}
+
+.statusButtonActive {
+  background: #1b676f;
+  color: #ffffff;
+}
+
+.quickQuestions {
+  margin-bottom: 14px;
+}
+
+.quickQuestions button:hover,
+.statusButton:hover,
+.employeeRow:hover,
+.employeeRowActive:hover,
+.viewButton:hover,
+.viewButtonActive:hover {
+  filter: brightness(0.98);
+}
+
+.chatFeed {
+  max-height: 640px;
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid rgba(21, 35, 37, 0.1);
+  background: #fbfbf8;
+}
+
+.assistantMessage,
+.userMessage {
+  padding: 16px;
+  border: 1px solid rgba(21, 35, 37, 0.1);
+}
+
+.assistantMessage {
+  margin-right: 18px;
+  background: #ffffff;
+}
+
+.userMessage {
+  margin-left: 18px;
+  background: #edf7f4;
+}
+
+.messageMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.messageMeta span {
+  font-weight: 900;
+}
+
+.messageMeta small {
+  color: #667072;
+}
+
+.assistantMessage p,
+.userMessage p {
+  margin: 0;
+  color: #314245;
+  line-height: 1.55;
+}
+
+.answerSources span {
+  align-items: flex-start;
+  height: auto;
+  min-height: 30px;
+  padding: 8px 10px;
+  line-height: 1.3;
+}
+
+.escalationNotice {
+  margin-top: 10px;
+  padding: 10px;
+  background: #f8e5df;
+  color: #9f3725;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.chatForm {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.chatForm label {
+  display: grid;
+  gap: 8px;
+  color: #314245;
+  font-weight: 900;
+}
+
+.chatForm textarea {
+  width: 100%;
+  min-height: 96px;
+  resize: vertical;
+  border: 1px solid rgba(21, 35, 37, 0.16);
+  background: #ffffff;
+  color: #152325;
+  padding: 12px;
+  font: inherit;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.chatForm button {
+  min-height: 48px;
+  background: #c9462a;
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.supportCard {
+  background: #173f45;
+  color: #ffffff;
+}
+
+.supportCard h2 {
+  color: #ffffff;
+}
+
+.materialsCard,
+.supportCard {
+  box-shadow: none;
+}
+
+.managerHero {
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 0.7fr);
+}
+
+.managerStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.managerGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.employeeRow,
+.employeeRowActive {
+  width: 100%;
+  display: block;
+  margin-top: 10px;
+  padding: 12px;
+  background: #fbfbf8;
+  color: #152325;
+  text-align: left;
+}
+
+.employeeRowActive {
+  background: #edf7f4;
+  box-shadow: inset 0 0 0 2px rgba(27, 103, 111, 0.18);
+}
+
+.employeeRow span,
+.employeeRowActive span {
+  display: block;
+  font-weight: 900;
+}
+
+.employeeRow small,
+.employeeRowActive small {
+  display: block;
+  margin-top: 6px;
+  color: #5d6769;
+}
+
+.escalationCard {
+  margin-top: 10px;
+  background: #fffaf7;
+  border-color: rgba(201, 70, 42, 0.2);
+}
+
+.escalationCard span {
+  display: block;
+  margin-top: 6px;
+  color: #9f3725;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.emptyState,
+.intentList {
+  color: #667072;
+}
+
+.intentList {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  line-height: 1.55;
+}
+
+.integrationCard span {
+  margin-top: 8px;
+  min-height: 24px;
+  background: #f4eee9;
+  color: #77513e;
+}
+
+.viewButton:focus,
+.viewButtonActive:focus,
+.statusButton:focus,
+.statusButtonActive:focus,
+.quickQuestions button:focus,
+.chatForm textarea:focus,
+.chatForm button:focus,
+.employeeRow:focus,
+.employeeRowActive:focus {
+  outline: 3px solid rgba(242, 184, 75, 0.62);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1180px) {
+  .employeeMainGrid,
+  .employeeGrid,
+  .managerGrid,
+  .employeeHero,
+  .managerHero {
+    grid-template-columns: 1fr;
+  }
+
+  .chatFeed {
+    max-height: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .page {
+    padding: 14px;
+  }
+
+  .topBar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .topBar nav,
+  .viewButton,
+  .viewButtonActive {
+    width: 100%;
+  }
+
+  .employeeHero h1,
+  .managerHero h1 {
+    font-size: 38px;
+  }
+
+  .employeeSummary dl,
+  .supportCard dl,
+  .progressForEmployee,
+  .managerStats {
+    grid-template-columns: 1fr;
+  }
+
+  .todayCard,
+  .progressForEmployee,
+  .trackPanel,
+  .chatPanel,
+  .materialsCard,
+  .supportCard,
+  .dashboardSection {
+    padding: 16px;
+  }
+
+  .assistantMessage,
+  .userMessage {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
