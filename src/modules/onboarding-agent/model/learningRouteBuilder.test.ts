@@ -1,8 +1,17 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { buildPersonalLearningRoute } from "../lib/buildPersonalLearningRoute";
+import { calculateDiagnosticResult } from "../lib/calculateDiagnosticResult";
+import { getDiagnosticQuestions } from "../lib/getDiagnosticQuestions";
 import type { LearningRoute } from "./learningRouteTypes";
-import type { DiagnosticResult, EmployeeProfile, TopicScore } from "./types";
+import { competencyTopics } from "./mockData";
+import type {
+  DiagnosticAnswer,
+  DiagnosticQuestion,
+  DiagnosticResult,
+  EmployeeProfile,
+  TopicScore
+} from "./types";
 
 const employee: EmployeeProfile = {
   id: "emp-route-1",
@@ -153,6 +162,35 @@ test("builder is deterministic except generatedAt", () => {
   assert.deepEqual(first, second);
 });
 
+test("network employee diagnostic route keeps every role topic in the generated route", () => {
+  const networkEmployee: EmployeeProfile = {
+    ...employee,
+    grade: "network_experience"
+  };
+  const questions = getDiagnosticQuestions({
+    role: networkEmployee.role,
+    grade: networkEmployee.grade
+  });
+  const diagnosticResult = calculateDiagnosticResult({
+    employee: networkEmployee,
+    questions,
+    answers: createCorrectAnswers(questions),
+    topics: competencyTopics
+  });
+  const route = buildPersonalLearningRoute({
+    employee: networkEmployee,
+    result: diagnosticResult
+  });
+  const taskTopicIds = new Set(getAllTasks(route).map((task) => task.topicId));
+  const roleTopicIds = competencyTopics
+    .filter((topic) => topic.role === networkEmployee.role)
+    .map((topic) => topic.id);
+
+  for (const topicId of roleTopicIds) {
+    assert.equal(taskTopicIds.has(topicId), true, `route misses topic ${topicId}`);
+  }
+});
+
 function makeTopic(
   overrides: Partial<TopicScore> & Pick<TopicScore, "topicId" | "topicTitle">
 ): TopicScore {
@@ -182,4 +220,20 @@ function withoutGeneratedAt(route: LearningRoute) {
     ...route,
     generatedAt: "<ignored>"
   };
+}
+
+function createCorrectAnswers(questions: DiagnosticQuestion[]): DiagnosticAnswer[] {
+  return questions.map((question) => {
+    const correctOption = question.options.find((option) => option.isCorrect);
+
+    assert.ok(correctOption);
+
+    return {
+      questionId: question.id,
+      selectedOptionId: correctOption.id,
+      isCorrect: true,
+      topicId: question.topicId,
+      weight: question.weight
+    };
+  });
 }

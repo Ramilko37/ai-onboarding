@@ -18,10 +18,8 @@ export function calculateDiagnosticResult(params: {
   const answersByQuestionId = new Map(
     params.answers.map((answer) => [answer.questionId, answer])
   );
-  const roleTopicsById = new Map(
-    params.topics
-      .filter((topic) => topic.role === params.employee.role)
-      .map((topic) => [topic.id, topic])
+  const roleTopics = params.topics.filter(
+    (topic) => topic.role === params.employee.role
   );
   const answeredQuestions = params.questions.filter((question) =>
     answersByQuestionId.has(question.id)
@@ -29,7 +27,7 @@ export function calculateDiagnosticResult(params: {
   const topicScores = buildTopicScores({
     questions: answeredQuestions,
     answersByQuestionId,
-    topicsById: roleTopicsById
+    topics: roleTopics
   });
   const totalWeight = answeredQuestions.reduce(
     (sum, question) => sum + question.weight,
@@ -62,7 +60,7 @@ export function calculateDiagnosticResult(params: {
 function buildTopicScores(params: {
   questions: DiagnosticQuestion[];
   answersByQuestionId: Map<string, DiagnosticAnswer>;
-  topicsById: Map<string, CompetencyTopic>;
+  topics: CompetencyTopic[];
 }): TopicScore[] {
   const questionsByTopic = new Map<string, DiagnosticQuestion[]>();
 
@@ -72,8 +70,8 @@ function buildTopicScores(params: {
     questionsByTopic.set(question.topicId, questions);
   }
 
-  return Array.from(questionsByTopic.entries()).map(([topicId, questions]) => {
-    const topic = params.topicsById.get(topicId);
+  return params.topics.map((topic) => {
+    const questions = questionsByTopic.get(topic.id) ?? [];
     const totalWeight = questions.reduce(
       (sum, question) => sum + question.weight,
       0
@@ -88,20 +86,20 @@ function buildTopicScores(params: {
     ).length;
     const scorePercent =
       totalWeight === 0 ? 0 : Math.round((earnedWeight / totalWeight) * 100);
-    const required = topic?.required ?? false;
-    const skippable = topic?.skippable ?? false;
+    const required = topic.required;
+    const skippable = topic.skippable;
     const status = getTopicStatus(scorePercent);
 
     return {
-      topicId,
-      topicTitle: topic?.title ?? topicId,
-      role: topic?.role ?? questions[0].role,
+      topicId: topic.id,
+      topicTitle: topic.title,
+      role: topic.role,
       scorePercent,
       correctAnswers,
       totalQuestions: questions.length,
       totalWeight,
       earnedWeight,
-      importance: topic?.importance ?? "medium",
+      importance: topic.importance,
       required,
       skippable,
       status,

@@ -1,48 +1,67 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { competencyTopics } from "./mockData";
-import type { DiagnosticAnswer, DiagnosticQuestion, EmployeeProfile } from "./types";
+import type {
+  DiagnosticAnswer,
+  DiagnosticQuestion,
+  EmployeeGrade,
+  EmployeeProfile,
+  EmployeeRole
+} from "./types";
 import { calculateDiagnosticResult } from "../lib/calculateDiagnosticResult";
 import { getDiagnosticQuestions } from "../lib/getDiagnosticQuestions";
 
-test("getDiagnosticQuestions returns stable role and grade specific sets", () => {
-  const cookNoExperience = getDiagnosticQuestions({
-    role: "cook",
-    grade: "no_experience"
-  });
-  const cookNetwork = getDiagnosticQuestions({
-    role: "cook",
-    grade: "network_experience"
-  });
-  const adminNoExperience = getDiagnosticQuestions({
-    role: "admin",
-    grade: "no_experience"
-  });
+const roles: EmployeeRole[] = ["cook", "admin"];
+const grades: EmployeeGrade[] = [
+  "no_experience",
+  "horeca_experience",
+  "network_experience"
+];
 
-  assert.equal(cookNoExperience.length >= 10, true);
-  assert.equal(adminNoExperience.length >= 10, true);
-  assert.deepEqual(
-    cookNoExperience.map((question) => question.id),
-    getDiagnosticQuestions({ role: "cook", grade: "no_experience" }).map(
-      (question) => question.id
+test("getDiagnosticQuestions returns stable role and grade specific sets that cover all role topics", () => {
+  for (const role of roles) {
+    const roleTopicIds = getRoleTopicIds(role);
+
+    for (const grade of grades) {
+      const questions = getDiagnosticQuestions({ role, grade });
+      const repeatedQuestions = getDiagnosticQuestions({ role, grade });
+      const selectedTopicIds = new Set(questions.map((question) => question.topicId));
+
+      assert.equal(questions.length >= roleTopicIds.length, true);
+      assert.deepEqual(
+        questions.map((question) => question.id),
+        repeatedQuestions.map((question) => question.id)
+      );
+      assert.equal(questions.every((question) => question.role === role), true);
+
+      for (const topicId of roleTopicIds) {
+        assert.equal(
+          selectedTopicIds.has(topicId),
+          true,
+          `${role}/${grade} misses topic ${topicId}`
+        );
+      }
+    }
+  }
+});
+
+test("getDiagnosticQuestions keeps basic anchors for network employees when a topic has no harder question", () => {
+  const cookNetworkTopicIds = new Set(
+    getDiagnosticQuestions({ role: "cook", grade: "network_experience" }).map(
+      (question) => question.topicId
     )
   );
-  assert.equal(cookNoExperience.every((question) => question.role === "cook"), true);
-  assert.equal(adminNoExperience.every((question) => question.role === "admin"), true);
-  assert.equal(
-    cookNoExperience.every(
-      (question) =>
-        question.difficulty === "basic" || question.difficulty === "intermediate"
-    ),
-    true
+  const adminNetworkTopicIds = new Set(
+    getDiagnosticQuestions({ role: "admin", grade: "network_experience" }).map(
+      (question) => question.topicId
+    )
   );
-  assert.equal(
-    cookNetwork.every(
-      (question) =>
-        question.difficulty === "intermediate" || question.difficulty === "advanced"
-    ),
-    true
-  );
+
+  assert.equal(cookNetworkTopicIds.has("cook-hygiene"), true);
+  assert.equal(cookNetworkTopicIds.has("cook-packaging"), true);
+  assert.equal(adminNetworkTopicIds.has("admin-communication"), true);
+  assert.equal(adminNetworkTopicIds.has("admin-orders"), true);
+  assert.equal(adminNetworkTopicIds.has("admin-discounts"), true);
 });
 
 test("calculateDiagnosticResult scores topics and keeps required topics mandatory", () => {
@@ -109,9 +128,15 @@ test("calculateDiagnosticResult scores topics and keeps required topics mandator
   });
 
   assert.equal(result.totalScorePercent, 33);
-  assert.equal(result.topicScores.length, 2);
-  assert.equal(result.criticalTopics[0]?.topicId, "cook-labeling");
-  assert.equal(result.strongTopics[0]?.topicId, "cook-packaging");
+  assert.equal(result.topicScores.length, getRoleTopicIds("cook").length);
+  assert.equal(
+    result.criticalTopics.some((topic) => topic.topicId === "cook-labeling"),
+    true
+  );
+  assert.equal(
+    result.strongTopics.some((topic) => topic.topicId === "cook-packaging"),
+    true
+  );
 
   const requiredLabeling = result.topicScores.find(
     (topic) => topic.topicId === "cook-labeling"
@@ -119,4 +144,23 @@ test("calculateDiagnosticResult scores topics and keeps required topics mandator
   assert.equal(requiredLabeling?.required, true);
   assert.equal(requiredLabeling?.skippable, false);
   assert.equal(requiredLabeling?.recommendation, "full_module_with_mentor");
+
+  const unansweredRequiredStorage = result.topicScores.find(
+    (topic) => topic.topicId === "cook-storage"
+  );
+  assert.equal(unansweredRequiredStorage?.totalQuestions, 0);
+  assert.equal(unansweredRequiredStorage?.required, true);
+  assert.equal(unansweredRequiredStorage?.status, "critical_gap");
+
+  assert.deepEqual(
+    result.requiredTopics.map((topic) => topic.topicId).sort(),
+    getRoleTopicIds("cook", true)
+  );
 });
+
+function getRoleTopicIds(role: EmployeeRole, requiredOnly = false) {
+  return competencyTopics
+    .filter((topic) => topic.role === role && (!requiredOnly || topic.required))
+    .map((topic) => topic.id)
+    .sort();
+}

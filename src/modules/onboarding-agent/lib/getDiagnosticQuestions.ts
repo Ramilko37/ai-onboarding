@@ -1,4 +1,5 @@
 import { diagnosticQuestions } from "../model/diagnosticQuestions";
+import { competencyTopics } from "../model/mockData";
 import type {
   DiagnosticQuestion,
   EmployeeGrade,
@@ -24,13 +25,44 @@ export function getDiagnosticQuestions(params: {
 }): DiagnosticQuestion[] {
   const allowedDifficulties = difficultiesByGrade[params.grade];
   const limit = limitsByGrade[params.grade];
+  const roleQuestions = diagnosticQuestions
+    .filter((question) => question.role === params.role)
+    .sort(compareQuestions);
+  const roleTopicIds = competencyTopics
+    .filter((topic) => topic.role === params.role)
+    .map((topic) => topic.id);
+  const selectedQuestions: DiagnosticQuestion[] = [];
+  const selectedQuestionIds = new Set<string>();
 
-  return diagnosticQuestions
-    .filter(
-      (question) =>
-        question.role === params.role &&
-        allowedDifficulties.includes(question.difficulty)
-    )
-    .sort((first, second) => first.id.localeCompare(second.id))
-    .slice(0, limit);
+  for (const topicId of roleTopicIds) {
+    const topicQuestions = roleQuestions.filter((question) => question.topicId === topicId);
+    const preferredQuestion =
+      topicQuestions.find((question) => allowedDifficulties.includes(question.difficulty)) ??
+      topicQuestions[0];
+
+    if (preferredQuestion) {
+      selectedQuestions.push(preferredQuestion);
+      selectedQuestionIds.add(preferredQuestion.id);
+    }
+  }
+
+  for (const question of roleQuestions) {
+    if (selectedQuestions.length >= limit) {
+      break;
+    }
+
+    if (
+      allowedDifficulties.includes(question.difficulty) &&
+      !selectedQuestionIds.has(question.id)
+    ) {
+      selectedQuestions.push(question);
+      selectedQuestionIds.add(question.id);
+    }
+  }
+
+  return selectedQuestions.sort(compareQuestions).slice(0, limit);
+}
+
+function compareQuestions(first: DiagnosticQuestion, second: DiagnosticQuestion) {
+  return first.id.localeCompare(second.id);
 }
