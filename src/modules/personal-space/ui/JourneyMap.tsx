@@ -1,5 +1,6 @@
 import { ArrowRight, Check, MapPin } from "lucide-react";
 import Link from "next/link";
+import type { LearningRoute } from "../../onboarding-agent/model/learningRouteTypes";
 import { journeyStages, type JourneyStage } from "../data";
 
 function StageNode({ status }: { status: JourneyStage["status"] }) {
@@ -26,7 +27,9 @@ function StageNode({ status }: { status: JourneyStage["status"] }) {
   );
 }
 
-export function JourneyMap() {
+export function JourneyMap({ route }: { route?: LearningRoute }) {
+  const stages = route ? getRouteStages(route) : journeyStages;
+
   return (
     <section className="flex min-h-0 flex-col overflow-hidden rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm">
       <div className="mb-3 flex shrink-0 items-center gap-2.5">
@@ -40,8 +43,8 @@ export function JourneyMap() {
       </div>
 
       <ol className="min-h-0 flex-1 overflow-y-auto pr-1">
-        {journeyStages.map((stage, index) => {
-          const isLast = index === journeyStages.length - 1;
+        {stages.map((stage, index) => {
+          const isLast = index === stages.length - 1;
           return (
             <li key={stage.id} className="relative flex gap-3 pb-3 last:pb-0">
               {!isLast && (
@@ -104,4 +107,23 @@ export function JourneyMap() {
       </ol>
     </section>
   );
+}
+
+function getRouteStages(route: LearningRoute): JourneyStage[] {
+  return [
+    {
+      id: "diagnostic",
+      title: "Диагностика знаний",
+      caption: route.summary,
+      status: "done",
+      day: "Сегодня",
+    },
+    ...route.days.map<JourneyStage>((day, index) => ({
+      id: day.id,
+      title: day.title,
+      caption: day.goal,
+      status: index === 0 ? "active" : "upcoming",
+      day: day.title,
+    })),
+  ];
 }

@@ -2,10 +2,11 @@
 
 import { Check, Clock, Sparkles, Sun } from "lucide-react";
 import { useState } from "react";
+import type { LearningRoute } from "../../onboarding-agent/model/learningRouteTypes";
 import { initialTodayTasks } from "../data";
 
-export function TodayFocus() {
-  const [tasks, setTasks] = useState(initialTodayTasks);
+export function TodayFocus({ route }: { route?: LearningRoute }) {
+  const [tasks, setTasks] = useState(() => getInitialTasks(route));
   const doneCount = tasks.filter((task) => task.done).length;
 
   function toggle(id: string) {
@@ -79,4 +80,20 @@ export function TodayFocus() {
       </ul>
     </section>
   );
+}
+
+function getInitialTasks(route?: LearningRoute) {
+  const dayOneTasks = route?.days.find((day) => day.id === "day_1")?.tasks;
+
+  if (!dayOneTasks || dayOneTasks.length === 0) {
+    return initialTodayTasks;
+  }
+
+  return dayOneTasks.slice(0, 3).map((task) => ({
+    id: task.id,
+    title: task.title,
+    meta: task.source ?? task.description,
+    minutes: task.estimatedMinutes,
+    done: task.status === "done",
+  }));
 }

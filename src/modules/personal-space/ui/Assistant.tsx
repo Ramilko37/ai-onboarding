@@ -2,13 +2,17 @@
 
 import { Compass, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import {
-  assistantOpening,
-  assistantReplies,
-  assistantSuggestions,
-  defaultAssistantReply,
-  type AssistantMessage,
-} from "../data";
+import type { MentorSource } from "../../knowledge-base";
+import type { LearningRoute } from "../../onboarding-agent/model/learningRouteTypes";
+import { assistantSuggestions } from "../data";
+import type { PersonalSpaceProfile } from "../PersonalSpace";
+
+type AssistantMessage = {
+  id: string;
+  author: "guide" | "you";
+  text: string;
+  sources?: MentorSource[];
+};
 
 let idCounter = 0;
 function nextId() {
@@ -16,8 +20,16 @@ function nextId() {
   return `msg-${idCounter}`;
 }
 
-export function Assistant() {
-  const [messages, setMessages] = useState<AssistantMessage[]>(assistantOpening);
+export function Assistant({
+  profile,
+  route,
+}: {
+  profile?: PersonalSpaceProfile;
+  route?: LearningRoute;
+}) {
+  const [messages, setMessages] = useState<AssistantMessage[]>(() =>
+    createOpeningMessages(profile?.name),
+  );
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -29,7 +41,7 @@ export function Assistant() {
     });
   }, [messages, isTyping]);
 
-  function send(text: string) {
+  async function send(text: string) {
     const trimmed = text.trim();
     if (!trimmed || isTyping) return;
 
@@ -37,11 +49,50 @@ export function Assistant() {
     setInput("");
     setIsTyping(true);
 
-    const reply = assistantReplies[trimmed] ?? defaultAssistantReply;
-    window.setTimeout(() => {
-      setMessages((prev) => [...prev, { id: nextId(), author: "guide", text: reply }]);
+    try {
+      const response = await fetch("/api/mentor-chat", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          question: trimmed,
+          role: route?.role ?? "cook",
+          topicIds: getRouteTopicIds(route),
+          employeeName: profile?.name,
+          routeSummary: route?.summary,
+          activeTaskTitles: getActiveTaskTitles(route),
+        }),
+      });
+      const payload = (await response.json()) as {
+        answer?: string;
+        sources?: MentorSource[];
+        error?: string;
+      };
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: nextId(),
+          author: "guide",
+          text:
+            response.ok && payload.answer
+              ? payload.answer
+              : payload.error ?? "Не удалось получить ответ из базы знаний.",
+          sources: payload.sources,
+        },
+      ]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: nextId(),
+          author: "guide",
+          text:
+            "Сейчас не удалось обратиться к базе знаний. Не буду выдумывать ответ: лучше уточнить у наставника или управляющего.",
+        },
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 900);
+    }
   }
 
   return (
@@ -77,9 +128,18 @@ export function Assistant() {
               >
                 <Compass className="h-3.5 w-3.5 text-primary" />
               </span>
-              <p className="max-w-[88%] rounded-2xl rounded-bl-md bg-secondary px-3 py-2 text-xs leading-relaxed text-secondary-foreground">
-                {message.text}
-              </p>
+              <div className="max-w-[88%] rounded-2xl rounded-bl-md bg-secondary px-3 py-2 text-xs leading-relaxed text-secondary-foreground">
+                <p className="whitespace-pre-line">{message.text}</p>
+                {message.sources && message.sources.length > 0 && (
+                  <ul className="mt-2 grid gap-1 border-t border-border/70 pt-2 text-[11px] text-muted-foreground">
+                    {message.sources.slice(0, 2).map((source) => (
+                      <li key={`${message.id}-${source.documentId}-${source.sectionTitle}`}>
+                        {source.title} · {source.sectionTitle}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
           ) : (
             <p
@@ -144,4 +204,53 @@ export function Assistant() {
       </div>
     </section>
   );
+}
+
+function createOpeningMessages(employeeName?: string): AssistantMessage[] {
+  const name = employeeName?.split(" ")[0] ?? "Алина";
+
+  return [
+    {
+      id: "m1",
+      author: "guide",
+      text: `Привет, ${name}. Я Маяк — ваш проводник на старте. Я отвечаю только по демо-базе знаний и показываю источники, чтобы не выдумывать правила точки.`,
+    },
+    {
+      id: "m2",
+      author: "guide",
+      text:
+        "Можно спросить про хранение, маркировку, техкарты, кассу, возвраты или претензии. Если источника нет, я честно отправлю вопрос к наставнику.",
+    },
+  ];
+}
+
+function getRouteTopicIds(route?: LearningRoute) {
+  if (!route) {
+    return undefined;
+  }
+
+  const topicIds = [
+    ...new Set(
+      route.days
+        .flatMap((day) => day.tasks)
+        .map((task) => task.topicId)
+        .filter((topicId): topicId is string => Boolean(topicId)),
+    ),
+  ];
+
+  return topicIds.length > 0 ? topicIds : undefined;
+}
+
+function getActiveTaskTitles(route?: LearningRoute) {
+  if (!route) {
+    return undefined;
+  }
+
+  const titles = route.days
+    .flatMap((day) => day.tasks)
+    .filter((task) => task.status !== "done")
+    .slice(0, 5)
+    .map((task) => task.title);
+
+  return titles.length > 0 ? titles : undefined;
 }

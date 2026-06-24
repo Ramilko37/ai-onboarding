@@ -1,12 +1,11 @@
 import { Stars } from "lucide-react";
+import type { LearningRoute } from "../../onboarding-agent/model/learningRouteTypes";
 import {
   knowledgeLinks,
   knowledgeNodes,
   type KnowledgeMastery,
   type KnowledgeNode,
 } from "../data";
-
-const nodeById = new Map(knowledgeNodes.map((node) => [node.id, node]));
 
 const masteryStyle: Record<KnowledgeMastery, string> = {
   strong: "bg-primary text-primary-foreground border-transparent shadow-sm",
@@ -30,7 +29,17 @@ function Dot({ mastery }: { mastery: KnowledgeMastery }) {
   return <span className={`h-2.5 w-2.5 rounded-full ${color}`} />;
 }
 
-export function KnowledgeConstellation() {
+export function KnowledgeConstellation({
+  roleLabel,
+  route,
+}: {
+  roleLabel?: string;
+  route?: LearningRoute;
+}) {
+  const nodes = route ? createRouteNodes(route) : knowledgeNodes;
+  const links = route ? [] : knowledgeLinks;
+  const nodeById = new Map(nodes.map((node) => [node.id, node]));
+
   return (
     <section className="flex min-h-0 flex-col overflow-hidden rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm">
       <div className="mb-3 flex shrink-0 items-center justify-between gap-3">
@@ -40,7 +49,9 @@ export function KnowledgeConstellation() {
           </span>
           <div>
             <h2 className="text-sm font-semibold tracking-tight text-foreground">Созвездие знаний</h2>
-            <p className="text-xs text-muted-foreground">Карта навыков повара</p>
+            <p className="text-xs text-muted-foreground">
+              Карта навыков {roleLabel?.toLowerCase() ?? "повара"}
+            </p>
           </div>
         </div>
         <div className="hidden gap-3 sm:flex">
@@ -63,7 +74,7 @@ export function KnowledgeConstellation() {
           preserveAspectRatio="none"
           aria-hidden="true"
         >
-          {knowledgeLinks.map(([from, to]) => {
+          {links.map(([from, to]) => {
             const a = nodeById.get(from);
             const b = nodeById.get(to);
             if (!a || !b) return null;
@@ -81,7 +92,7 @@ export function KnowledgeConstellation() {
           })}
         </svg>
 
-        {knowledgeNodes.map((node: KnowledgeNode, index) => (
+        {nodes.map((node: KnowledgeNode, index) => (
           <div
             key={node.id}
             className="animate-float absolute flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border text-center text-[10px] font-medium leading-tight"
@@ -103,8 +114,47 @@ export function KnowledgeConstellation() {
       </div>
 
       <p className="mt-3 line-clamp-2 shrink-0 text-xs leading-relaxed text-muted-foreground">
-        После диагностики Маяк подсветит сильные стороны и мягко покажет, что стоит освоить дальше.
+        После диагностики Маяк подсвечивает сильные стороны и показывает, что стоит освоить дальше.
       </p>
     </section>
   );
+}
+
+function createRouteNodes(route: LearningRoute): KnowledgeNode[] {
+  const positions = [
+    [18, 30],
+    [40, 20],
+    [62, 28],
+    [80, 44],
+    [65, 66],
+    [43, 72],
+    [22, 62],
+    [14, 48],
+  ];
+  const topicMap = new Map<string, string>();
+
+  for (const task of route.days.flatMap((day) => day.tasks)) {
+    if (!task.topicId || topicMap.has(task.topicId)) {
+      continue;
+    }
+
+    topicMap.set(
+      task.topicId,
+      task.title.includes(":") ? (task.title.split(":").pop()?.trim() ?? task.title) : task.title,
+    );
+  }
+
+  const topicTitles = [...topicMap.entries()].slice(0, positions.length);
+
+  return topicTitles.map(([topicId, title], index) => {
+    const [x, y] = positions[index] ?? [50, 50];
+    return {
+      id: topicId,
+      label: title ?? "Тема",
+      mastery: index < 2 ? "strong" : index < 6 ? "learning" : "new",
+      x,
+      y,
+      size: 54 - Math.min(index, 4) * 2,
+    };
+  });
 }
