@@ -1,3 +1,4 @@
+import { ArrowRight, Check } from "lucide-react";
 import type {
   DiagnosticAnswer,
   DiagnosticQuestion,
@@ -9,7 +10,6 @@ import {
   MayakPanel,
   MayakProgressBar,
   MayakSectionHeader,
-  MayakStatCard,
   cn,
 } from "@/shared/ui/mayak";
 import { getGradeLabel } from "../../lib/getGradeLabel";
@@ -62,15 +62,36 @@ export function DiagnosticStep({
         totalQuestions={questions.length}
       />
 
-      <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[0.72fr_1.28fr]">
-        <aside className="flex min-h-0 flex-col gap-2">
-          <MayakStatCard value={employee.name} label="Сотрудник" />
-          <MayakStatCard value={getRoleLabel(employee.role)} label="Роль" />
-          <MayakStatCard value={getGradeLabel(employee.grade)} label="Грейд" />
+      <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[0.66fr_1.34fr]">
+        <aside className="flex min-h-0 flex-col gap-3">
+          <MayakPanel padding="sm" className="shrink-0 shadow-none">
+            <div className="flex items-center gap-2.5">
+              <span
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-secondary-foreground"
+                aria-hidden="true"
+              >
+                {employee.name.trim().charAt(0).toUpperCase()}
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-foreground">{employee.name}</p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {getRoleLabel(employee.role)} · {getGradeLabel(employee.grade)}
+                </p>
+              </div>
+            </div>
+            <div className="mt-3 flex items-center justify-between border-t border-border pt-2.5">
+              <span className="text-xs text-muted-foreground">Вопрос</span>
+              <span className="font-mono text-sm font-semibold text-foreground">
+                {currentQuestionIndex + 1}/{questions.length}
+              </span>
+            </div>
+          </MayakPanel>
+
           <MayakPanel variant="deep" padding="sm" className="mt-auto shadow-none">
-            <MayakBadge tone="accent">спокойный режим</MayakBadge>
+            <MayakBadge tone="accent">подсказка</MayakBadge>
             <p className="mt-2 text-xs leading-relaxed text-deep-muted">
-              Можно отвечать без давления: выбранный вариант нужен только для настройки маршрута.
+              Выбирайте вариант, ближайший к реальности. Правильность нужна только для настройки
+              маршрута — не для оценки.
             </p>
           </MayakPanel>
         </aside>
@@ -172,23 +193,39 @@ export function DiagnosticOption({
     <button
       aria-pressed={selected}
       className={cn(
-        "grid min-h-14 grid-cols-[34px_1fr] items-center gap-3 rounded-2xl border bg-card p-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
+        "grid min-h-14 grid-cols-[36px_1fr_auto] items-center gap-3 rounded-2xl border p-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
         selected
-          ? "border-primary/60 bg-primary/5 shadow-[inset_0_0_0_1px_color-mix(in_oklch,var(--primary)_70%,transparent)]"
-          : "border-border hover:border-primary/40 hover:bg-primary/5",
+          ? "border-primary bg-primary/8 ring-1 ring-primary/40 shadow-[var(--shadow-card)]"
+          : "border-border bg-card hover:border-primary/40 hover:bg-primary/5",
       )}
       onClick={onSelect}
       type="button"
     >
       <span
         className={cn(
-          "flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold",
+          "flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold transition",
           selected ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground",
         )}
       >
         {optionId.toUpperCase()}
       </span>
-      <span className="text-sm leading-relaxed text-foreground/85">{text}</span>
+      <span
+        className={cn(
+          "text-sm leading-relaxed transition",
+          selected ? "font-medium text-foreground" : "text-foreground/85",
+        )}
+      >
+        {text}
+      </span>
+      <span
+        className={cn(
+          "flex h-5 w-5 items-center justify-center rounded-full transition",
+          selected ? "bg-primary text-primary-foreground" : "border border-border bg-card",
+        )}
+        aria-hidden="true"
+      >
+        {selected && <Check className="h-3 w-3" />}
+      </span>
     </button>
   );
 }
@@ -207,13 +244,21 @@ export function DiagnosticNavigation({
   onNext: () => void;
 }) {
   return (
-    <MayakActionBar className="mt-3 shrink-0 justify-between">
+    <MayakActionBar className="mt-3 shrink-0 items-center justify-between">
       <SecondaryButton onClick={onBack}>
         {canGoBack ? "Назад" : "К вводной"}
       </SecondaryButton>
-      <PrimaryButton disabled={!canContinue} onClick={onNext}>
-        {isLastQuestion ? "Завершить" : "Далее"}
-      </PrimaryButton>
+      <div className="flex items-center gap-3">
+        {!canContinue && (
+          <span className="hidden text-xs text-muted-foreground sm:inline">
+            Выберите вариант, чтобы продолжить
+          </span>
+        )}
+        <PrimaryButton disabled={!canContinue} onClick={onNext}>
+          {isLastQuestion ? "Завершить" : "Далее"}
+          {!isLastQuestion && <ArrowRight className="h-4 w-4" aria-hidden="true" />}
+        </PrimaryButton>
+      </div>
     </MayakActionBar>
   );
 }

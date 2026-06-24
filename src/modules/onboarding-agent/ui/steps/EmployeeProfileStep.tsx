@@ -1,12 +1,12 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
-import { CalendarDays, MapPin, UserRound } from "lucide-react";
+import { ArrowRight, CalendarDays, MapPin, Sparkles, UserRound } from "lucide-react";
 import {
-  MayakActionBar,
   MayakField,
   MayakIconBadge,
   MayakInput,
+  MayakInsightCard,
   MayakPanel,
   MayakSectionHeader,
   MayakSectionTitle,
@@ -17,6 +17,11 @@ import type { EmployeeProfileInput } from "../../model/useOnboardingAgentState";
 import { GradeSelector, PrimaryButton, RoleCard } from "../components";
 
 const today = new Date().toISOString().slice(0, 10);
+
+const roleRouteFocus: Record<EmployeeRole, string> = {
+  cook: "гигиена, техкарты, заготовки, качество",
+  admin: "заказы, гости, касса, претензии",
+};
 
 export function EmployeeProfileStep({
   onSubmit,
@@ -53,11 +58,19 @@ export function EmployeeProfileStep({
   return (
     <MayakPanel padding="lg" className="h-full min-h-0">
       <form className="grid h-full min-h-0 gap-4 lg:grid-cols-[0.85fr_1.35fr]" onSubmit={handleSubmit}>
-        <div className="flex min-h-0 flex-col justify-between gap-4">
+        <div className="flex min-h-0 flex-col gap-4">
           <MayakSectionHeader
+            className="mb-0"
             kicker="Шаг 1 · профиль"
             title="Соберём профиль адаптации"
             description="Минимум данных, чтобы Маяк собрал релевантную карту: роль, грейд, точка и дата выхода."
+          />
+
+          <MayakInsightCard
+            tone="primary"
+            icon={<Sparkles className="h-4 w-4" aria-hidden="true" />}
+            title="Зачем это Маяку"
+            description="Роль определяет карту и вопросы, грейд — глубину тем. Так маршрут становится персональным, а не общим для всех."
           />
 
           <div className="grid gap-3">
@@ -98,11 +111,17 @@ export function EmployeeProfileStep({
             </div>
           </div>
 
-          <MayakActionBar>
-            <PrimaryButton className="w-full sm:w-auto" disabled={!canSubmit} type="submit">
+          <div className="mt-auto border-t border-border pt-4">
+            <PrimaryButton className="w-full" disabled={!canSubmit} type="submit">
               Сформировать профиль
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </PrimaryButton>
-          </MayakActionBar>
+            <p className="mt-2 text-center text-xs text-muted-foreground">
+              {canSubmit
+                ? "Дальше Маяк покажет карту роли и темы для диагностики."
+                : "Заполните имя и точку, чтобы продолжить."}
+            </p>
+          </div>
         </div>
 
         <div className="grid min-h-0 gap-3 lg:grid-rows-[0.95fr_1fr]">
@@ -120,6 +139,7 @@ export function EmployeeProfileStep({
               {roleOptions.map((option) => (
                 <RoleCard
                   description={option.description}
+                  meta={`В маршруте: ${roleRouteFocus[option.value]}`}
                   key={option.value}
                   onSelect={setRole}
                   selected={option.value === role}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Clock, Sun } from "lucide-react";
+import { Check, Clock, Sparkles, Sun } from "lucide-react";
 import { useState } from "react";
 import { initialTodayTasks } from "../data";
 
@@ -30,6 +30,11 @@ export function TodayFocus() {
           {doneCount}/{tasks.length}
         </span>
       </div>
+
+      <p className="mb-2 flex items-center gap-1.5 rounded-xl bg-primary/8 px-2.5 py-1.5 text-[11px] font-medium text-primary">
+        <Sparkles className="h-3 w-3" aria-hidden="true" />
+        Эти задачи Маяк собрал по итогам диагностики
+      </p>
 
       <ul className="grid gap-2">
         {tasks.map((task) => (

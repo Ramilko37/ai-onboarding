@@ -19,7 +19,7 @@ export const mayakSurface = {
   interactive:
     "transition hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
   deep:
-    "overflow-hidden rounded-3xl border border-deep-border bg-[radial-gradient(70%_90%_at_0%_0%,color-mix(in_oklch,var(--primary)_32%,transparent),transparent_60%),var(--deep)] text-deep-foreground shadow-[var(--shadow-soft)]",
+    "bg-deep-surface overflow-hidden rounded-3xl border border-deep-border text-deep-foreground shadow-[var(--shadow-soft)]",
 } as const;
 
 export const mayakTypography = {
@@ -473,6 +473,110 @@ export function MayakProgressBar({
         />
       </div>
     </div>
+  );
+}
+
+type MayakInsightCardProps = {
+  icon?: ReactNode;
+  title: ReactNode;
+  description?: ReactNode;
+  tone?: "neutral" | "primary" | "accent";
+  className?: string;
+};
+
+const insightTone = {
+  neutral: "border-border bg-card",
+  primary: "border-primary/25 bg-primary/5",
+  accent: "border-accent/50 bg-accent/30",
+} as const;
+
+export function MayakInsightCard({
+  icon,
+  title,
+  description,
+  tone = "neutral",
+  className,
+}: MayakInsightCardProps) {
+  return (
+    <div className={cn("flex items-start gap-2.5 rounded-2xl border p-3", insightTone[tone], className)}>
+      {icon && (
+        <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/12 text-primary">
+          {icon}
+        </span>
+      )}
+      <div className="min-w-0">
+        <p className="text-sm font-semibold leading-snug text-foreground">{title}</p>
+        {description && (
+          <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{description}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export type MayakSupportLevel = "start" | "support" | "shorter" | "confident";
+
+const supportLevelStyle: Record<
+  MayakSupportLevel,
+  { label: string; className: string; dot: string }
+> = {
+  start: {
+    label: "Начнём с базы",
+    className: "bg-secondary text-secondary-foreground",
+    dot: "bg-muted-foreground/50",
+  },
+  support: {
+    label: "Зона поддержки",
+    className: "bg-accent text-accent-foreground",
+    dot: "bg-accent-foreground/60",
+  },
+  shorter: {
+    label: "Можно короче",
+    className: "bg-primary/15 text-primary",
+    dot: "bg-primary",
+  },
+  confident: {
+    label: "Уверенно",
+    className:
+      "bg-[color-mix(in_oklch,oklch(0.7_0.12_160)_22%,transparent)] text-[oklch(0.45_0.1_160)]",
+    dot: "bg-[oklch(0.55_0.12_160)]",
+  },
+};
+
+export function MayakLevelPill({
+  level,
+  className,
+}: {
+  level: MayakSupportLevel;
+  className?: string;
+}) {
+  const style = supportLevelStyle[level];
+
+  return (
+    <span
+      className={cn(
+        "inline-flex min-h-6 items-center gap-1.5 rounded-full px-2.5 text-[11px] font-medium leading-none",
+        style.className,
+        className,
+      )}
+    >
+      <span className={cn("h-1.5 w-1.5 rounded-full", style.dot)} aria-hidden="true" />
+      {style.label}
+    </span>
+  );
+}
+
+export function MayakScrollHint({ children, className }: { children?: ReactNode; className?: string }) {
+  return (
+    <p
+      className={cn(
+        "pointer-events-none flex items-center justify-center gap-1 pt-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70",
+        className,
+      )}
+      aria-hidden="true"
+    >
+      {children ?? "прокрутите список"}
+    </p>
   );
 }
 

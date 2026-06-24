@@ -110,12 +110,14 @@ export function RoleCard({
   value,
   title,
   description,
+  meta,
   selected,
   onSelect,
 }: {
   value: EmployeeRole;
   title: string;
   description: string;
+  meta?: ReactNode;
   selected: boolean;
   onSelect: (value: EmployeeRole) => void;
 }) {
@@ -124,6 +126,7 @@ export function RoleCard({
       className="h-full"
       title={title}
       description={description}
+      meta={meta}
       selected={selected}
       onClick={() => onSelect(value)}
     />
