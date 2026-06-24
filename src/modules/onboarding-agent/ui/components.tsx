@@ -45,7 +45,7 @@ export function StepProgress({ currentStep }: { currentStep: OnboardingStep }) {
 
   return (
     <nav
-      className="shrink-0 rounded-3xl border border-border bg-card/70 p-2 backdrop-blur-xl"
+      className="shrink-0 rounded-3xl border border-border bg-card/72 p-2 backdrop-blur-xl"
       aria-label="Прогресс сценария"
     >
       <div className="mb-2 h-1 overflow-hidden rounded-full bg-secondary">
@@ -71,7 +71,7 @@ export function StepProgress({ currentStep }: { currentStep: OnboardingStep }) {
             >
               <span
                 className={cn(
-                  "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold",
+                  "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold",
                   isDone && "bg-primary text-primary-foreground",
                   isActive && "animate-pulse-ring bg-card text-primary ring-1 ring-primary/40",
                   !isDone && !isActive && "bg-secondary text-muted-foreground",
@@ -80,8 +80,8 @@ export function StepProgress({ currentStep }: { currentStep: OnboardingStep }) {
               >
                 {isDone ? <Check className="h-3 w-3" /> : isActive ? <Circle className="h-2.5 w-2.5 fill-current" /> : index + 1}
               </span>
-              <span className="text-xs font-semibold">{step.label}</span>
-              {isActive && <span className="hidden text-[11px] text-muted-foreground sm:inline">{step.caption}</span>}
+              <span className="font-display text-xs font-bold">{step.label}</span>
+              {isActive && <span className="hidden text-[11px] font-medium text-muted-foreground sm:inline">{step.caption}</span>}
             </div>
           );
         })}
@@ -164,11 +164,11 @@ export function EmployeeSummaryCard({ employee }: { employee: EmployeeProfile })
     <MayakPanel variant="deep" padding="md" ariaLabel="Профиль сотрудника">
       <div className="grid gap-4 lg:grid-cols-[0.65fr_1fr_0.85fr] lg:items-center">
         <div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-accent-foreground">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-accent-foreground">
             <Sparkles className="h-3 w-3" aria-hidden="true" />
             Профиль
           </span>
-          <h2 className="mt-2 truncate text-xl font-semibold tracking-tight text-deep-foreground">
+          <h2 className="mt-2 truncate font-display text-xl font-extrabold tracking-tight text-deep-foreground">
             {employee.name}
           </h2>
         </div>
@@ -178,7 +178,7 @@ export function EmployeeSummaryCard({ employee }: { employee: EmployeeProfile })
           <SummaryFact label="Точка" value={employee.location} />
           <SummaryFact label="Дата выхода" value={formatDate(employee.startDate)} />
         </dl>
-        <p className="line-clamp-3 text-xs leading-relaxed text-deep-muted">
+        <p className="line-clamp-3 text-xs font-medium leading-relaxed text-deep-muted">
           Маяк использует роль и грейд только для персонализации: что знакомо — сократит, где нужна поддержка — подсветит.
         </p>
       </div>
@@ -189,8 +189,8 @@ export function EmployeeSummaryCard({ employee }: { employee: EmployeeProfile })
 function SummaryFact({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="border-t border-deep-border pt-2">
-      <dt className="text-[11px] text-deep-muted">{label}</dt>
-      <dd className="mt-0.5 truncate text-sm font-semibold text-deep-foreground">{value}</dd>
+      <dt className="text-[11px] font-medium text-deep-muted">{label}</dt>
+      <dd className="mt-0.5 truncate text-sm font-bold text-deep-foreground">{value}</dd>
     </div>
   );
 }
@@ -199,11 +199,11 @@ export function CompetencyMilestoneCard({ milestone }: { milestone: CompetencyMi
   return (
     <MayakPanel padding="sm" className="h-full transition hover:-translate-y-0.5 hover:border-primary/40">
       <MayakBadge tone="primary">День {milestone.day}</MayakBadge>
-      <h3 className="mt-3 text-base font-semibold tracking-tight text-foreground">
+      <h3 className="mt-3 font-display text-base font-bold tracking-tight text-foreground">
         {getMilestoneTitle(milestone.day)}
       </h3>
-      <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{milestone.goal}</p>
-      <ul className="mt-3 space-y-1.5 text-xs text-foreground/85">
+      <p className="mt-1 line-clamp-2 text-xs font-medium leading-relaxed text-muted-foreground">{milestone.goal}</p>
+      <ul className="mt-3 space-y-1.5 text-xs font-medium text-foreground/85">
         {milestone.competencies.slice(0, 4).map((competency) => (
           <li className="flex gap-2" key={competency}>
             <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
@@ -219,7 +219,7 @@ export function CompetencyTopicCard({ topic }: { topic: CompetencyTopic }) {
   return (
     <MayakPanel padding="xs" className="transition hover:border-primary/40">
       <div className="flex items-start justify-between gap-2">
-        <h3 className="text-xs font-semibold leading-snug text-foreground">{topic.title}</h3>
+        <h3 className="font-display text-xs font-bold leading-snug text-foreground">{topic.title}</h3>
         <ImportanceBadge importance={topic.importance} />
       </div>
       <div className="mt-2">
