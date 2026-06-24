@@ -12,5 +12,5 @@ export function LearningRouteStep(_props: {
   onReset: () => void;
   onUpdateTaskStatus: (taskId: string, status: LearningTaskStatus) => void;
 }) {
-  return <PersonalSpace />;
+  return <PersonalSpace embedded />;
 }
