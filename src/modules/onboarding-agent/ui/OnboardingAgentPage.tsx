@@ -18,6 +18,7 @@ export function OnboardingAgentPage() {
 
   return (
     <MayakShell
+      contentClassName="gap-3"
       topBar={
         <MayakTopBar
           brand="Маяк"
@@ -35,64 +36,66 @@ export function OnboardingAgentPage() {
     >
       <StepProgress currentStep={state.currentStep} />
 
-      {state.currentStep === "welcome" && (
-        <WelcomeStep onStart={() => actions.goToStep("employee_profile")} />
-      )}
+      <section className="min-h-0 flex-1 overflow-hidden">
+        {state.currentStep === "welcome" && (
+          <WelcomeStep onStart={() => actions.goToStep("employee_profile")} />
+        )}
 
-      {state.currentStep === "employee_profile" && (
-        <EmployeeProfileStep onSubmit={actions.saveEmployee} />
-      )}
+        {state.currentStep === "employee_profile" && (
+          <EmployeeProfileStep onSubmit={actions.saveEmployee} />
+        )}
 
-      {state.currentStep === "competency_map" && state.employee && (
-        <CompetencyMapStep
-          employee={state.employee}
-          onBack={() => actions.goToStep("employee_profile")}
-          onNext={() => actions.goToStep("diagnostic_intro")}
-        />
-      )}
-
-      {state.currentStep === "diagnostic_intro" && state.employee && (
-        <DiagnosticIntroStep
-          employee={state.employee}
-          onBack={() => actions.goToStep("competency_map")}
-          onStart={actions.startDiagnostic}
-        />
-      )}
-
-      {state.currentStep === "diagnostic" && state.employee && (
-        <DiagnosticStep
-          employee={state.employee}
-          questions={state.diagnosticQuestions}
-          answers={state.diagnosticAnswers}
-          currentQuestionIndex={state.currentQuestionIndex}
-          onSelectAnswer={actions.selectAnswer}
-          onPrevious={actions.goToPreviousQuestion}
-          onNext={actions.goToNextQuestion}
-          onBackToIntro={actions.resetDiagnostic}
-          onComplete={actions.completeDiagnostic}
-        />
-      )}
-
-      {state.currentStep === "diagnostic_result" &&
-        state.employee &&
-        state.diagnosticResult && (
-          <DiagnosticResultStep
+        {state.currentStep === "competency_map" && state.employee && (
+          <CompetencyMapStep
             employee={state.employee}
-            result={state.diagnosticResult}
-            onBackToDiagnostic={() => actions.goToStep("diagnostic")}
-            onBuildRoute={actions.buildLearningRoute}
+            onBack={() => actions.goToStep("employee_profile")}
+            onNext={() => actions.goToStep("diagnostic_intro")}
           />
         )}
 
-      {state.currentStep === "learning_route" && state.employee && state.learningRoute && (
-        <LearningRouteStep
-          employee={state.employee}
-          route={state.learningRoute}
-          onBack={() => actions.goToStep("diagnostic_result")}
-          onReset={actions.reset}
-          onUpdateTaskStatus={actions.updateLearningTaskStatus}
-        />
-      )}
+        {state.currentStep === "diagnostic_intro" && state.employee && (
+          <DiagnosticIntroStep
+            employee={state.employee}
+            onBack={() => actions.goToStep("competency_map")}
+            onStart={actions.startDiagnostic}
+          />
+        )}
+
+        {state.currentStep === "diagnostic" && state.employee && (
+          <DiagnosticStep
+            employee={state.employee}
+            questions={state.diagnosticQuestions}
+            answers={state.diagnosticAnswers}
+            currentQuestionIndex={state.currentQuestionIndex}
+            onSelectAnswer={actions.selectAnswer}
+            onPrevious={actions.goToPreviousQuestion}
+            onNext={actions.goToNextQuestion}
+            onBackToIntro={actions.resetDiagnostic}
+            onComplete={actions.completeDiagnostic}
+          />
+        )}
+
+        {state.currentStep === "diagnostic_result" &&
+          state.employee &&
+          state.diagnosticResult && (
+            <DiagnosticResultStep
+              employee={state.employee}
+              result={state.diagnosticResult}
+              onBackToDiagnostic={() => actions.goToStep("diagnostic")}
+              onBuildRoute={actions.buildLearningRoute}
+            />
+          )}
+
+        {state.currentStep === "learning_route" && state.employee && state.learningRoute && (
+          <LearningRouteStep
+            employee={state.employee}
+            route={state.learningRoute}
+            onBack={() => actions.goToStep("diagnostic_result")}
+            onReset={actions.reset}
+            onUpdateTaskStatus={actions.updateLearningTaskStatus}
+          />
+        )}
+      </section>
     </MayakShell>
   );
 }
