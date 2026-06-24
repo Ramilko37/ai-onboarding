@@ -21,7 +21,7 @@ export const mayakStyleguide = {
     {
       title: "Читаемая иерархия",
       description:
-        "Заголовки набраны display-шрифтом, body — более читаемым гротеском, muted-тексты стали темнее и заметнее.",
+        "Один гротеск Manrope используется для всего интерфейса, а иерархия строится весом, размером и цветом — без тяжёлого display-шрифта, который ломает кириллицу.",
     },
   ],
   tokens: [
@@ -47,7 +47,7 @@ export const mayakStyleguide = {
     {
       group: "Типографика",
       items: [
-        { name: "font-display", value: "Montserrat", usage: "h1/h2, сильные числа, бренд" },
+        { name: "font-display", value: "Manrope", usage: "h1/h2, сильные числа, бренд" },
         { name: "font-sans", value: "Manrope", usage: "основной интерфейс и читаемые подписи" },
         { name: "font-mono uppercase", value: "служебные подписи", usage: "kicker, статусы, номера шагов" },
         { name: "text-muted-foreground", value: "тёплый серо-коричневый", usage: "пояснения без потери контраста" },
@@ -58,7 +58,7 @@ export const mayakStyleguide = {
     { name: "MayakShell", usage: "Обязательная оболочка страницы: aurora-фон, top bar и max-w-6xl контент." },
     { name: "MayakTopBar", usage: "Единый верхний бар с брендом «Маяк», меткой этапа и пользователем." },
     { name: "MayakPanel", usage: "Базовая поверхность для всех шагов, виджетов, summary и форм." },
-    { name: "MayakSectionHeader", usage: "Заголовок экрана: kicker, display H1, короткое объяснение без перегруза." },
+    { name: "MayakSectionHeader", usage: "Заголовок экрана: kicker, H1, короткое объяснение без перегруза." },
     { name: "MayakButton / MayakLinkButton", usage: "Один copper primary CTA на экран; вторичные действия — secondary/ghost." },
     { name: "MayakOptionCard", usage: "Выбор роли, грейда, ответа диагностики и других вариантов." },
     { name: "MayakBadge / MayakIconBadge", usage: "Статусы, важность, теги и иконки секций." },
@@ -71,6 +71,7 @@ export const mayakStyleguide = {
   ],
   dont: [
     "Не возвращать холодный medical teal как главный цвет интерфейса.",
+    "Не добавлять тяжёлый display-шрифт без проверки кириллицы на demo-экранах.",
     "Не вводить новые цвета вне CSS-токенов без обновления styleguide.",
     "Не использовать слишком светлый muted-текст: подписи должны читаться на demo-скринах.",
     "Не смешивать CSS-module стиль старых этапов с визуальным языком Маяка.",
