@@ -1,5 +1,11 @@
 import { MapPin, Stars } from "lucide-react";
-import { MayakActionBar, MayakIconBadge, MayakPanel, MayakSectionHeader, MayakSectionTitle } from "@/shared/ui/mayak";
+import {
+  MayakActionBar,
+  MayakIconBadge,
+  MayakPanel,
+  MayakSectionHeader,
+  MayakSectionTitle,
+} from "@/shared/ui/mayak";
 import { getGradeLabel } from "../../lib/getGradeLabel";
 import { getMilestonesByRole, getTopicsByRole } from "../../lib/getTopicsByRole";
 import { getRoleLabel } from "../../lib/getRoleLabel";
@@ -28,64 +34,69 @@ export function CompetencyMapStep({
   const adaptiveCount = topics.length - requiredCount;
 
   return (
-    <MayakPanel padding="lg" className="space-y-6">
-      <MayakSectionHeader
-        kicker="Шаг 2 · карта пути"
-        title={`Карта компетенций для роли «${getRoleLabel(employee.role)}»`}
-        description={`Грейд: ${getGradeLabel(employee.grade)}. Маяк покажет обязательные стандарты и темы, которые можно сократить после диагностики.`}
-      />
-
-      <EmployeeSummaryCard employee={employee} />
-
-      <StatGrid
-        stats={[
-          { value: milestones.length, label: "контрольные точки", description: "день 1, 7 и 14" },
-          { value: requiredCount, label: "обязательных блоков", description: "стандарты качества и безопасности" },
-          { value: adaptiveCount, label: "адаптивных тем", description: "можно усилить или сократить" },
-        ]}
-      />
-
-      <section>
-        <MayakSectionTitle
-          icon={
-            <MayakIconBadge>
-              <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
-            </MayakIconBadge>
-          }
-          title="Контрольные точки"
-          description="Путь сотрудника выглядит как спокойная карта, а не список требований"
+    <MayakPanel padding="lg" className="grid h-full min-h-0 gap-4 lg:grid-cols-[0.95fr_1.35fr]">
+      <div className="flex min-h-0 flex-col gap-3">
+        <MayakSectionHeader
+          className="mb-0"
+          kicker="Шаг 2 · карта"
+          title={`Карта роли «${getRoleLabel(employee.role)}»`}
+          description={`Грейд: ${getGradeLabel(employee.grade)}. Видим весь маршрут сразу: контрольные точки, обязательные блоки и адаптивные темы.`}
         />
-        <div className="grid gap-3 lg:grid-cols-3">
-          {milestones.map((milestone) => (
-            <CompetencyMilestoneCard
-              key={`${milestone.role}-${milestone.day}`}
-              milestone={milestone}
-            />
-          ))}
-        </div>
-      </section>
 
-      <section>
-        <MayakSectionTitle
-          icon={
-            <MayakIconBadge>
-              <Stars className="h-4 w-4 text-primary" aria-hidden="true" />
-            </MayakIconBadge>
-          }
-          title="Темы диагностики"
-          description="Обязательные блоки остаются в маршруте, а адаптивные темы Маяк настроит по результатам."
+        <EmployeeSummaryCard employee={employee} />
+
+        <StatGrid
+          stats={[
+            { value: milestones.length, label: "точки", description: "день 1, 7 и 14" },
+            { value: requiredCount, label: "обязательные", description: "безопасность и качество" },
+            { value: adaptiveCount, label: "адаптивные", description: "усилить или сократить" },
+          ]}
         />
-        <div className="grid gap-3 md:grid-cols-2">
-          {topics.map((topic) => (
-            <CompetencyTopicCard key={topic.id} topic={topic} />
-          ))}
-        </div>
-      </section>
 
-      <MayakActionBar>
-        <SecondaryButton onClick={onBack}>Назад к профилю</SecondaryButton>
-        <PrimaryButton onClick={onNext}>Перейти к объяснению диагностики</PrimaryButton>
-      </MayakActionBar>
+        <MayakActionBar className="mt-auto">
+          <SecondaryButton onClick={onBack}>Назад</SecondaryButton>
+          <PrimaryButton onClick={onNext}>К диагностике</PrimaryButton>
+        </MayakActionBar>
+      </div>
+
+      <div className="grid min-h-0 gap-3 lg:grid-rows-[0.76fr_1fr]">
+        <MayakPanel padding="sm" className="min-h-0 shadow-none">
+          <MayakSectionTitle
+            icon={
+              <MayakIconBadge>
+                <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
+              </MayakIconBadge>
+            }
+            title="Контрольные точки"
+            description="Короткая карта без перегруза"
+          />
+          <div className="grid h-[calc(100%-2.75rem)] min-h-0 gap-2 lg:grid-cols-3">
+            {milestones.map((milestone) => (
+              <CompetencyMilestoneCard
+                key={`${milestone.role}-${milestone.day}`}
+                milestone={milestone}
+              />
+            ))}
+          </div>
+        </MayakPanel>
+
+        <MayakPanel padding="sm" className="min-h-0 shadow-none">
+          <MayakSectionTitle
+            icon={
+              <MayakIconBadge>
+                <Stars className="h-4 w-4 text-primary" aria-hidden="true" />
+              </MayakIconBadge>
+            }
+            title="Темы диагностики"
+            description="Если тем много, скроллится только эта карточка"
+          />
+          <div className="grid max-h-[calc(100%-2.75rem)] min-h-0 gap-2 overflow-y-auto pr-1 md:grid-cols-2">
+            {topics.map((topic) => (
+              <CompetencyTopicCard key={topic.id} topic={topic} />
+            ))}
+          </div>
+        </MayakPanel>
+      </div>
     </MayakPanel>
   );
 }
