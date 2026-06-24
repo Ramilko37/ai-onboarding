@@ -19,27 +19,29 @@ export const mayakSurface = {
   interactive:
     "transition hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
   deep:
-    "overflow-hidden rounded-3xl border border-deep-border bg-[radial-gradient(70%_90%_at_0%_0%,color-mix(in_oklch,var(--primary)_32%,transparent),transparent_60%),var(--deep)] text-deep-foreground shadow-[var(--shadow-soft)]",
+    "overflow-hidden rounded-3xl border border-deep-border bg-[radial-gradient(70%_90%_at_0%_0%,color-mix(in_oklch,var(--primary)_28%,transparent),transparent_60%),var(--deep)] text-deep-foreground shadow-[var(--shadow-soft)]",
 } as const;
 
 export const mayakTypography = {
-  eyebrow: "font-mono text-[10px] font-medium uppercase tracking-wider",
-  h1: "text-pretty text-2xl font-semibold leading-tight tracking-tight text-foreground sm:text-3xl",
-  h2: "text-sm font-semibold tracking-tight text-foreground",
-  body: "text-pretty text-sm leading-relaxed text-muted-foreground",
-  caption: "text-xs leading-relaxed text-muted-foreground",
+  eyebrow: "font-mono text-[10px] font-semibold uppercase tracking-wider",
+  h1: "font-display text-pretty text-2xl font-extrabold leading-[1.08] tracking-tight text-foreground sm:text-3xl",
+  h2: "font-display text-sm font-bold tracking-tight text-foreground",
+  body: "text-pretty text-sm font-medium leading-relaxed text-muted-foreground",
+  caption: "text-xs font-medium leading-relaxed text-muted-foreground",
 } as const;
 
 export const mayakInputClassName =
-  "min-h-10 w-full rounded-2xl border border-border bg-card px-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground hover:border-primary/40 focus:border-primary/50";
+  "min-h-10 w-full rounded-2xl border border-border bg-card px-3 text-sm font-medium text-foreground outline-none transition placeholder:text-muted-foreground hover:border-primary/40 focus:border-primary/50";
 
 const badgeTone: Record<MayakTone, string> = {
   primary: "bg-primary/15 text-primary",
   secondary: "bg-secondary text-secondary-foreground",
   accent: "bg-accent text-accent-foreground",
   muted: "bg-muted text-muted-foreground",
-  success: "bg-[color-mix(in_oklch,oklch(0.7_0.12_160)_22%,transparent)] text-[oklch(0.45_0.1_160)]",
-  danger: "bg-[color-mix(in_oklch,oklch(0.7_0.13_35)_22%,transparent)] text-[oklch(0.5_0.13_32)]",
+  success:
+    "bg-[color-mix(in_oklch,oklch(0.62_0.075_130)_22%,transparent)] text-[oklch(0.36_0.065_125)]",
+  danger:
+    "bg-[color-mix(in_oklch,oklch(0.64_0.13_33)_20%,transparent)] text-[oklch(0.42_0.11_32)]",
 };
 
 const iconTone: Record<MayakTone, string> = {
@@ -47,8 +49,10 @@ const iconTone: Record<MayakTone, string> = {
   secondary: "bg-secondary text-secondary-foreground",
   accent: "bg-accent text-accent-foreground",
   muted: "bg-muted text-muted-foreground",
-  success: "bg-[color-mix(in_oklch,oklch(0.7_0.12_160)_22%,transparent)] text-[oklch(0.45_0.1_160)]",
-  danger: "bg-[color-mix(in_oklch,oklch(0.7_0.13_35)_22%,transparent)] text-[oklch(0.5_0.13_32)]",
+  success:
+    "bg-[color-mix(in_oklch,oklch(0.62_0.075_130)_22%,transparent)] text-[oklch(0.36_0.065_125)]",
+  danger:
+    "bg-[color-mix(in_oklch,oklch(0.64_0.13_33)_20%,transparent)] text-[oklch(0.42_0.11_32)]",
 };
 
 type MayakAmbientBackgroundProps = {
@@ -72,10 +76,10 @@ export function MayakAmbientBackground({ className }: MayakAmbientBackgroundProp
         style={{ animationDelay: "-3s" }}
       />
       <div
-        className="absolute inset-0 opacity-[0.4]"
+        className="absolute inset-0 opacity-[0.32]"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 1px 1px, color-mix(in oklch, var(--foreground) 8%, transparent) 1px, transparent 0)",
+            "radial-gradient(circle at 1px 1px, color-mix(in oklch, var(--foreground) 10%, transparent) 1px, transparent 0)",
           backgroundSize: "32px 32px",
           maskImage:
             "radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%)",
@@ -124,7 +128,7 @@ export function MayakTopBar({
   return (
     <header
       className={cn(
-        "sticky top-0 z-20 h-16 shrink-0 border-b border-border/60 bg-background/70 backdrop-blur-xl",
+        "sticky top-0 z-20 h-16 shrink-0 border-b border-border/70 bg-background/82 backdrop-blur-xl",
         className,
       )}
     >
@@ -136,9 +140,11 @@ export function MayakTopBar({
             </span>
           )}
           <div className="min-w-0 leading-tight">
-            <p className="truncate text-sm font-semibold tracking-tight text-foreground">{brand}</p>
+            <p className="truncate font-display text-sm font-extrabold tracking-tight text-foreground">
+              {brand}
+            </p>
             {subtitle && (
-              <p className="truncate font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+              <p className="truncate font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {subtitle}
               </p>
             )}
@@ -147,19 +153,19 @@ export function MayakTopBar({
 
         <div className="flex shrink-0 items-center gap-3">
           {meta && (
-            <span className="hidden items-center gap-1.5 rounded-full border border-border bg-card/80 px-3 py-1.5 text-xs font-medium text-muted-foreground sm:inline-flex">
+            <span className="hidden items-center gap-1.5 rounded-full border border-border bg-card/80 px-3 py-1.5 text-xs font-semibold text-muted-foreground sm:inline-flex">
               {meta}
             </span>
           )}
           {userName && (
             <div className="flex items-center gap-2.5 rounded-full border border-border bg-card/80 py-1 pr-3 pl-1">
               <span
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-secondary-foreground"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-sm font-bold text-secondary-foreground"
                 aria-hidden="true"
               >
                 {initials}
               </span>
-              <span className="hidden text-sm font-medium text-foreground sm:inline">{userName}</span>
+              <span className="hidden text-sm font-bold text-foreground sm:inline">{userName}</span>
             </div>
           )}
         </div>
@@ -287,7 +293,7 @@ export function MayakSectionTitle({
         {icon}
         <div className="min-w-0">
           <h2 className={mayakTypography.h2}>{title}</h2>
-          {description && <p className="truncate text-xs text-muted-foreground">{description}</p>}
+          {description && <p className="truncate text-xs font-medium text-muted-foreground">{description}</p>}
         </div>
       </div>
       {action}
@@ -307,7 +313,7 @@ export function MayakBadge({
   return (
     <span
       className={cn(
-        "inline-flex min-h-6 items-center rounded-full px-2.5 text-[11px] font-medium leading-none",
+        "inline-flex min-h-6 items-center rounded-full px-2.5 text-[11px] font-bold leading-none",
         badgeTone[tone],
         className,
       )}
@@ -356,7 +362,7 @@ export function MayakLinkButton({
 
 function buttonClassName(variant: MayakButtonVariant) {
   const base =
-    "inline-flex min-h-10 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:pointer-events-none disabled:opacity-40";
+    "inline-flex min-h-10 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:pointer-events-none disabled:opacity-40";
 
   if (variant === "secondary") {
     return cn(base, "bg-secondary text-secondary-foreground hover:bg-secondary/80");
@@ -382,7 +388,7 @@ type MayakFieldProps = {
 export function MayakField({ label, children, className }: MayakFieldProps) {
   return (
     <label className={cn("flex flex-col gap-1.5", className)}>
-      <span className="text-xs font-semibold text-foreground">{label}</span>
+      <span className="text-xs font-bold text-foreground">{label}</span>
       {children}
     </label>
   );
@@ -422,13 +428,13 @@ export function MayakOptionCard({
         className,
       )}
     >
-      <span className="block text-sm font-semibold text-foreground">{title}</span>
+      <span className="block font-display text-sm font-bold text-foreground">{title}</span>
       {description && (
-        <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">
+        <span className="mt-1 block text-xs font-medium leading-relaxed text-muted-foreground">
           {description}
         </span>
       )}
-      {meta && <span className="mt-2 block text-xs text-muted-foreground">{meta}</span>}
+      {meta && <span className="mt-2 block text-xs font-medium text-muted-foreground">{meta}</span>}
     </button>
   );
 }
@@ -446,9 +452,11 @@ export function MayakStatCard({
 }) {
   return (
     <div className={cn("rounded-2xl border border-border bg-card p-3", className)}>
-      <span className="block truncate text-2xl font-semibold tracking-tight text-primary">{value}</span>
-      {label && <p className="mt-0.5 truncate text-xs font-medium text-foreground">{label}</p>}
-      {description && <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{description}</p>}
+      <span className="block truncate font-display text-2xl font-extrabold tracking-tight text-primary">
+        {value}
+      </span>
+      {label && <p className="mt-0.5 truncate text-xs font-bold text-foreground">{label}</p>}
+      {description && <p className="mt-1 line-clamp-2 text-xs font-medium leading-relaxed text-muted-foreground">{description}</p>}
     </div>
   );
 }
@@ -514,8 +522,8 @@ export function MayakProgressRing({
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="text-xl font-semibold tracking-tight text-foreground">{safeValue}%</span>
-        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+        <span className="font-display text-xl font-extrabold tracking-tight text-foreground">{safeValue}%</span>
+        <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
       </div>
     </div>
   );
