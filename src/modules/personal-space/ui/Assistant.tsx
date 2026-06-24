@@ -33,61 +33,50 @@ export function Assistant() {
     const trimmed = text.trim();
     if (!trimmed || isTyping) return;
 
-    setMessages((prev) => [
-      ...prev,
-      { id: nextId(), author: "you", text: trimmed },
-    ]);
+    setMessages((prev) => [...prev, { id: nextId(), author: "you", text: trimmed }]);
     setInput("");
     setIsTyping(true);
 
     const reply = assistantReplies[trimmed] ?? defaultAssistantReply;
     window.setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        { id: nextId(), author: "guide", text: reply },
-      ]);
+      setMessages((prev) => [...prev, { id: nextId(), author: "guide", text: reply }]);
       setIsTyping(false);
     }, 900);
   }
 
   return (
-    <section className="flex flex-col overflow-hidden rounded-3xl border border-border bg-card/80 backdrop-blur-sm">
-      <div className="flex items-center gap-3 border-b border-border/60 px-6 py-4">
-        <span className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+    <section className="flex min-h-0 flex-col overflow-hidden rounded-3xl border border-border bg-card/80 backdrop-blur-sm">
+      <div className="flex shrink-0 items-center gap-3 border-b border-border/60 px-4 py-3">
+        <span className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground">
           <Compass className="h-4 w-4" aria-hidden="true" />
           <span className="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-card bg-aurora-2" />
         </span>
-        <div>
-          <h2 className="text-sm font-semibold tracking-tight text-foreground">
-            Маяк · ваш проводник
+        <div className="min-w-0">
+          <h2 className="truncate text-sm font-semibold tracking-tight text-foreground">
+            Маяк · проводник
           </h2>
-          <p className="text-xs text-muted-foreground">
-            Спокойно подскажет следующий шаг
-          </p>
+          <p className="truncate text-xs text-muted-foreground">Подскажет следующий шаг</p>
         </div>
       </div>
 
-      <div
-        ref={scrollRef}
-        className="flex max-h-80 flex-col gap-3 overflow-y-auto px-5 py-5"
-      >
+      <div ref={scrollRef} className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-4 py-3">
         {messages.map((message) =>
           message.author === "guide" ? (
-            <div key={message.id} className="flex items-end gap-2.5">
+            <div key={message.id} className="flex items-end gap-2">
               <span
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-secondary text-secondary-foreground"
+                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-secondary text-secondary-foreground"
                 aria-hidden="true"
               >
                 <Compass className="h-3.5 w-3.5 text-primary" />
               </span>
-              <p className="max-w-[85%] rounded-2xl rounded-bl-md bg-secondary px-4 py-2.5 text-sm leading-relaxed text-secondary-foreground">
+              <p className="max-w-[88%] rounded-2xl rounded-bl-md bg-secondary px-3 py-2 text-xs leading-relaxed text-secondary-foreground">
                 {message.text}
               </p>
             </div>
           ) : (
             <p
               key={message.id}
-              className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-primary px-4 py-2.5 text-sm leading-relaxed text-primary-foreground"
+              className="ml-auto max-w-[88%] rounded-2xl rounded-br-md bg-primary px-3 py-2 text-xs leading-relaxed text-primary-foreground"
             >
               {message.text}
             </p>
@@ -95,14 +84,11 @@ export function Assistant() {
         )}
 
         {isTyping && (
-          <div className="flex items-center gap-2.5">
-            <span
-              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-secondary"
-              aria-hidden="true"
-            >
+          <div className="flex items-center gap-2">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-secondary" aria-hidden="true">
               <Compass className="h-3.5 w-3.5 text-primary" />
             </span>
-            <span className="flex gap-1 rounded-2xl rounded-bl-md bg-secondary px-4 py-3">
+            <span className="flex gap-1 rounded-2xl rounded-bl-md bg-secondary px-3 py-2.5">
               <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/60 [animation-delay:-0.3s]" />
               <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/60 [animation-delay:-0.15s]" />
               <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/60" />
@@ -111,14 +97,14 @@ export function Assistant() {
         )}
       </div>
 
-      <div className="border-t border-border/60 px-5 py-4">
-        <div className="mb-3 flex flex-wrap gap-2">
+      <div className="shrink-0 border-t border-border/60 px-4 py-3">
+        <div className="mb-2 flex gap-1.5 overflow-x-auto pb-0.5">
           {assistantSuggestions.map((suggestion) => (
             <button
               key={suggestion}
               type="button"
               onClick={() => send(suggestion)}
-              className="rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground transition hover:border-primary/40 hover:text-primary"
+              className="min-w-fit rounded-full border border-border bg-card px-2.5 py-1 text-[11px] text-muted-foreground transition hover:border-primary/40 hover:text-primary"
             >
               {suggestion}
             </button>
@@ -129,14 +115,14 @@ export function Assistant() {
             event.preventDefault();
             send(input);
           }}
-          className="flex items-center gap-2 rounded-full border border-border bg-card py-1.5 pr-1.5 pl-4 transition focus-within:border-primary/50"
+          className="flex items-center gap-2 rounded-full border border-border bg-card py-1 pr-1 pl-3 transition focus-within:border-primary/50"
         >
           <input
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            placeholder="Спросите что угодно — здесь спокойно"
+            placeholder="Спросите Маяк"
             aria-label="Сообщение проводнику"
-            className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+            className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
           />
           <button
             type="submit"
