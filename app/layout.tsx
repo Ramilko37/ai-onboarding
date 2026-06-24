@@ -1,16 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Manrope, Montserrat } from "next/font/google";
+import { Geist_Mono, Manrope } from "next/font/google";
 import "./globals.css";
 
 const manrope = Manrope({
   subsets: ["latin", "cyrillic"],
   variable: "--font-manrope",
-  display: "swap",
-});
-
-const montserrat = Montserrat({
-  subsets: ["latin", "cyrillic"],
-  variable: "--font-montserrat",
   display: "swap",
 });
 
@@ -38,10 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="ru"
-      className={`${manrope.variable} ${montserrat.variable} ${geistMono.variable} bg-background`}
-    >
+    <html lang="ru" className={`${manrope.variable} ${geistMono.variable} bg-background`}>
       <body>{children}</body>
     </html>
   );
