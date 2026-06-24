@@ -134,15 +134,15 @@ export function DiagnosticQuestionCard({
   onSelectAnswer: (questionId: string, optionId: string) => void;
 }) {
   return (
-    <MayakPanel padding="md" className="min-h-0 flex-1 shadow-none">
-      <div className="mb-3 flex flex-wrap gap-2">
+    <MayakPanel padding="md" className="flex min-h-0 flex-1 flex-col shadow-none">
+      <div className="mb-3 flex shrink-0 flex-wrap gap-2">
         <MayakBadge tone="primary">{getDifficultyLabel(question.difficulty)}</MayakBadge>
         {question.source && <MayakBadge tone="secondary">{question.source}</MayakBadge>}
       </div>
-      <h2 className="text-xl font-semibold leading-snug tracking-tight text-foreground sm:text-2xl">
+      <h2 className="shrink-0 text-xl font-semibold leading-snug tracking-tight text-foreground sm:text-2xl">
         {question.question}
       </h2>
-      <div className="mt-4 grid gap-2 overflow-y-auto pr-1" role="list">
+      <div className="mt-4 grid min-h-0 flex-1 gap-2 overflow-y-auto pr-1" role="list">
         {question.options.map((option) => (
           <DiagnosticOption
             key={option.id}
