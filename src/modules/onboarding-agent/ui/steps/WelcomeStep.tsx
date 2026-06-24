@@ -10,8 +10,8 @@ import { PrimaryButton } from "../components";
 
 export function WelcomeStep({ onStart }: { onStart: () => void }) {
   return (
-    <section className="grid gap-5 lg:grid-cols-3">
-      <MayakPanel padding="lg" className="flex min-h-[520px] flex-col justify-between lg:col-span-2">
+    <section className="grid h-full min-h-0 gap-3 lg:grid-cols-[1.45fr_0.9fr]">
+      <MayakPanel padding="lg" className="flex min-h-0 flex-col justify-between">
         <div>
           <MayakSectionHeader
             kicker={
@@ -24,41 +24,62 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
               <>
                 AI-агент адаптации сотрудников.
                 <br />
-                <span className="text-muted-foreground">Теперь весь путь — в стиле Маяка.</span>
+                <span className="text-muted-foreground">Один экран — один понятный шаг.</span>
               </>
             }
-            description="Маяк помогает франчайзинговой сети быстрее и спокойнее обучать новых сотрудников: сначала понимает стартовый уровень, затем собирает персональный маршрут на 1, 7 и 14 дней."
+            description="Маяк сначала понимает стартовый уровень, затем собирает персональный маршрут на 1, 7 и 14 дней. Без ощущения экзамена и без длинных полотен интерфейса."
           />
         </div>
 
-        <MayakActionBar>
+        <div className="grid gap-2 sm:grid-cols-3">
+          {[
+            ["1", "Профиль", "роль и грейд"],
+            ["2", "Диагностика", "мягкие вопросы"],
+            ["3", "Маршрут", "под реальные зоны"],
+          ].map(([number, title, caption]) => (
+            <div className="rounded-2xl border border-border bg-card p-3" key={number}>
+              <MayakBadge tone="primary">{number}</MayakBadge>
+              <p className="mt-2 text-sm font-semibold text-foreground">{title}</p>
+              <p className="text-xs text-muted-foreground">{caption}</p>
+            </div>
+          ))}
+        </div>
+
+        <MayakActionBar className="items-center justify-between">
           <PrimaryButton onClick={onStart}>
-            Начать адаптацию сотрудника
+            Начать адаптацию
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </PrimaryButton>
-          <span className="text-sm leading-relaxed text-muted-foreground">
+          <span className="max-w-sm text-xs leading-relaxed text-muted-foreground">
             Диагностика не оценивает человека — она убирает лишнее обучение.
           </span>
         </MayakActionBar>
       </MayakPanel>
 
-      <MayakPanel variant="deep" padding="lg" className="flex flex-col justify-end gap-5">
-        <MayakIconBadge tone="accent" className="h-12 w-12 rounded-2xl">
-          <Compass className="h-6 w-6" aria-hidden="true" />
-        </MayakIconBadge>
-        {[
-          ["01", "Не обучаем всех одинаково."],
-          ["02", "Сначала понимаем, что сотрудник уже знает."],
-          ["03", "Затем собираем маршрут под реальные зоны развития."],
-        ].map(([number, text]) => (
-          <div className="border-t border-deep-border pt-4" key={number}>
-            <MayakBadge tone="accent">{number}</MayakBadge>
-            <p className="mt-3 text-lg font-medium leading-snug text-deep-foreground">{text}</p>
-          </div>
-        ))}
-        <p className="flex items-center gap-2 text-sm text-deep-muted">
+      <MayakPanel variant="deep" padding="lg" className="flex min-h-0 flex-col justify-between gap-3">
+        <div>
+          <MayakIconBadge tone="accent" className="h-11 w-11 rounded-2xl">
+            <Compass className="h-5 w-5" aria-hidden="true" />
+          </MayakIconBadge>
+          <h2 className="mt-4 text-xl font-semibold tracking-tight text-deep-foreground">
+            Маяк держит весь путь в одном спокойном пространстве.
+          </h2>
+        </div>
+        <div className="grid gap-3">
+          {[
+            ["01", "Не обучаем всех одинаково."],
+            ["02", "Понимаем, что сотрудник уже знает."],
+            ["03", "Подсвечиваем следующий лучший шаг."],
+          ].map(([number, text]) => (
+            <div className="border-t border-deep-border pt-3" key={number}>
+              <MayakBadge tone="accent">{number}</MayakBadge>
+              <p className="mt-2 text-sm font-medium leading-snug text-deep-foreground">{text}</p>
+            </div>
+          ))}
+        </div>
+        <p className="flex items-center gap-2 text-xs text-deep-muted">
           <Sparkles className="h-4 w-4 text-accent" aria-hidden="true" />
-          Один понятный шаг за раз.
+          Экран помещается в viewport, детали раскрываются по мере необходимости.
         </p>
       </MayakPanel>
     </section>
