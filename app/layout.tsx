@@ -1,15 +1,23 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Manrope, Montserrat } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
+const manrope = Manrope({
   subsets: ["latin", "cyrillic"],
-  variable: "--font-geist-sans",
+  variable: "--font-manrope",
+  display: "swap",
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-montserrat",
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -19,7 +27,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fafaf7",
+  themeColor: "#fbf4e8",
   width: "device-width",
   initialScale: 1,
 };
@@ -32,7 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="ru"
-      className={`${geistSans.variable} ${geistMono.variable} bg-background`}
+      className={`${manrope.variable} ${montserrat.variable} ${geistMono.variable} bg-background`}
     >
       <body>{children}</body>
     </html>
