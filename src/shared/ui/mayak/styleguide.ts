@@ -1,12 +1,12 @@
 export const mayakStyleguide = {
   name: "Маяк UI",
   purpose:
-    "Единый визуальный язык для всех этапов AI-агента адаптации: спокойно, понятно, без ощущения экзамена или HR-контроля.",
+    "Единый визуальный язык для AI-агента адаптации в HORECA: тёплый, уверенный, гостеприимный, без медицинской стерильности и без ощущения HR-контроля.",
   principles: [
     {
-      title: "Спокойный проводник",
+      title: "Гостеприимный проводник",
       description:
-        "Интерфейс говорит простыми фразами, объясняет следующий шаг и снижает тревожность новичка.",
+        "Интерфейс говорит как хороший наставник на смене: спокойно, по делу, с ощущением заботы и профессиональной кухни.",
     },
     {
       title: "Один понятный шаг",
@@ -14,26 +14,26 @@ export const mayakStyleguide = {
         "Каждый экран показывает один главный CTA, короткий контекст и мягкую подсказку, что будет дальше.",
     },
     {
-      title: "Источник доверия",
+      title: "Тёплая уверенность",
       description:
-        "Карточки, бейджи и подсказки используют одинаковые состояния: готово, сейчас, впереди, нужна поддержка.",
+        "Акценты строятся вокруг espresso, copper, honey и herb: это ближе к HORECA, чем холодный medical teal.",
     },
     {
-      title: "Живой, но не шумный AI",
+      title: "Читаемая иерархия",
       description:
-        "Анимации aurora/float/pulse используются как фон и акцент, а не как конкурирующий контент.",
+        "Заголовки набраны display-шрифтом, body — более читаемым гротеском, muted-тексты стали темнее и заметнее.",
     },
   ],
   tokens: [
     {
       group: "Цвет",
       items: [
-        { name: "background", value: "тёплая бумага", usage: "общий фон приложения" },
-        { name: "card", value: "полупрозрачная карточка", usage: "основные панели и виджеты" },
-        { name: "primary", value: "спокойный teal", usage: "главный CTA, активное состояние, прогресс" },
-        { name: "secondary", value: "мягкий голубой", usage: "плашки, входящие сообщения, спокойные блоки" },
-        { name: "accent", value: "тёплый sand", usage: "мягкое внимание, обучение в процессе" },
-        { name: "deep", value: "глубокая teal-поверхность", usage: "ключевые summary/hero-блоки" },
+        { name: "background", value: "cream tablecloth", usage: "общий тёплый фон приложения" },
+        { name: "foreground", value: "espresso", usage: "главный текст и сильная типографика" },
+        { name: "primary", value: "copper", usage: "главный CTA, активное состояние, прогресс" },
+        { name: "secondary", value: "toasted cream", usage: "плашки, входящие сообщения, спокойные блоки" },
+        { name: "accent", value: "honey", usage: "мягкое внимание, обучение в процессе" },
+        { name: "deep", value: "espresso surface", usage: "ключевые summary/hero-блоки" },
       ],
     },
     {
@@ -41,15 +41,16 @@ export const mayakStyleguide = {
       items: [
         { name: "radius-2xl/3xl", value: "большие скругления", usage: "карточки и этапы" },
         { name: "rounded-full", value: "капсулы", usage: "CTA, бейджи, ввод чата" },
-        { name: "border-border", value: "тонкая граница", usage: "все интерактивные поверхности" },
+        { name: "border-border", value: "тёплая видимая граница", usage: "все интерактивные поверхности" },
       ],
     },
     {
       group: "Типографика",
       items: [
-        { name: "tracking-tight", value: "компактные заголовки", usage: "h1/h2" },
+        { name: "font-display", value: "Montserrat", usage: "h1/h2, сильные числа, бренд" },
+        { name: "font-sans", value: "Manrope", usage: "основной интерфейс и читаемые подписи" },
         { name: "font-mono uppercase", value: "служебные подписи", usage: "kicker, статусы, номера шагов" },
-        { name: "text-muted-foreground", value: "вторичный текст", usage: "пояснения и captions" },
+        { name: "text-muted-foreground", value: "тёплый серо-коричневый", usage: "пояснения без потери контраста" },
       ],
     },
   ],
@@ -57,20 +58,21 @@ export const mayakStyleguide = {
     { name: "MayakShell", usage: "Обязательная оболочка страницы: aurora-фон, top bar и max-w-6xl контент." },
     { name: "MayakTopBar", usage: "Единый верхний бар с брендом «Маяк», меткой этапа и пользователем." },
     { name: "MayakPanel", usage: "Базовая поверхность для всех шагов, виджетов, summary и форм." },
-    { name: "MayakSectionHeader", usage: "Заголовок экрана: kicker, H1, короткое объяснение без перегруза." },
-    { name: "MayakButton / MayakLinkButton", usage: "Один primary CTA на экран; вторичные действия — secondary/ghost." },
+    { name: "MayakSectionHeader", usage: "Заголовок экрана: kicker, display H1, короткое объяснение без перегруза." },
+    { name: "MayakButton / MayakLinkButton", usage: "Один copper primary CTA на экран; вторичные действия — secondary/ghost." },
     { name: "MayakOptionCard", usage: "Выбор роли, грейда, ответа диагностики и других вариантов." },
     { name: "MayakBadge / MayakIconBadge", usage: "Статусы, важность, теги и иконки секций." },
   ],
   do: [
-    "Использовать card/80 + backdrop-blur для основных поверхностей.",
+    "Использовать cream/card surfaces + тёплый blur для основных поверхностей.",
     "Держать текст дружелюбным: «диагностика», «поддержка», «путь», а не «экзамен».",
-    "Показывать текущий этап через primary/5 фон и primary/40 border.",
+    "Показывать текущий этап через copper primary/5 фон и primary/40 border.",
     "Сохранять один главный CTA и группировать вторичные действия в MayakActionBar.",
   ],
   dont: [
+    "Не возвращать холодный medical teal как главный цвет интерфейса.",
     "Не вводить новые цвета вне CSS-токенов без обновления styleguide.",
-    "Не использовать резкие тени, плотные таблицы и агрессивные красные состояния без необходимости.",
+    "Не использовать слишком светлый muted-текст: подписи должны читаться на demo-скринах.",
     "Не смешивать CSS-module стиль старых этапов с визуальным языком Маяка.",
   ],
 } as const;
