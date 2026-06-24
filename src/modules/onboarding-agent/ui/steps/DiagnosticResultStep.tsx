@@ -256,10 +256,12 @@ function TopicNameList({
 
 function getStatusClassName(status: TopicScore["status"]) {
   return cn(
-    "inline-flex min-h-6 items-center rounded-full px-2.5 text-[11px] font-medium leading-none",
-    status === "strong" && "bg-[color-mix(in_oklch,oklch(0.7_0.12_160)_22%,transparent)] text-[oklch(0.45_0.1_160)]",
+    "inline-flex min-h-6 items-center rounded-full px-2.5 text-[11px] font-bold leading-none",
+    status === "strong" &&
+      "bg-[color-mix(in_oklch,oklch(0.62_0.075_130)_22%,transparent)] text-[oklch(0.36_0.065_125)]",
     status === "good" && "bg-primary/15 text-primary",
     status === "medium_gap" && "bg-accent text-accent-foreground",
-    status === "critical_gap" && "bg-[color-mix(in_oklch,oklch(0.7_0.13_35)_22%,transparent)] text-[oklch(0.5_0.13_32)]",
+    status === "critical_gap" &&
+      "bg-[color-mix(in_oklch,oklch(0.64_0.13_33)_20%,transparent)] text-[oklch(0.42_0.11_32)]",
   );
 }
