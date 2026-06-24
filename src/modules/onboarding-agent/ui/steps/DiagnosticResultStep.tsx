@@ -5,7 +5,6 @@ import {
   MayakPanel,
   MayakProgressRing,
   MayakSectionHeader,
-  MayakStatCard,
   cn,
 } from "@/shared/ui/mayak";
 import {
@@ -38,55 +37,61 @@ export function DiagnosticResultStep({
   );
 
   return (
-    <MayakPanel padding="lg" className="space-y-5">
-      <DiagnosticSummaryCard
-        employee={employee}
-        result={result}
-        skippableCount={skippableTopics.length}
-        reinforcedCount={reinforcedTopics.length}
-      />
+    <MayakPanel padding="lg" className="grid h-full min-h-0 gap-4 lg:grid-cols-[0.82fr_1.18fr]">
+      <div className="flex min-h-0 flex-col gap-3">
+        <DiagnosticSummaryCard
+          employee={employee}
+          result={result}
+          skippableCount={skippableTopics.length}
+          reinforcedCount={reinforcedTopics.length}
+        />
 
-      <div className="grid gap-3 lg:grid-cols-3">
-        <StrongTopicsList topics={result.strongTopics} />
-        <WeakTopicsList topics={result.weakTopics} />
-        <RequiredTopicsList topics={result.requiredTopics} />
+        <div className="grid min-h-0 flex-1 gap-2 sm:grid-cols-3 lg:grid-cols-1">
+          <StrongTopicsList topics={result.strongTopics} />
+          <WeakTopicsList topics={result.weakTopics} />
+          <RequiredTopicsList topics={result.requiredTopics} />
+        </div>
+
+        <MayakActionBar className="mt-auto">
+          <SecondaryButton onClick={onBackToDiagnostic}>К вопросам</SecondaryButton>
+          <PrimaryButton onClick={onBuildRoute}>Собрать маршрут</PrimaryButton>
+        </MayakActionBar>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-2">
-        <MayakPanel padding="md" className="shadow-none">
-          <h2 className="text-lg font-semibold tracking-tight text-foreground">Что можно сократить</h2>
-          <TopicNameList
-            emptyText="Пока нет тем для сокращения: маршрут оставит больше поддержки."
-            topics={skippableTopics}
-          />
-        </MayakPanel>
-        <MayakPanel padding="md" className="shadow-none">
-          <h2 className="text-lg font-semibold tracking-tight text-foreground">Что нужно усилить</h2>
-          <TopicNameList
-            emptyText="Критичных усилений не видно, но обязательные темы останутся в маршруте."
-            topics={reinforcedTopics}
-          />
-        </MayakPanel>
+      <div className="grid min-h-0 gap-3 lg:grid-rows-[0.34fr_1fr]">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <MayakPanel padding="sm" className="shadow-none">
+            <h2 className="text-sm font-semibold tracking-tight text-foreground">Можно сократить</h2>
+            <TopicNameList
+              compact
+              emptyText="Пока нет тем для сокращения."
+              topics={skippableTopics}
+            />
+          </MayakPanel>
+          <MayakPanel padding="sm" className="shadow-none">
+            <h2 className="text-sm font-semibold tracking-tight text-foreground">Нужно усилить</h2>
+            <TopicNameList
+              compact
+              emptyText="Критичных усилений нет."
+              topics={reinforcedTopics}
+            />
+          </MayakPanel>
+        </div>
+
+        <section className="min-h-0 overflow-hidden rounded-3xl border border-border bg-card/80" aria-label="Результаты по темам">
+          <div className="hidden grid-cols-[1.2fr_0.35fr_0.55fr_0.9fr] gap-3 bg-secondary px-4 py-2 text-xs font-semibold text-secondary-foreground lg:grid">
+            <span>Тема</span>
+            <span>%</span>
+            <span>Статус</span>
+            <span>Решение</span>
+          </div>
+          <div className="h-full divide-y divide-border overflow-y-auto lg:h-[calc(100%-2.25rem)]">
+            {result.topicScores.map((topic) => (
+              <TopicScoreCard key={topic.topicId} topic={topic} />
+            ))}
+          </div>
+        </section>
       </div>
-
-      <section className="overflow-hidden rounded-3xl border border-border bg-card/80" aria-label="Результаты по темам">
-        <div className="hidden grid-cols-[1.2fr_0.35fr_0.55fr_0.9fr] gap-3 bg-secondary px-5 py-3 text-xs font-semibold text-secondary-foreground lg:grid">
-          <span>Тема</span>
-          <span>Результат</span>
-          <span>Статус</span>
-          <span>Решение</span>
-        </div>
-        <div className="divide-y divide-border">
-          {result.topicScores.map((topic) => (
-            <TopicScoreCard key={topic.topicId} topic={topic} />
-          ))}
-        </div>
-      </section>
-
-      <MayakActionBar>
-        <SecondaryButton onClick={onBackToDiagnostic}>Вернуться к вопросам</SecondaryButton>
-        <PrimaryButton onClick={onBuildRoute}>Сформировать персональный маршрут</PrimaryButton>
-      </MayakActionBar>
     </MayakPanel>
   );
 }
@@ -103,29 +108,29 @@ export function DiagnosticSummaryCard({
   reinforcedCount: number;
 }) {
   return (
-    <MayakPanel variant="deep" padding="lg">
-      <div className="grid gap-6 lg:grid-cols-[1fr_180px_0.7fr] lg:items-center">
+    <MayakPanel variant="deep" padding="md">
+      <div className="grid gap-3 sm:grid-cols-[1fr_112px] sm:items-center">
         <MayakSectionHeader
           className="mb-0"
           titleClassName="text-deep-foreground"
           kicker="Диагностика завершена"
-          title="Мы собрали стартовый профиль знаний"
+          title="Профиль знаний собран"
           description={
             <span className="text-deep-muted">
-              Результат помогает персонализировать обучение для {employee.name}. Он не является HR-решением и показывает, где сотруднику будет полезна поддержка в первые дни.
+              Для {employee.name}: что знаем — сокращаем, где пробел — поддерживаем.
             </span>
           }
         />
-        <div className="flex justify-center">
+        <div className="flex justify-center sm:justify-end">
           <MayakProgressRing value={result.totalScorePercent} label={getRoleLabel(result.role)} />
         </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-          <ResultFact label="Сильные зоны" value={result.strongTopics.length} />
-          <ResultFact label="Зоны развития" value={result.weakTopics.length} />
-          <ResultFact label="Обязательные блоки" value={result.requiredTopics.length} />
-          <ResultFact label="Можно сократить" value={skippableCount} />
-          <ResultFact label="Нужно усилить" value={reinforcedCount} />
-        </div>
+      </div>
+      <div className="mt-3 grid grid-cols-5 gap-2">
+        <ResultFact label="сильные" value={result.strongTopics.length} />
+        <ResultFact label="развитие" value={result.weakTopics.length} />
+        <ResultFact label="обяз." value={result.requiredTopics.length} />
+        <ResultFact label="сокр." value={skippableCount} />
+        <ResultFact label="усил." value={reinforcedCount} />
       </div>
     </MayakPanel>
   );
@@ -133,27 +138,23 @@ export function DiagnosticSummaryCard({
 
 function ResultFact({ label, value }: { label: string; value: number }) {
   return (
-    <div className="border-t border-deep-border pt-3">
-      <p className="text-xs text-deep-muted">{label}</p>
-      <p className="mt-1 text-2xl font-semibold text-deep-foreground">{value}</p>
+    <div className="rounded-2xl border border-deep-border bg-white/5 p-2 text-center">
+      <p className="text-lg font-semibold text-deep-foreground">{value}</p>
+      <p className="text-[10px] text-deep-muted">{label}</p>
     </div>
   );
 }
 
 export function TopicScoreCard({ topic }: { topic: TopicScore }) {
   return (
-    <article className="grid gap-3 px-5 py-4 lg:grid-cols-[1.2fr_0.35fr_0.55fr_0.9fr] lg:items-center">
+    <article className="grid gap-2 px-4 py-3 lg:grid-cols-[1.2fr_0.35fr_0.55fr_0.9fr] lg:items-center">
       <div>
         <strong className="block text-sm text-foreground">{topic.topicTitle}</strong>
-        <small className="mt-1 block text-xs text-muted-foreground">
-          {topic.correctAnswers} из {topic.totalQuestions} ответов по теме
+        <small className="mt-0.5 block text-xs text-muted-foreground">
+          {topic.correctAnswers} из {topic.totalQuestions} ответов
         </small>
       </div>
-      <MayakStatCard
-        className="p-3 lg:border-transparent lg:bg-transparent lg:p-0"
-        value={`${topic.scorePercent}%`}
-        label=""
-      />
+      <div className="text-xl font-semibold tracking-tight text-primary">{topic.scorePercent}%</div>
       <div>
         <span className={getStatusClassName(topic.status)}>{getStatusLabel(topic.status)}</span>
       </div>
@@ -166,8 +167,8 @@ export function TopicScoreCard({ topic }: { topic: TopicScore }) {
 
 export function TopicRecommendationBadge({ topic }: { topic: TopicScore }) {
   return (
-    <MayakBadge tone="muted" className="h-auto py-2 leading-snug">
-      {topic.required && "Обязательный блок: "}
+    <MayakBadge tone="muted" className="h-auto py-1.5 leading-snug">
+      {topic.required && "Обязательный: "}
       {getRecommendationLabel(topic.recommendation)}
     </MayakBadge>
   );
@@ -178,7 +179,7 @@ export function StrongTopicsList({ topics }: { topics: TopicScore[] }) {
     <TopicListCard
       title="Сильные зоны"
       tone="success"
-      emptyText="Сильные зоны появятся после первых уверенных ответов."
+      emptyText="Появятся после уверенных ответов."
       topics={topics}
     />
   );
@@ -189,7 +190,7 @@ export function WeakTopicsList({ topics }: { topics: TopicScore[] }) {
     <TopicListCard
       title="Зоны развития"
       tone="accent"
-      emptyText="Пока нет выраженных зон развития."
+      emptyText="Выраженных зон пока нет."
       topics={topics}
     />
   );
@@ -198,9 +199,9 @@ export function WeakTopicsList({ topics }: { topics: TopicScore[] }) {
 export function RequiredTopicsList({ topics }: { topics: TopicScore[] }) {
   return (
     <TopicListCard
-      title="Обязательные блоки"
+      title="Обязательные"
       tone="primary"
-      emptyText="В этом наборе нет обязательных тем."
+      emptyText="Нет обязательных тем."
       topics={topics}
     />
   );
@@ -218,33 +219,35 @@ function TopicListCard({
   topics: TopicScore[];
 }) {
   return (
-    <MayakPanel padding="md" className="shadow-none">
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground">{title}</h2>
+    <MayakPanel padding="sm" className="min-h-0 shadow-none">
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <h2 className="text-sm font-semibold tracking-tight text-foreground">{title}</h2>
         <MayakBadge tone={tone}>{topics.length}</MayakBadge>
       </div>
-      <TopicNameList emptyText={emptyText} topics={topics} />
+      <TopicNameList compact emptyText={emptyText} topics={topics} />
     </MayakPanel>
   );
 }
 
 function TopicNameList({
+  compact = false,
   emptyText,
   topics,
 }: {
+  compact?: boolean;
   emptyText: string;
   topics: TopicScore[];
 }) {
   if (topics.length === 0) {
-    return <p className="text-sm leading-relaxed text-muted-foreground">{emptyText}</p>;
+    return <p className="text-xs leading-relaxed text-muted-foreground">{emptyText}</p>;
   }
 
   return (
-    <ul className="space-y-2 text-sm leading-relaxed text-foreground/85">
+    <ul className={cn("space-y-1.5 text-xs leading-relaxed text-foreground/85", compact && "max-h-20 overflow-y-auto pr-1")}>
       {topics.map((topic) => (
         <li className="flex gap-2" key={topic.topicId}>
-          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
-          <span>{topic.topicTitle}</span>
+          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
+          <span className="line-clamp-1">{topic.topicTitle}</span>
         </li>
       ))}
     </ul>
@@ -253,7 +256,7 @@ function TopicNameList({
 
 function getStatusClassName(status: TopicScore["status"]) {
   return cn(
-    "inline-flex min-h-7 items-center rounded-full px-3 text-xs font-medium leading-none",
+    "inline-flex min-h-6 items-center rounded-full px-2.5 text-[11px] font-medium leading-none",
     status === "strong" && "bg-[color-mix(in_oklch,oklch(0.7_0.12_160)_22%,transparent)] text-[oklch(0.45_0.1_160)]",
     status === "good" && "bg-primary/15 text-primary",
     status === "medium_gap" && "bg-accent text-accent-foreground",
