@@ -12,26 +12,26 @@ export function cn(...classes: ClassValue[]) {
 }
 
 export const mayakSurface = {
-  page: "relative min-h-screen text-foreground",
-  shell: "mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8",
+  page: "relative h-screen overflow-hidden text-foreground",
+  shell: "mx-auto flex h-[calc(100dvh-4rem)] max-w-6xl flex-col overflow-hidden px-4 py-3 sm:px-6 sm:py-4",
   panel:
-    "rounded-3xl border border-border bg-card/80 backdrop-blur-sm shadow-[var(--shadow-card)]",
+    "overflow-hidden rounded-3xl border border-border bg-card/80 backdrop-blur-sm shadow-[var(--shadow-card)]",
   interactive:
     "transition hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
   deep:
-    "rounded-3xl border border-deep-border bg-[radial-gradient(70%_90%_at_0%_0%,color-mix(in_oklch,var(--primary)_32%,transparent),transparent_60%),var(--deep)] text-deep-foreground shadow-[var(--shadow-soft)]",
+    "overflow-hidden rounded-3xl border border-deep-border bg-[radial-gradient(70%_90%_at_0%_0%,color-mix(in_oklch,var(--primary)_32%,transparent),transparent_60%),var(--deep)] text-deep-foreground shadow-[var(--shadow-soft)]",
 } as const;
 
 export const mayakTypography = {
-  eyebrow: "font-mono text-[11px] font-medium uppercase tracking-wider",
-  h1: "text-pretty text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl",
-  h2: "text-base font-semibold tracking-tight text-foreground",
-  body: "text-pretty leading-relaxed text-muted-foreground",
+  eyebrow: "font-mono text-[10px] font-medium uppercase tracking-wider",
+  h1: "text-pretty text-2xl font-semibold leading-tight tracking-tight text-foreground sm:text-3xl",
+  h2: "text-sm font-semibold tracking-tight text-foreground",
+  body: "text-pretty text-sm leading-relaxed text-muted-foreground",
   caption: "text-xs leading-relaxed text-muted-foreground",
 } as const;
 
 export const mayakInputClassName =
-  "min-h-12 w-full rounded-2xl border border-border bg-card px-4 text-sm text-foreground outline-none transition placeholder:text-muted-foreground hover:border-primary/40 focus:border-primary/50";
+  "min-h-10 w-full rounded-2xl border border-border bg-card px-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground hover:border-primary/40 focus:border-primary/50";
 
 const badgeTone: Record<MayakTone, string> = {
   primary: "bg-primary/15 text-primary",
@@ -124,11 +124,11 @@ export function MayakTopBar({
   return (
     <header
       className={cn(
-        "sticky top-0 z-20 border-b border-border/60 bg-background/70 backdrop-blur-xl",
+        "sticky top-0 z-20 h-16 shrink-0 border-b border-border/60 bg-background/70 backdrop-blur-xl",
         className,
       )}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-3">
           {icon && (
             <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
@@ -138,7 +138,7 @@ export function MayakTopBar({
           <div className="min-w-0 leading-tight">
             <p className="truncate text-sm font-semibold tracking-tight text-foreground">{brand}</p>
             {subtitle && (
-              <p className="truncate font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+              <p className="truncate font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                 {subtitle}
               </p>
             )}
@@ -171,16 +171,17 @@ export function MayakTopBar({
 type MayakPanelProps = {
   children: ReactNode;
   className?: string;
-  padding?: "none" | "sm" | "md" | "lg";
+  padding?: "none" | "xs" | "sm" | "md" | "lg";
   variant?: "card" | "deep" | "soft";
   ariaLabel?: string;
 };
 
 const panelPadding = {
   none: "",
-  sm: "p-4 sm:p-5",
-  md: "p-6 sm:p-7",
-  lg: "p-6 sm:p-8",
+  xs: "p-3",
+  sm: "p-4",
+  md: "p-5 sm:p-6",
+  lg: "p-5 sm:p-7",
 } as const;
 
 export function MayakPanel({
@@ -221,7 +222,7 @@ export function MayakSectionHeader({
   titleClassName,
 }: MayakSectionHeaderProps) {
   return (
-    <div className={cn("mb-6 space-y-3", className)}>
+    <div className={cn("mb-4 space-y-2", className)}>
       {kicker && <MayakKicker>{kicker}</MayakKicker>}
       <h1 className={cn(mayakTypography.h1, titleClassName)}>{title}</h1>
       {description && <p className={cn("max-w-2xl", mayakTypography.body)}>{description}</p>}
@@ -281,12 +282,12 @@ export function MayakSectionTitle({
   className,
 }: MayakSectionTitleProps) {
   return (
-    <div className={cn("mb-5 flex items-center justify-between gap-3", className)}>
+    <div className={cn("mb-3 flex items-center justify-between gap-3", className)}>
       <div className="flex min-w-0 items-center gap-2.5">
         {icon}
         <div className="min-w-0">
           <h2 className={mayakTypography.h2}>{title}</h2>
-          {description && <p className="text-xs text-muted-foreground">{description}</p>}
+          {description && <p className="truncate text-xs text-muted-foreground">{description}</p>}
         </div>
       </div>
       {action}
@@ -306,7 +307,7 @@ export function MayakBadge({
   return (
     <span
       className={cn(
-        "inline-flex min-h-7 items-center rounded-full px-3 text-xs font-medium leading-none",
+        "inline-flex min-h-6 items-center rounded-full px-2.5 text-[11px] font-medium leading-none",
         badgeTone[tone],
         className,
       )}
@@ -355,7 +356,7 @@ export function MayakLinkButton({
 
 function buttonClassName(variant: MayakButtonVariant) {
   const base =
-    "inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:pointer-events-none disabled:opacity-40";
+    "inline-flex min-h-10 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:pointer-events-none disabled:opacity-40";
 
   if (variant === "secondary") {
     return cn(base, "bg-secondary text-secondary-foreground hover:bg-secondary/80");
@@ -369,7 +370,7 @@ function buttonClassName(variant: MayakButtonVariant) {
 }
 
 export function MayakActionBar({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn("mt-6 flex flex-wrap items-center gap-3", className)}>{children}</div>;
+  return <div className={cn("mt-4 flex flex-wrap items-center gap-3", className)}>{children}</div>;
 }
 
 type MayakFieldProps = {
@@ -380,8 +381,8 @@ type MayakFieldProps = {
 
 export function MayakField({ label, children, className }: MayakFieldProps) {
   return (
-    <label className={cn("flex flex-col gap-2", className)}>
-      <span className="text-sm font-semibold text-foreground">{label}</span>
+    <label className={cn("flex flex-col gap-1.5", className)}>
+      <span className="text-xs font-semibold text-foreground">{label}</span>
       {children}
     </label>
   );
@@ -414,7 +415,7 @@ export function MayakOptionCard({
       aria-pressed={selected}
       onClick={onClick}
       className={cn(
-        "min-h-28 rounded-2xl border bg-card p-4 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
+        "min-h-20 rounded-2xl border bg-card p-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
         selected
           ? "border-primary/60 bg-primary/5 ring-1 ring-primary/40 shadow-[var(--shadow-card)]"
           : "border-border hover:border-primary/40 hover:bg-primary/5",
@@ -423,11 +424,11 @@ export function MayakOptionCard({
     >
       <span className="block text-sm font-semibold text-foreground">{title}</span>
       {description && (
-        <span className="mt-1 block text-sm leading-relaxed text-muted-foreground">
+        <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">
           {description}
         </span>
       )}
-      {meta && <span className="mt-3 block text-xs text-muted-foreground">{meta}</span>}
+      {meta && <span className="mt-2 block text-xs text-muted-foreground">{meta}</span>}
     </button>
   );
 }
@@ -444,10 +445,10 @@ export function MayakStatCard({
   className?: string;
 }) {
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4", className)}>
-      <span className="block text-3xl font-semibold tracking-tight text-primary">{value}</span>
-      {label && <p className="mt-1 text-sm font-medium text-foreground">{label}</p>}
-      {description && <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{description}</p>}
+    <div className={cn("rounded-2xl border border-border bg-card p-3", className)}>
+      <span className="block truncate text-2xl font-semibold tracking-tight text-primary">{value}</span>
+      {label && <p className="mt-0.5 truncate text-xs font-medium text-foreground">{label}</p>}
+      {description && <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{description}</p>}
     </div>
   );
 }
@@ -465,7 +466,7 @@ export function MayakProgressBar({
 
   return (
     <div className={className} aria-label={label ?? `Прогресс ${safeValue}%`}>
-      <div className="h-3 overflow-hidden rounded-full border border-border bg-secondary">
+      <div className="h-2 overflow-hidden rounded-full border border-border bg-secondary">
         <span
           className="block h-full rounded-full bg-primary transition-[width] duration-300"
           style={{ width: `${safeValue}%` }}
@@ -478,7 +479,7 @@ export function MayakProgressBar({
 export function MayakProgressRing({
   value,
   label = "путь",
-  size = 128,
+  size = 112,
   className,
 }: {
   value: number;
@@ -513,7 +514,7 @@ export function MayakProgressRing({
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="text-2xl font-semibold tracking-tight text-foreground">{safeValue}%</span>
+        <span className="text-xl font-semibold tracking-tight text-foreground">{safeValue}%</span>
         <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
       </div>
     </div>
