@@ -32,19 +32,15 @@ function Dot({ mastery }: { mastery: KnowledgeMastery }) {
 
 export function KnowledgeConstellation() {
   return (
-    <section className="rounded-3xl border border-border bg-card/80 p-6 backdrop-blur-sm sm:p-7">
-      <div className="mb-5 flex items-center justify-between gap-3">
+    <section className="flex min-h-0 flex-col overflow-hidden rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm">
+      <div className="mb-3 flex shrink-0 items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
             <Stars className="h-4 w-4 text-primary" aria-hidden="true" />
           </span>
           <div>
-            <h2 className="text-base font-semibold tracking-tight text-foreground">
-              Созвездие знаний
-            </h2>
-            <p className="text-xs text-muted-foreground">
-              Карта ваших навыков повара
-            </p>
+            <h2 className="text-sm font-semibold tracking-tight text-foreground">Созвездие знаний</h2>
+            <p className="text-xs text-muted-foreground">Карта навыков повара</p>
           </div>
         </div>
         <div className="hidden gap-3 sm:flex">
@@ -60,7 +56,7 @@ export function KnowledgeConstellation() {
         </div>
       </div>
 
-      <div className="relative aspect-[5/4] w-full overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-secondary/40 to-card sm:aspect-[16/9]">
+      <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-secondary/40 to-card">
         <svg
           className="absolute inset-0 h-full w-full"
           viewBox="0 0 100 100"
@@ -88,12 +84,12 @@ export function KnowledgeConstellation() {
         {knowledgeNodes.map((node: KnowledgeNode, index) => (
           <div
             key={node.id}
-            className="animate-float absolute flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border text-center text-[11px] font-medium leading-tight"
+            className="animate-float absolute flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border text-center text-[10px] font-medium leading-tight"
             style={{
               left: `${node.x}%`,
               top: `${node.y}%`,
-              width: node.size,
-              height: node.size,
+              width: Math.max(34, node.size - 8),
+              height: Math.max(34, node.size - 8),
               animationDelay: `${index * 0.6}s`,
             }}
           >
@@ -106,9 +102,8 @@ export function KnowledgeConstellation() {
         ))}
       </div>
 
-      <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-        Пройдите диагностику — и созвездие оживёт: Маяк подсветит сильные стороны
-        и мягко покажет, что стоит освоить дальше.
+      <p className="mt-3 line-clamp-2 shrink-0 text-xs leading-relaxed text-muted-foreground">
+        После диагностики Маяк подсветит сильные стороны и мягко покажет, что стоит освоить дальше.
       </p>
     </section>
   );
