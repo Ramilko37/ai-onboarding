@@ -9,25 +9,25 @@ import { TopBar } from "./ui/TopBar";
 
 function PersonalSpaceContent() {
   return (
-    <>
+    <div className="grid h-full min-h-0 grid-rows-[auto_1fr_auto] gap-3">
       <HeroGreeting />
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-3">
-        <div className="flex flex-col gap-5 lg:col-span-2">
+      <div className="grid min-h-0 gap-3 lg:grid-cols-[1.25fr_0.85fr]">
+        <div className="grid min-h-0 gap-3 lg:grid-rows-[0.88fr_1.12fr]">
           <JourneyMap />
           <KnowledgeConstellation />
         </div>
-        <div className="flex flex-col gap-5">
+        <div className="grid min-h-0 gap-3 lg:grid-rows-[1fr_auto_auto]">
           <Assistant />
           <TodayFocus />
           <SupportPanel />
         </div>
       </div>
 
-      <footer className="mt-10 text-center text-xs text-muted-foreground">
-        Маяк сопровождает вас спокойно и без давления. Один понятный шаг за раз.
+      <footer className="shrink-0 text-center text-[11px] text-muted-foreground">
+        Маяк сопровождает спокойно: один экран, один следующий шаг.
       </footer>
-    </>
+    </div>
   );
 }
 
