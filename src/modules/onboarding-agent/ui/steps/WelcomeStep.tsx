@@ -39,8 +39,8 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
           ].map(([number, title, caption]) => (
             <div className="rounded-2xl border border-border bg-card p-3" key={number}>
               <MayakBadge tone="primary">{number}</MayakBadge>
-              <p className="mt-2 text-sm font-semibold text-foreground">{title}</p>
-              <p className="text-xs text-muted-foreground">{caption}</p>
+              <p className="mt-2 font-display text-sm font-bold text-foreground">{title}</p>
+              <p className="text-xs font-medium text-muted-foreground">{caption}</p>
             </div>
           ))}
         </div>
@@ -50,7 +50,7 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
             Начать адаптацию
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </PrimaryButton>
-          <span className="max-w-sm text-xs leading-relaxed text-muted-foreground">
+          <span className="max-w-sm text-xs font-medium leading-relaxed text-muted-foreground">
             Диагностика не оценивает человека — она убирает лишнее обучение.
           </span>
         </MayakActionBar>
@@ -61,7 +61,7 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
           <MayakIconBadge tone="accent" className="h-11 w-11 rounded-2xl">
             <Compass className="h-5 w-5" aria-hidden="true" />
           </MayakIconBadge>
-          <h2 className="mt-4 text-xl font-semibold tracking-tight text-deep-foreground">
+          <h2 className="mt-4 font-display text-xl font-extrabold tracking-tight text-deep-foreground">
             Маяк держит весь путь в одном спокойном пространстве.
           </h2>
         </div>
@@ -73,11 +73,11 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
           ].map(([number, text]) => (
             <div className="border-t border-deep-border pt-3" key={number}>
               <MayakBadge tone="accent">{number}</MayakBadge>
-              <p className="mt-2 text-sm font-medium leading-snug text-deep-foreground">{text}</p>
+              <p className="mt-2 text-sm font-semibold leading-snug text-deep-foreground">{text}</p>
             </div>
           ))}
         </div>
-        <p className="flex items-center gap-2 text-xs text-deep-muted">
+        <p className="flex items-center gap-2 text-xs font-medium text-deep-muted">
           <Sparkles className="h-4 w-4 text-accent" aria-hidden="true" />
           Экран помещается в viewport, детали раскрываются по мере необходимости.
         </p>
