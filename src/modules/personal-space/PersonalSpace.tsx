@@ -1,4 +1,4 @@
-import { AmbientBackground } from "./ui/AmbientBackground";
+import { MayakShell } from "@/shared/ui/mayak";
 import { Assistant } from "./ui/Assistant";
 import { HeroGreeting } from "./ui/HeroGreeting";
 import { JourneyMap } from "./ui/JourneyMap";
@@ -7,31 +7,38 @@ import { SupportPanel } from "./ui/SupportPanel";
 import { TodayFocus } from "./ui/TodayFocus";
 import { TopBar } from "./ui/TopBar";
 
-export function PersonalSpace() {
+function PersonalSpaceContent() {
   return (
-    <div className="relative min-h-screen">
-      <AmbientBackground />
-      <TopBar />
+    <div className="grid h-full min-h-0 grid-rows-[auto_1fr_auto] gap-3">
+      <HeroGreeting />
 
-      <main className="mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8">
-        <HeroGreeting />
-
-        <div className="mt-5 grid gap-5 lg:grid-cols-3">
-          <div className="flex flex-col gap-5 lg:col-span-2">
-            <JourneyMap />
-            <KnowledgeConstellation />
-          </div>
-          <div className="flex flex-col gap-5">
-            <Assistant />
-            <TodayFocus />
-            <SupportPanel />
-          </div>
+      <div className="grid min-h-0 gap-3 lg:grid-cols-[1.25fr_0.85fr]">
+        <div className="grid min-h-0 gap-3 lg:grid-rows-[0.88fr_1.12fr]">
+          <JourneyMap />
+          <KnowledgeConstellation />
         </div>
+        <div className="grid min-h-0 gap-3 lg:grid-rows-[1fr_auto_auto]">
+          <Assistant />
+          <TodayFocus />
+          <SupportPanel />
+        </div>
+      </div>
 
-        <footer className="mt-10 text-center text-xs text-muted-foreground">
-          Маяк сопровождает вас спокойно и без давления. Один понятный шаг за раз.
-        </footer>
-      </main>
+      <footer className="shrink-0 text-center text-[11px] text-muted-foreground">
+        Маяк сопровождает спокойно: один экран, один следующий шаг.
+      </footer>
     </div>
+  );
+}
+
+export function PersonalSpace({ embedded = false }: { embedded?: boolean }) {
+  if (embedded) {
+    return <PersonalSpaceContent />;
+  }
+
+  return (
+    <MayakShell topBar={<TopBar />}>
+      <PersonalSpaceContent />
+    </MayakShell>
   );
 }

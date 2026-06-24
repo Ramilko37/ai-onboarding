@@ -1,12 +1,20 @@
 import type {
   DiagnosticAnswer,
   DiagnosticQuestion,
-  EmployeeProfile
+  EmployeeProfile,
 } from "../../model/types";
+import {
+  MayakActionBar,
+  MayakBadge,
+  MayakPanel,
+  MayakProgressBar,
+  MayakSectionHeader,
+  MayakStatCard,
+  cn,
+} from "@/shared/ui/mayak";
 import { getGradeLabel } from "../../lib/getGradeLabel";
 import { getRoleLabel } from "../../lib/getRoleLabel";
 import { PrimaryButton, SecondaryButton } from "../components";
-import styles from "../OnboardingAgentPage.module.css";
 
 export function DiagnosticStep({
   employee,
@@ -17,7 +25,7 @@ export function DiagnosticStep({
   onPrevious,
   onNext,
   onBackToIntro,
-  onComplete
+  onComplete,
 }: {
   employee: EmployeeProfile;
   questions: DiagnosticQuestion[];
@@ -31,64 +39,65 @@ export function DiagnosticStep({
 }) {
   const currentQuestion = questions[currentQuestionIndex];
   const currentAnswer = answers.find(
-    (answer) => answer.questionId === currentQuestion?.id
+    (answer) => answer.questionId === currentQuestion?.id,
   );
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   if (!currentQuestion) {
     return (
-      <section className={styles.diagnosticPanel}>
-        <div className={styles.sectionHeader}>
-          <h1>Не удалось собрать вопросы диагностики</h1>
-          <p>Вернитесь к объяснению диагностики и запустите её ещё раз.</p>
-        </div>
+      <MayakPanel padding="lg" className="h-full">
+        <MayakSectionHeader
+          title="Не удалось собрать вопросы диагностики"
+          description="Вернитесь к объяснению диагностики и запустите её ещё раз."
+        />
         <SecondaryButton onClick={onBackToIntro}>Вернуться назад</SecondaryButton>
-      </section>
+      </MayakPanel>
     );
   }
 
   return (
-    <section className={styles.diagnosticRunPanel}>
+    <MayakPanel padding="lg" className="flex h-full min-h-0 flex-col gap-3">
       <DiagnosticProgress
         currentQuestionIndex={currentQuestionIndex}
         totalQuestions={questions.length}
       />
 
-      <div className={styles.diagnosticMetaGrid}>
-        <div>
-          <span>Сотрудник</span>
-          <strong>{employee.name}</strong>
-        </div>
-        <div>
-          <span>Роль</span>
-          <strong>{getRoleLabel(employee.role)}</strong>
-        </div>
-        <div>
-          <span>Грейд</span>
-          <strong>{getGradeLabel(employee.grade)}</strong>
+      <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[0.72fr_1.28fr]">
+        <aside className="flex min-h-0 flex-col gap-2">
+          <MayakStatCard value={employee.name} label="Сотрудник" />
+          <MayakStatCard value={getRoleLabel(employee.role)} label="Роль" />
+          <MayakStatCard value={getGradeLabel(employee.grade)} label="Грейд" />
+          <MayakPanel variant="deep" padding="sm" className="mt-auto shadow-none">
+            <MayakBadge tone="accent">спокойный режим</MayakBadge>
+            <p className="mt-2 text-xs leading-relaxed text-deep-muted">
+              Можно отвечать без давления: выбранный вариант нужен только для настройки маршрута.
+            </p>
+          </MayakPanel>
+        </aside>
+
+        <div className="flex min-h-0 flex-col">
+          <DiagnosticQuestionCard
+            question={currentQuestion}
+            selectedOptionId={currentAnswer?.selectedOptionId}
+            onSelectAnswer={onSelectAnswer}
+          />
+
+          <DiagnosticNavigation
+            canGoBack={currentQuestionIndex > 0}
+            canContinue={Boolean(currentAnswer)}
+            isLastQuestion={isLastQuestion}
+            onBack={currentQuestionIndex > 0 ? onPrevious : onBackToIntro}
+            onNext={isLastQuestion ? onComplete : onNext}
+          />
         </div>
       </div>
-
-      <DiagnosticQuestionCard
-        question={currentQuestion}
-        selectedOptionId={currentAnswer?.selectedOptionId}
-        onSelectAnswer={onSelectAnswer}
-      />
-
-      <DiagnosticNavigation
-        canGoBack={currentQuestionIndex > 0}
-        canContinue={Boolean(currentAnswer)}
-        isLastQuestion={isLastQuestion}
-        onBack={currentQuestionIndex > 0 ? onPrevious : onBackToIntro}
-        onNext={isLastQuestion ? onComplete : onNext}
-      />
-    </section>
+    </MayakPanel>
   );
 }
 
 export function DiagnosticProgress({
   currentQuestionIndex,
-  totalQuestions
+  totalQuestions,
 }: {
   currentQuestionIndex: number;
   totalQuestions: number;
@@ -97,18 +106,19 @@ export function DiagnosticProgress({
   const progressPercent = Math.round((currentNumber / totalQuestions) * 100);
 
   return (
-    <header className={styles.diagnosticHeader}>
-      <div>
-        <p className={styles.kicker}>Диагностика знаний</p>
-        <h1>Вопрос {currentNumber} из {totalQuestions}</h1>
-        <p>
-          Диагностика помогает собрать персональный маршрут обучения. Это не
-          экзамен: цель — понять, какие темы уже знакомы, а где лучше дать больше
-          поддержки.
-        </p>
-      </div>
-      <div className={styles.progressMeter} aria-label={`Прогресс ${progressPercent}%`}>
-        <span style={{ width: `${progressPercent}%` }} />
+    <header className="grid shrink-0 gap-3 lg:grid-cols-[1fr_240px] lg:items-end">
+      <MayakSectionHeader
+        className="mb-0"
+        kicker="Диагностика знаний"
+        title={`Вопрос ${currentNumber} из ${totalQuestions}`}
+        description="Один вопрос на экран. После ответа Маяк двигает вас дальше без перегруза."
+      />
+      <div className="rounded-2xl border border-border bg-card p-3">
+        <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
+          <span>Прогресс</span>
+          <span>{progressPercent}%</span>
+        </div>
+        <MayakProgressBar value={progressPercent} />
       </div>
     </header>
   );
@@ -117,20 +127,22 @@ export function DiagnosticProgress({
 export function DiagnosticQuestionCard({
   question,
   selectedOptionId,
-  onSelectAnswer
+  onSelectAnswer,
 }: {
   question: DiagnosticQuestion;
   selectedOptionId?: string;
   onSelectAnswer: (questionId: string, optionId: string) => void;
 }) {
   return (
-    <article className={styles.questionCard}>
-      <div className={styles.questionSource}>
-        <span>{getDifficultyLabel(question.difficulty)}</span>
-        {question.source && <span>{question.source}</span>}
+    <MayakPanel padding="md" className="flex min-h-0 flex-1 flex-col shadow-none">
+      <div className="mb-3 flex shrink-0 flex-wrap gap-2">
+        <MayakBadge tone="primary">{getDifficultyLabel(question.difficulty)}</MayakBadge>
+        {question.source && <MayakBadge tone="secondary">{question.source}</MayakBadge>}
       </div>
-      <h2>{question.question}</h2>
-      <div className={styles.optionList} role="list">
+      <h2 className="shrink-0 text-xl font-semibold leading-snug tracking-tight text-foreground sm:text-2xl">
+        {question.question}
+      </h2>
+      <div className="mt-4 grid min-h-0 flex-1 gap-2 overflow-y-auto pr-1" role="list">
         {question.options.map((option) => (
           <DiagnosticOption
             key={option.id}
@@ -141,7 +153,7 @@ export function DiagnosticQuestionCard({
           />
         ))}
       </div>
-    </article>
+    </MayakPanel>
   );
 }
 
@@ -149,7 +161,7 @@ export function DiagnosticOption({
   optionId,
   text,
   selected,
-  onSelect
+  onSelect,
 }: {
   optionId: string;
   text: string;
@@ -159,12 +171,24 @@ export function DiagnosticOption({
   return (
     <button
       aria-pressed={selected}
-      className={selected ? styles.answerOptionSelected : styles.answerOption}
+      className={cn(
+        "grid min-h-14 grid-cols-[34px_1fr] items-center gap-3 rounded-2xl border bg-card p-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
+        selected
+          ? "border-primary/60 bg-primary/5 shadow-[inset_0_0_0_1px_color-mix(in_oklch,var(--primary)_70%,transparent)]"
+          : "border-border hover:border-primary/40 hover:bg-primary/5",
+      )}
       onClick={onSelect}
       type="button"
     >
-      <span>{optionId.toUpperCase()}</span>
-      <p>{text}</p>
+      <span
+        className={cn(
+          "flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold",
+          selected ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground",
+        )}
+      >
+        {optionId.toUpperCase()}
+      </span>
+      <span className="text-sm leading-relaxed text-foreground/85">{text}</span>
     </button>
   );
 }
@@ -174,7 +198,7 @@ export function DiagnosticNavigation({
   canContinue,
   isLastQuestion,
   onBack,
-  onNext
+  onNext,
 }: {
   canGoBack: boolean;
   canContinue: boolean;
@@ -183,14 +207,14 @@ export function DiagnosticNavigation({
   onNext: () => void;
 }) {
   return (
-    <div className={styles.actions}>
+    <MayakActionBar className="mt-3 shrink-0 justify-between">
       <SecondaryButton onClick={onBack}>
-        {canGoBack ? "Назад к вопросу" : "Назад к объяснению"}
+        {canGoBack ? "Назад" : "К вводной"}
       </SecondaryButton>
       <PrimaryButton disabled={!canContinue} onClick={onNext}>
-        {isLastQuestion ? "Завершить диагностику" : "Далее"}
+        {isLastQuestion ? "Завершить" : "Далее"}
       </PrimaryButton>
-    </div>
+    </MayakActionBar>
   );
 }
 

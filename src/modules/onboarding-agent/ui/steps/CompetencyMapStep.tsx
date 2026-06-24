@@ -1,3 +1,11 @@
+import { MapPin, Stars } from "lucide-react";
+import {
+  MayakActionBar,
+  MayakIconBadge,
+  MayakPanel,
+  MayakSectionHeader,
+  MayakSectionTitle,
+} from "@/shared/ui/mayak";
 import { getGradeLabel } from "../../lib/getGradeLabel";
 import { getMilestonesByRole, getTopicsByRole } from "../../lib/getTopicsByRole";
 import { getRoleLabel } from "../../lib/getRoleLabel";
@@ -7,14 +15,14 @@ import {
   CompetencyTopicCard,
   EmployeeSummaryCard,
   PrimaryButton,
-  SecondaryButton
+  SecondaryButton,
+  StatGrid,
 } from "../components";
-import styles from "../OnboardingAgentPage.module.css";
 
 export function CompetencyMapStep({
   employee,
   onBack,
-  onNext
+  onNext,
 }: {
   employee: EmployeeProfile;
   onBack: () => void;
@@ -26,64 +34,69 @@ export function CompetencyMapStep({
   const adaptiveCount = topics.length - requiredCount;
 
   return (
-    <section className={styles.stepPanel}>
-      <div className={styles.sectionHeader}>
-        <p className={styles.kicker}>Шаг 2</p>
-        <h1>Карта компетенций для роли «{getRoleLabel(employee.role)}»</h1>
-        <p>
-          Грейд: {getGradeLabel(employee.grade)}. Агент покажет обязательные
-          стандарты и темы, которые можно сократить после диагностики.
-        </p>
+    <MayakPanel padding="lg" className="grid h-full min-h-0 gap-4 lg:grid-cols-[0.95fr_1.35fr]">
+      <div className="flex min-h-0 flex-col gap-3">
+        <MayakSectionHeader
+          className="mb-0"
+          kicker="Шаг 2 · карта"
+          title={`Карта роли «${getRoleLabel(employee.role)}»`}
+          description={`Грейд: ${getGradeLabel(employee.grade)}. Видим весь маршрут сразу: контрольные точки, обязательные блоки и адаптивные темы.`}
+        />
+
+        <EmployeeSummaryCard employee={employee} />
+
+        <StatGrid
+          stats={[
+            { value: milestones.length, label: "точки", description: "день 1, 7 и 14" },
+            { value: requiredCount, label: "обязательные", description: "безопасность и качество" },
+            { value: adaptiveCount, label: "адаптивные", description: "усилить или сократить" },
+          ]}
+        />
+
+        <MayakActionBar className="mt-auto">
+          <SecondaryButton onClick={onBack}>Назад</SecondaryButton>
+          <PrimaryButton onClick={onNext}>К диагностике</PrimaryButton>
+        </MayakActionBar>
       </div>
 
-      <EmployeeSummaryCard employee={employee} />
-
-      <div className={styles.statsRow} aria-label="Сводка тем">
-        <div>
-          <span>{milestones.length}</span>
-          <p>контрольные точки</p>
-        </div>
-        <div>
-          <span>{requiredCount}</span>
-          <p>обязательных блоков</p>
-        </div>
-        <div>
-          <span>{adaptiveCount}</span>
-          <p>адаптивных тем</p>
-        </div>
-      </div>
-
-      <div className={styles.milestoneGrid}>
-        {milestones.map((milestone) => (
-          <CompetencyMilestoneCard
-            key={`${milestone.role}-${milestone.day}`}
-            milestone={milestone}
+      <div className="grid min-h-0 gap-3 lg:grid-rows-[0.76fr_1fr]">
+        <MayakPanel padding="sm" className="min-h-0 shadow-none">
+          <MayakSectionTitle
+            icon={
+              <MayakIconBadge>
+                <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
+              </MayakIconBadge>
+            }
+            title="Контрольные точки"
+            description="Короткая карта без перегруза"
           />
-        ))}
+          <div className="grid h-[calc(100%-2.75rem)] min-h-0 gap-2 lg:grid-cols-3">
+            {milestones.map((milestone) => (
+              <CompetencyMilestoneCard
+                key={`${milestone.role}-${milestone.day}`}
+                milestone={milestone}
+              />
+            ))}
+          </div>
+        </MayakPanel>
+
+        <MayakPanel padding="sm" className="min-h-0 shadow-none">
+          <MayakSectionTitle
+            icon={
+              <MayakIconBadge>
+                <Stars className="h-4 w-4 text-primary" aria-hidden="true" />
+              </MayakIconBadge>
+            }
+            title="Темы диагностики"
+            description="Если тем много, скроллится только эта карточка"
+          />
+          <div className="grid max-h-[calc(100%-2.75rem)] min-h-0 gap-2 overflow-y-auto pr-1 md:grid-cols-2">
+            {topics.map((topic) => (
+              <CompetencyTopicCard key={topic.id} topic={topic} />
+            ))}
+          </div>
+        </MayakPanel>
       </div>
-
-      <section className={styles.topicSection}>
-        <div className={styles.sectionHeaderCompact}>
-          <h2>Темы диагностики</h2>
-          <p>
-            Обязательные блоки остаются в маршруте как стандарты безопасности и
-            качества. Адаптивные темы можно сократить или усилить по результатам.
-          </p>
-        </div>
-
-        <div className={styles.topicGrid}>
-          {topics.map((topic) => (
-            <CompetencyTopicCard key={topic.id} topic={topic} />
-          ))}
-        </div>
-      </section>
-
-      <div className={styles.actions}>
-        <SecondaryButton onClick={onBack}>Назад к профилю</SecondaryButton>
-        <PrimaryButton onClick={onNext}>
-          Перейти к объяснению диагностики
-        </PrimaryButton>
-      </div>
-    </section>
+    </MayakPanel>
   );
 }

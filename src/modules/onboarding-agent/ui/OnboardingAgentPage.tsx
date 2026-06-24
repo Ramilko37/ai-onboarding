@@ -1,5 +1,7 @@
 "use client";
 
+import { Compass, Sparkles } from "lucide-react";
+import { MayakShell, MayakTopBar } from "@/shared/ui/mayak";
 import { useOnboardingAgentState } from "../model/useOnboardingAgentState";
 import { CompetencyMapStep } from "./steps/CompetencyMapStep";
 import { DiagnosticIntroStep } from "./steps/DiagnosticIntroStep";
@@ -8,17 +10,33 @@ import { DiagnosticStep } from "./steps/DiagnosticStep";
 import { EmployeeProfileStep } from "./steps/EmployeeProfileStep";
 import { LearningRouteStep } from "./steps/LearningRouteStep";
 import { WelcomeStep } from "./steps/WelcomeStep";
-import { StepProgress } from "./components";
-import styles from "./OnboardingAgentPage.module.css";
+import { StepProgress, onboardingSteps } from "./components";
 
 export function OnboardingAgentPage() {
   const { state, actions } = useOnboardingAgentState();
+  const currentStepIndex = onboardingSteps.findIndex((step) => step.id === state.currentStep) + 1;
 
   return (
-    <main className={styles.page}>
-      <div className={styles.shell}>
-        <StepProgress currentStep={state.currentStep} />
+    <MayakShell
+      contentClassName="gap-3"
+      topBar={
+        <MayakTopBar
+          brand="Маяк"
+          subtitle="единый путь адаптации"
+          icon={<Compass className="h-5 w-5" aria-hidden="true" />}
+          meta={
+            <>
+              <Sparkles className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+              Шаг {currentStepIndex} из {onboardingSteps.length}
+            </>
+          }
+          userName={state.employee?.name ?? "Новый сотрудник"}
+        />
+      }
+    >
+      <StepProgress currentStep={state.currentStep} />
 
+      <section className="min-h-0 flex-1 overflow-hidden">
         {state.currentStep === "welcome" && (
           <WelcomeStep onStart={() => actions.goToStep("employee_profile")} />
         )}
@@ -77,7 +95,7 @@ export function OnboardingAgentPage() {
             onUpdateTaskStatus={actions.updateLearningTaskStatus}
           />
         )}
-      </div>
-    </main>
+      </section>
+    </MayakShell>
   );
 }
