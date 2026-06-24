@@ -1,4 +1,13 @@
 import type { ReactNode } from "react";
+import { Check, Circle, Sparkles } from "lucide-react";
+import {
+  MayakBadge,
+  MayakButton,
+  MayakOptionCard,
+  MayakPanel,
+  MayakStatCard,
+  cn,
+} from "@/shared/ui/mayak";
 import type {
   CompetencyMilestone,
   CompetencyTopic,
@@ -7,20 +16,19 @@ import type {
   EmployeeRole,
   Importance,
   OnboardingStep,
-  Skippable
+  Skippable,
 } from "../model/types";
 import { getGradeLabel } from "../lib/getGradeLabel";
 import { getRoleLabel } from "../lib/getRoleLabel";
-import styles from "./OnboardingAgentPage.module.css";
 
-const steps: Array<{ id: OnboardingStep; label: string }> = [
-  { id: "welcome", label: "Старт" },
-  { id: "employee_profile", label: "Профиль" },
-  { id: "competency_map", label: "Карта" },
-  { id: "diagnostic_intro", label: "Вводная" },
-  { id: "diagnostic", label: "Вопросы" },
-  { id: "diagnostic_result", label: "Результат" },
-  { id: "learning_route", label: "Маршрут" }
+export const onboardingSteps: Array<{ id: OnboardingStep; label: string; caption: string }> = [
+  { id: "welcome", label: "Старт", caption: "знакомство" },
+  { id: "employee_profile", label: "Профиль", caption: "роль и точка" },
+  { id: "competency_map", label: "Карта", caption: "что важно" },
+  { id: "diagnostic_intro", label: "Вводная", caption: "без тревоги" },
+  { id: "diagnostic", label: "Вопросы", caption: "мягкая диагностика" },
+  { id: "diagnostic_result", label: "Результат", caption: "зоны поддержки" },
+  { id: "learning_route", label: "Маяк", caption: "личный маршрут" },
 ];
 
 type ButtonProps = {
@@ -31,56 +39,61 @@ type ButtonProps = {
 };
 
 export function StepProgress({ currentStep }: { currentStep: OnboardingStep }) {
-  const currentIndex = steps.findIndex((step) => step.id === currentStep);
+  const currentIndex = onboardingSteps.findIndex((step) => step.id === currentStep);
 
   return (
-    <nav className={styles.progress} aria-label="Прогресс сценария">
-      {steps.map((step, index) => (
-        <div
-          className={index <= currentIndex ? styles.progressItemActive : styles.progressItem}
-          key={step.id}
-        >
-          <span>{index + 1}</span>
-          <p>{step.label}</p>
-        </div>
-      ))}
+    <nav className="mb-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-7" aria-label="Прогресс сценария">
+      {onboardingSteps.map((step, index) => {
+        const isDone = index < currentIndex;
+        const isActive = index === currentIndex;
+
+        return (
+          <div
+            className={cn(
+              "rounded-2xl border bg-card/75 p-3 backdrop-blur-sm transition",
+              isActive && "border-primary/40 bg-primary/5 shadow-[var(--shadow-card)]",
+              isDone && "border-border bg-card/80",
+              !isDone && !isActive && "border-border/70 opacity-75",
+            )}
+            key={step.id}
+          >
+            <div className="flex items-center gap-2.5">
+              <span
+                className={cn(
+                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-xs font-semibold",
+                  isDone && "border-primary bg-primary text-primary-foreground",
+                  isActive && "animate-pulse-ring border-primary bg-card text-primary",
+                  !isDone && !isActive && "border-border bg-secondary text-muted-foreground",
+                )}
+                aria-hidden="true"
+              >
+                {isDone ? <Check className="h-3.5 w-3.5" /> : isActive ? <Circle className="h-3 w-3 fill-current" /> : index + 1}
+              </span>
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-semibold text-foreground">{step.label}</span>
+                <span className="block truncate text-[11px] text-muted-foreground">{step.caption}</span>
+              </span>
+            </div>
+          </div>
+        );
+      })}
     </nav>
   );
 }
 
-export function PrimaryButton({
-  children,
-  onClick,
-  type = "button",
-  disabled
-}: ButtonProps) {
+export function PrimaryButton({ children, onClick, type = "button", disabled }: ButtonProps) {
   return (
-    <button
-      className={styles.primaryButton}
-      disabled={disabled}
-      onClick={onClick}
-      type={type}
-    >
+    <MayakButton disabled={disabled} onClick={onClick} type={type} variant="primary">
       {children}
-    </button>
+    </MayakButton>
   );
 }
 
-export function SecondaryButton({
-  children,
-  onClick,
-  type = "button",
-  disabled
-}: ButtonProps) {
+export function SecondaryButton({ children, onClick, type = "button", disabled }: ButtonProps) {
   return (
-    <button
-      className={styles.secondaryButton}
-      disabled={disabled}
-      onClick={onClick}
-      type={type}
-    >
+    <MayakButton disabled={disabled} onClick={onClick} type={type} variant="secondary">
       {children}
-    </button>
+    </MayakButton>
   );
 }
 
@@ -89,7 +102,7 @@ export function RoleCard({
   title,
   description,
   selected,
-  onSelect
+  onSelect,
 }: {
   value: EmployeeRole;
   title: string;
@@ -98,21 +111,19 @@ export function RoleCard({
   onSelect: (value: EmployeeRole) => void;
 }) {
   return (
-    <button
-      className={selected ? styles.optionCardSelected : styles.optionCard}
+    <MayakOptionCard
+      title={title}
+      description={description}
+      selected={selected}
       onClick={() => onSelect(value)}
-      type="button"
-    >
-      <span>{title}</span>
-      <p>{description}</p>
-    </button>
+    />
   );
 }
 
 export function GradeSelector({
   options,
   value,
-  onChange
+  onChange,
 }: {
   options: Array<{
     value: EmployeeGrade;
@@ -123,19 +134,15 @@ export function GradeSelector({
   onChange: (value: EmployeeGrade) => void;
 }) {
   return (
-    <div className={styles.gradeGrid}>
+    <div className="mt-2 grid gap-3 lg:grid-cols-3">
       {options.map((option) => (
-        <button
-          className={
-            option.value === value ? styles.gradeOptionSelected : styles.gradeOption
-          }
+        <MayakOptionCard
           key={option.value}
+          title={option.label}
+          description={option.description}
+          selected={option.value === value}
           onClick={() => onChange(option.value)}
-          type="button"
-        >
-          <span>{option.label}</span>
-          <p>{option.description}</p>
-        </button>
+        />
       ))}
     </div>
   );
@@ -143,68 +150,69 @@ export function GradeSelector({
 
 export function EmployeeSummaryCard({ employee }: { employee: EmployeeProfile }) {
   return (
-    <section className={styles.summaryCard} aria-label="Профиль сотрудника">
-      <div>
-        <p className={styles.kicker}>Профиль адаптации</p>
-        <h2>{employee.name}</h2>
+    <MayakPanel variant="deep" padding="lg" ariaLabel="Профиль сотрудника">
+      <div className="grid gap-6 lg:grid-cols-[0.8fr_1fr_0.9fr] lg:items-center">
+        <div>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-accent-foreground">
+            <Sparkles className="h-3 w-3" aria-hidden="true" />
+            Профиль адаптации
+          </span>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-deep-foreground">
+            {employee.name}
+          </h2>
+        </div>
+        <dl className="grid gap-3 sm:grid-cols-2">
+          <SummaryFact label="Роль" value={getRoleLabel(employee.role)} />
+          <SummaryFact label="Грейд" value={getGradeLabel(employee.grade)} />
+          <SummaryFact label="Точка" value={employee.location} />
+          <SummaryFact label="Дата выхода" value={formatDate(employee.startDate)} />
+        </dl>
+        <p className="text-sm leading-relaxed text-deep-muted">
+          Маяк использует роль и грейд только для персонализации маршрута: что уже знакомо — сократим, где нужна поддержка — подсветим спокойно.
+        </p>
       </div>
-      <dl>
-        <div>
-          <dt>Роль</dt>
-          <dd>{getRoleLabel(employee.role)}</dd>
-        </div>
-        <div>
-          <dt>Грейд</dt>
-          <dd>{getGradeLabel(employee.grade)}</dd>
-        </div>
-        <div>
-          <dt>Точка</dt>
-          <dd>{employee.location}</dd>
-        </div>
-        <div>
-          <dt>Дата выхода</dt>
-          <dd>{formatDate(employee.startDate)}</dd>
-        </div>
-      </dl>
-      <p>
-        На основе роли и грейда агент определит, какие знания нужно проверить в
-        первый день. Диагностика нужна не для оценки сотрудника, а для
-        персонализации обучения.
-      </p>
-    </section>
+    </MayakPanel>
   );
 }
 
-export function CompetencyMilestoneCard({
-  milestone
-}: {
-  milestone: CompetencyMilestone;
-}) {
+function SummaryFact({ label, value }: { label: string; value: ReactNode }) {
   return (
-    <article className={styles.milestoneCard}>
-      <span>День {milestone.day}</span>
-      <h3>{getMilestoneTitle(milestone.day)}</h3>
-      <p>{milestone.goal}</p>
-      <ul>
+    <div className="border-t border-deep-border pt-3">
+      <dt className="text-xs text-deep-muted">{label}</dt>
+      <dd className="mt-1 font-semibold text-deep-foreground">{value}</dd>
+    </div>
+  );
+}
+
+export function CompetencyMilestoneCard({ milestone }: { milestone: CompetencyMilestone }) {
+  return (
+    <MayakPanel padding="md" className="transition hover:-translate-y-0.5 hover:border-primary/40">
+      <MayakBadge tone="primary">День {milestone.day}</MayakBadge>
+      <h3 className="mt-4 text-lg font-semibold tracking-tight text-foreground">
+        {getMilestoneTitle(milestone.day)}
+      </h3>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{milestone.goal}</p>
+      <ul className="mt-4 space-y-2 text-sm text-foreground/85">
         {milestone.competencies.map((competency) => (
-          <li key={competency}>{competency}</li>
+          <li className="flex gap-2" key={competency}>
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
+            <span>{competency}</span>
+          </li>
         ))}
       </ul>
-    </article>
+    </MayakPanel>
   );
 }
 
 export function CompetencyTopicCard({ topic }: { topic: CompetencyTopic }) {
   return (
-    <article className={styles.topicCard}>
-      <div>
-        <h3>{topic.title}</h3>
-        <div className={styles.badges}>
-          <ImportanceBadge importance={topic.importance} />
-          <SkippableBadge required={topic.required} skippable={topic.skippable} />
-        </div>
+    <MayakPanel padding="sm" className="transition hover:-translate-y-0.5 hover:border-primary/40">
+      <h3 className="text-sm font-semibold text-foreground">{topic.title}</h3>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <ImportanceBadge importance={topic.importance} />
+        <SkippableBadge required={topic.required} skippable={topic.skippable} />
       </div>
-    </article>
+    </MayakPanel>
   );
 }
 
@@ -216,25 +224,46 @@ export function ImportanceBadge({ importance }: { importance: Importance }) {
         ? "Средняя важность"
         : "Низкая важность";
 
-  return <span className={styles.importanceBadge}>{label}</span>;
+  return <MayakBadge tone={importance === "high" ? "accent" : "secondary"}>{label}</MayakBadge>;
 }
 
 export function SkippableBadge({
   skippable,
-  required
+  required,
 }: {
   skippable: Skippable;
   required: boolean;
 }) {
   if (required || skippable === false) {
-    return <span className={styles.requiredBadge}>Обязательный блок</span>;
+    return <MayakBadge tone="primary">Обязательный блок</MayakBadge>;
   }
 
   if (skippable === "partial") {
-    return <span className={styles.partialBadge}>Можно сократить</span>;
+    return <MayakBadge tone="secondary">Можно сократить</MayakBadge>;
   }
 
-  return <span className={styles.optionalBadge}>Можно пропустить</span>;
+  return <MayakBadge tone="muted">Можно пропустить</MayakBadge>;
+}
+
+export function StatGrid({
+  stats,
+  className,
+}: {
+  stats: Array<{ value: ReactNode; label: ReactNode; description?: ReactNode }>;
+  className?: string;
+}) {
+  return (
+    <div className={cn("grid gap-3 md:grid-cols-3", className)}>
+      {stats.map((stat) => (
+        <MayakStatCard
+          key={`${stat.label}-${stat.value}`}
+          value={stat.value}
+          label={stat.label}
+          description={stat.description}
+        />
+      ))}
+    </div>
+  );
 }
 
 function getMilestoneTitle(day: 1 | 7 | 14) {
