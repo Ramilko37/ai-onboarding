@@ -32,7 +32,7 @@ export function SupportPanel() {
         </div>
         <button
           type="button"
-          className="rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition hover:border-primary/40 hover:text-primary"
+          className="cursor-pointer rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition hover:border-primary/40 hover:text-primary"
         >
           Написать
         </button>
@@ -43,7 +43,7 @@ export function SupportPanel() {
           <button
             key={link.id}
             type="button"
-            className="group flex items-center gap-2 rounded-2xl border border-border bg-card p-3 text-left transition hover:border-primary/40 hover:bg-primary/5"
+            className="group flex cursor-pointer items-center gap-2 rounded-2xl border border-border bg-card p-3 text-left transition hover:border-primary/40 hover:bg-primary/5"
           >
             <link.icon className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
             <span className="min-w-0">

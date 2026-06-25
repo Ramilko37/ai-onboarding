@@ -2,32 +2,19 @@ import {
   ArrowRight,
   Compass,
   Heart,
-  ListChecks,
-  MapPin,
-  MessageCircle,
   Sparkles,
-  UserRound,
 } from "lucide-react";
 import {
   MayakBadge,
-  MayakButton,
-  MayakIconBadge,
   MayakInsightCard,
   MayakPanel,
   MayakSectionHeader,
 } from "@/shared/ui/mayak";
 import { PrimaryButton } from "../components";
 
-const cockpitPreview = [
-  { icon: MapPin, label: "Маршрут", caption: "1 · 7 · 14 дней" },
-  { icon: ListChecks, label: "Задачи на сегодня", caption: "3 понятных шага" },
-  { icon: MessageCircle, label: "Ассистент Маяк", caption: "ответит на вопросы" },
-  { icon: UserRound, label: "Наставник", caption: "на связи в смене" },
-];
-
 export function WelcomeStep({ onStart }: { onStart: () => void }) {
   return (
-    <section className="grid h-full min-h-0 gap-3 lg:grid-cols-[1.4fr_0.95fr]">
+    <section className="grid min-h-0 gap-3">
       <MayakPanel padding="lg" className="flex min-h-0 flex-col justify-center gap-5">
         <MayakSectionHeader
           className="mb-0"
@@ -85,40 +72,6 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
             Диагностика не оценивает человека — она убирает лишнее обучение.
           </span>
         </div>
-      </MayakPanel>
-
-      <MayakPanel variant="deep" padding="lg" className="flex min-h-0 flex-col gap-4">
-        <div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-accent-foreground">
-            <Sparkles className="h-3 w-3" aria-hidden="true" />
-            Через 5 минут
-          </span>
-          <h2 className="mt-3 text-lg font-semibold leading-snug tracking-tight text-deep-foreground">
-            Так будет выглядеть ваше личное пространство адаптации
-          </h2>
-        </div>
-
-        <div className="grid min-h-0 flex-1 content-center gap-2.5">
-          {cockpitPreview.map(({ icon: Icon, label, caption }) => (
-            <div
-              className="flex items-center gap-3 rounded-2xl border border-deep-border bg-white/5 p-3"
-              key={label}
-            >
-              <MayakIconBadge tone="accent" className="h-9 w-9 rounded-xl">
-                <Icon className="h-4 w-4" aria-hidden="true" />
-              </MayakIconBadge>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-deep-foreground">{label}</p>
-                <p className="truncate text-xs text-deep-muted">{caption}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <p className="flex items-center gap-2 text-xs text-deep-muted">
-          <Compass className="h-4 w-4 text-accent" aria-hidden="true" />
-          Маяк ведёт весь путь в одном спокойном пространстве.
-        </p>
       </MayakPanel>
     </section>
   );

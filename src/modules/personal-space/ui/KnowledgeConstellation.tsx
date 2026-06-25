@@ -41,7 +41,7 @@ export function KnowledgeConstellation({
   const nodeById = new Map(nodes.map((node) => [node.id, node]));
 
   return (
-    <section className="flex min-h-0 flex-col overflow-hidden rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm">
+    <section className="flex flex-col rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm">
       <div className="mb-3 flex shrink-0 items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
@@ -67,7 +67,7 @@ export function KnowledgeConstellation({
         </div>
       </div>
 
-      <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-secondary/40 to-card">
+      <div className="relative min-h-[320px] overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-secondary/40 to-card sm:min-h-[380px]">
         <svg
           className="absolute inset-0 h-full w-full"
           viewBox="0 0 100 100"
@@ -113,7 +113,7 @@ export function KnowledgeConstellation({
         ))}
       </div>
 
-      <p className="mt-3 line-clamp-2 shrink-0 text-xs leading-relaxed text-muted-foreground">
+      <p className="mt-3 shrink-0 text-xs leading-relaxed text-muted-foreground">
         После диагностики Маяк подсвечивает сильные стороны и показывает, что стоит освоить дальше.
       </p>
     </section>

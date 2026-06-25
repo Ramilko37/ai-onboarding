@@ -44,7 +44,7 @@ export function TodayFocus({ route }: { route?: LearningRoute }) {
               type="button"
               onClick={() => toggle(task.id)}
               aria-pressed={task.done}
-              className={`flex w-full items-start gap-2.5 rounded-2xl border p-2.5 text-left transition ${
+              className={`flex w-full cursor-pointer items-start gap-2.5 rounded-2xl border p-2.5 text-left transition ${
                 task.done
                   ? "border-border bg-secondary/50"
                   : "border-border bg-card hover:border-primary/40 hover:bg-primary/5"

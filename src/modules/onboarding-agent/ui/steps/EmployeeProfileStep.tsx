@@ -31,7 +31,7 @@ export function EmployeeProfileStep({
   const [name, setName] = useState("Мария Иванова");
   const [role, setRole] = useState<EmployeeRole>("admin");
   const [grade, setGrade] = useState<EmployeeGrade>("horeca_experience");
-  const [location, setLocation] = useState("Франчайзи №12");
+  const [location, setLocation] = useState("Точка №1");
   const [startDate, setStartDate] = useState(today);
 
   const canSubmit = useMemo(
@@ -90,7 +90,7 @@ export function EmployeeProfileStep({
                   <MayakInput
                     className="pl-9"
                     onChange={(event) => setLocation(event.target.value)}
-                    placeholder="Франчайзи №12"
+                    placeholder="Точка №1"
                     type="text"
                     value={location}
                   />
@@ -111,17 +111,7 @@ export function EmployeeProfileStep({
             </div>
           </div>
 
-          <div className="mt-auto border-t border-border pt-4">
-            <PrimaryButton className="w-full" disabled={!canSubmit} type="submit">
-              Сформировать профиль
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </PrimaryButton>
-            <p className="mt-2 text-center text-xs text-muted-foreground">
-              {canSubmit
-                ? "Дальше Маяк покажет карту роли и темы для диагностики."
-                : "Заполните имя и точку, чтобы продолжить."}
-            </p>
-          </div>
+          <ProfileSubmitBlock canSubmit={canSubmit} className="mt-auto hidden lg:block" />
         </div>
 
         <div className="grid min-h-0 gap-3 lg:grid-rows-[0.95fr_1fr]">
@@ -158,7 +148,31 @@ export function EmployeeProfileStep({
             <GradeSelector onChange={setGrade} options={gradeOptions} value={grade} />
           </MayakPanel>
         </div>
+
+        <ProfileSubmitBlock canSubmit={canSubmit} className="lg:hidden" />
       </form>
     </MayakPanel>
+  );
+}
+
+function ProfileSubmitBlock({
+  canSubmit,
+  className = "",
+}: {
+  canSubmit: boolean;
+  className?: string;
+}) {
+  return (
+    <div className={`border-t border-border pt-4 ${className}`}>
+      <PrimaryButton className="w-full" disabled={!canSubmit} type="submit">
+        Сформировать профиль
+        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+      </PrimaryButton>
+      <p className="mt-2 text-center text-xs text-muted-foreground">
+        {canSubmit
+          ? "Дальше Маяк покажет карту роли и темы для диагностики."
+          : "Заполните имя и точку, чтобы продолжить."}
+      </p>
+    </div>
   );
 }

@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import {
   MayakActionBar,
-  MayakBadge,
   MayakIconBadge,
   MayakInsightCard,
   MayakPanel,
@@ -21,10 +20,10 @@ import { getRoleLabel } from "../../lib/getRoleLabel";
 import { PrimaryButton, SecondaryButton } from "../components";
 
 const facts = [
-  { icon: Clock, value: "8 минут", caption: "спокойный темп" },
-  { icon: ListChecks, value: "10–14 вопросов", caption: "по одному на экран" },
-  { icon: ShieldCheck, value: "без оценки", caption: "не влияет на кадровые решения" },
-  { icon: Sparkles, value: "персональный маршрут", caption: "результат диагностики" },
+  { icon: Clock, value: "8 минут" },
+  { icon: ListChecks, value: "10–14 вопросов" },
+  { icon: ShieldCheck, value: "без оценки" },
+  { icon: Sparkles, value: "персональный маршрут" },
 ];
 
 const willHappen = [
@@ -49,23 +48,22 @@ export function DiagnosticIntroStep({
         <MayakSectionHeader
           className="mb-0"
           kicker="Шаг 3 · вводная"
-          title="Короткая диагностика без тревоги"
+          title="Короткая диагностика"
           description={
             <>
-              Сотрудник: {employee.name}. Роль — {getRoleLabel(employee.role).toLowerCase()}. Это не
-              экзамен, а настройка маршрута под ваш реальный стартовый уровень.
+              Сотрудник: {employee.name}. Роль — {getRoleLabel(employee.role).toLowerCase()}. Сейчас
+              мы настроим ваш персональный маршрут адаптации.
             </>
           }
         />
 
         <div className="grid grid-cols-2 gap-2">
-          {facts.map(({ icon: Icon, value, caption }) => (
+          {facts.map(({ icon: Icon, value }) => (
             <div className="rounded-2xl border border-border bg-card p-3" key={value}>
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/12 text-primary">
                 <Icon className="h-4 w-4" aria-hidden="true" />
               </span>
               <p className="mt-2 text-sm font-semibold leading-snug text-foreground">{value}</p>
-              <p className="text-xs text-muted-foreground">{caption}</p>
             </div>
           ))}
         </div>
@@ -96,8 +94,7 @@ export function DiagnosticIntroStep({
             <Sparkles className="h-5 w-5" aria-hidden="true" />
           </MayakIconBadge>
           <div className="min-w-0">
-            <MayakBadge tone="accent">что произойдёт</MayakBadge>
-            <h2 className="mt-1.5 text-lg font-semibold tracking-tight text-deep-foreground">
+            <h2 className="text-lg font-semibold tracking-tight text-deep-foreground">
               После диагностики Маяк сразу соберёт маршрут
             </h2>
           </div>

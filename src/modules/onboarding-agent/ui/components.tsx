@@ -42,6 +42,7 @@ type ButtonProps = {
 export function StepProgress({ currentStep }: { currentStep: OnboardingStep }) {
   const currentIndex = onboardingSteps.findIndex((step) => step.id === currentStep);
   const progressPercent = Math.round(((currentIndex + 1) / onboardingSteps.length) * 100);
+  const currentStepData = onboardingSteps[currentIndex] ?? onboardingSteps[0];
 
   return (
     <nav
@@ -54,7 +55,44 @@ export function StepProgress({ currentStep }: { currentStep: OnboardingStep }) {
           style={{ width: `${progressPercent}%` }}
         />
       </div>
-      <div className="flex gap-1.5 overflow-x-auto pb-0.5">
+
+      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 px-1 sm:hidden">
+        <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
+          Шаг {currentIndex + 1}/{onboardingSteps.length}
+        </span>
+        <span className="min-w-0">
+          <span className="block truncate text-sm font-semibold text-foreground">
+            {currentStepData.label}
+          </span>
+          <span className="block truncate text-[11px] text-muted-foreground">
+            {currentStepData.caption}
+          </span>
+        </span>
+        <span className="font-mono text-[11px] font-medium text-muted-foreground">
+          {progressPercent}%
+        </span>
+      </div>
+
+      <div className="mt-2 grid grid-cols-7 gap-1 sm:hidden" aria-hidden="true">
+        {onboardingSteps.map((step, index) => {
+          const isDone = index < currentIndex;
+          const isActive = index === currentIndex;
+
+          return (
+            <span
+              className={cn(
+                "h-1.5 rounded-full transition",
+                isDone && "bg-primary/70",
+                isActive && "bg-primary",
+                !isDone && !isActive && "bg-secondary",
+              )}
+              key={step.id}
+            />
+          );
+        })}
+      </div>
+
+      <div className="hidden gap-1.5 pb-0.5 sm:flex sm:flex-wrap lg:flex-nowrap">
         {onboardingSteps.map((step, index) => {
           const isDone = index < currentIndex;
           const isActive = index === currentIndex;

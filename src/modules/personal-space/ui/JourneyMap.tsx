@@ -31,7 +31,7 @@ export function JourneyMap({ route }: { route?: LearningRoute }) {
   const stages = route ? getRouteStages(route) : journeyStages;
 
   return (
-    <section className="flex min-h-0 flex-col overflow-hidden rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm">
+    <section className="flex flex-col rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm">
       <div className="mb-3 flex shrink-0 items-center gap-2.5">
         <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
           <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
@@ -42,7 +42,7 @@ export function JourneyMap({ route }: { route?: LearningRoute }) {
         </div>
       </div>
 
-      <ol className="min-h-0 flex-1 overflow-y-auto pr-1">
+      <ol>
         {stages.map((stage, index) => {
           const isLast = index === stages.length - 1;
           return (
@@ -85,13 +85,13 @@ export function JourneyMap({ route }: { route?: LearningRoute }) {
                 >
                   {stage.title}
                 </h3>
-                <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
                   {stage.caption}
                 </p>
                 {stage.href && stage.cta && (
                   <Link
                     href={stage.href}
-                    className="group mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition hover:opacity-90"
+                    className="group mt-2 inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition hover:opacity-90"
                   >
                     {stage.cta}
                     <ArrowRight

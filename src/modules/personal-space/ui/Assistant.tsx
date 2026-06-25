@@ -96,7 +96,7 @@ export function Assistant({
   }
 
   return (
-    <section className="flex min-h-0 flex-col overflow-hidden rounded-3xl border border-primary/30 bg-card/80 shadow-[var(--shadow-card)] backdrop-blur-sm ring-1 ring-primary/15">
+    <section className="flex min-h-[430px] flex-col overflow-hidden rounded-3xl border border-primary/30 bg-card/80 shadow-[var(--shadow-card)] backdrop-blur-sm ring-1 ring-primary/15">
       <div className="flex shrink-0 items-center gap-3 border-b border-primary/15 bg-primary/8 px-4 py-3">
         <span className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
           <Compass className="h-4 w-4" aria-hidden="true" />
@@ -118,7 +118,7 @@ export function Assistant({
         </div>
       </div>
 
-      <div ref={scrollRef} className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-4 py-3">
+      <div ref={scrollRef} className="flex max-h-[560px] min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-4 py-3">
         {messages.map((message) =>
           message.author === "guide" ? (
             <div key={message.id} className="flex items-end gap-2">
@@ -172,7 +172,7 @@ export function Assistant({
               key={suggestion}
               type="button"
               onClick={() => send(suggestion)}
-              className="min-w-fit rounded-full border border-border bg-card px-2.5 py-1 text-[11px] text-muted-foreground transition hover:border-primary/40 hover:text-primary"
+              className="min-w-fit cursor-pointer rounded-full border border-border bg-card px-2.5 py-1 text-[11px] text-muted-foreground transition hover:border-primary/40 hover:text-primary"
             >
               {suggestion}
             </button>
@@ -196,7 +196,7 @@ export function Assistant({
             type="submit"
             disabled={!input.trim() || isTyping}
             aria-label="Отправить"
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground transition hover:opacity-90 disabled:opacity-40"
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
           >
             <Send className="h-4 w-4" aria-hidden="true" />
           </button>

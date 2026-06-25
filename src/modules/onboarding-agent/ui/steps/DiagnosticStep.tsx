@@ -1,4 +1,4 @@
-import { ArrowRight, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import type {
   DiagnosticAnswer,
   DiagnosticQuestion,
@@ -14,7 +14,7 @@ import {
 } from "@/shared/ui/mayak";
 import { getGradeLabel } from "../../lib/getGradeLabel";
 import { getRoleLabel } from "../../lib/getRoleLabel";
-import { PrimaryButton, SecondaryButton } from "../components";
+import { SecondaryButton } from "../components";
 
 export function DiagnosticStep({
   employee,
@@ -42,6 +42,19 @@ export function DiagnosticStep({
     (answer) => answer.questionId === currentQuestion?.id,
   );
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
+  function handleSelectAnswer(questionId: string, optionId: string) {
+    onSelectAnswer(questionId, optionId);
+
+    window.setTimeout(() => {
+      if (isLastQuestion) {
+        onComplete();
+        return;
+      }
+
+      onNext();
+    }, 160);
+  }
 
   if (!currentQuestion) {
     return (
@@ -100,15 +113,12 @@ export function DiagnosticStep({
           <DiagnosticQuestionCard
             question={currentQuestion}
             selectedOptionId={currentAnswer?.selectedOptionId}
-            onSelectAnswer={onSelectAnswer}
+            onSelectAnswer={handleSelectAnswer}
           />
 
           <DiagnosticNavigation
             canGoBack={currentQuestionIndex > 0}
-            canContinue={Boolean(currentAnswer)}
-            isLastQuestion={isLastQuestion}
             onBack={currentQuestionIndex > 0 ? onPrevious : onBackToIntro}
-            onNext={isLastQuestion ? onComplete : onNext}
           />
         </div>
       </div>
@@ -193,7 +203,7 @@ export function DiagnosticOption({
     <button
       aria-pressed={selected}
       className={cn(
-        "grid min-h-14 grid-cols-[36px_1fr_auto] items-center gap-3 rounded-2xl border p-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
+        "grid min-h-14 cursor-pointer grid-cols-[36px_1fr_auto] items-center gap-3 rounded-2xl border p-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
         selected
           ? "border-primary bg-primary/8 ring-1 ring-primary/40 shadow-[var(--shadow-card)]"
           : "border-border bg-card hover:border-primary/40 hover:bg-primary/5",
@@ -232,33 +242,16 @@ export function DiagnosticOption({
 
 export function DiagnosticNavigation({
   canGoBack,
-  canContinue,
-  isLastQuestion,
   onBack,
-  onNext,
 }: {
   canGoBack: boolean;
-  canContinue: boolean;
-  isLastQuestion: boolean;
   onBack: () => void;
-  onNext: () => void;
 }) {
   return (
-    <MayakActionBar className="mt-3 shrink-0 items-center justify-between">
+    <MayakActionBar className="mt-3 shrink-0">
       <SecondaryButton onClick={onBack}>
         {canGoBack ? "Назад" : "К вводной"}
       </SecondaryButton>
-      <div className="flex items-center gap-3">
-        {!canContinue && (
-          <span className="hidden text-xs text-muted-foreground sm:inline">
-            Выберите вариант, чтобы продолжить
-          </span>
-        )}
-        <PrimaryButton disabled={!canContinue} onClick={onNext}>
-          {isLastQuestion ? "Завершить" : "Далее"}
-          {!isLastQuestion && <ArrowRight className="h-4 w-4" aria-hidden="true" />}
-        </PrimaryButton>
-      </div>
     </MayakActionBar>
   );
 }

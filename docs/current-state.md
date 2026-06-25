@@ -1,6 +1,6 @@
 # Current Project State
 
-Last updated: 2026-06-24
+Last updated: 2026-06-25
 
 ## Product Scope
 
@@ -43,11 +43,15 @@ Current user flow:
 The onboarding flow uses the shared Mayak UI kit and a compact operational layout rather than large promo-style cards:
 
 - The scenario progress is shown as a compact “Step X of 7” stepper with a thin progress bar.
+- On mobile, the scenario progress does not use an inner horizontal scroller; it shows the current step summary and seven fixed progress segments.
 - Main actions are kept close to the active panel so forward/back actions stay reachable on desktop and mobile.
+- Clickable controls use a pointer cursor; disabled controls use a not-allowed cursor.
 - Role, grade, competency, diagnostic, result, and route screens use denser cards and tables.
 - Diagnostic result details are collapsed behind a details section by default.
 - The generated learning route step opens the Mayak personal-space UI inside the onboarding shell.
 - The final personal-space screen uses the generated employee profile and learning route for the hero, journey map, knowledge map, today's focus, and mentor chat context.
+- The final Mayak personal-space screen uses normal page scroll and is not forced to fit into one viewport.
+- On mobile, all onboarding screens may use normal page scroll instead of being compressed into one viewport.
 
 ## Implemented Diagnostic Logic
 
@@ -89,6 +93,7 @@ Implemented route behavior:
 - Each learning task has type, priority, status, estimated duration, source, and assignment reason.
 - The final Mayak screen uses the generated `LearningRoute` and employee profile instead of the previous static employee demo state.
 - The Mayak screen contains static mentor / knowledge-base / team shortcut buttons for the prototype; they do not open real external systems.
+- The Mayak screen is scrollable; internal fixed-height compression is avoided for the journey map and knowledge map.
 - Blocked tasks are only displayed as blockers inside the prototype; they do not create escalations.
 
 ## Implemented Knowledge Base And Mentor Chat

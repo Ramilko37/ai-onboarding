@@ -30,10 +30,10 @@ export function HeroGreeting({
             <Heart className="h-3 w-3 text-primary" aria-hidden="true" />
             Пространство адаптации
           </span>
-          <h1 className="truncate text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          <h1 className="text-pretty text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
             {partOfDay}, {name}. <span className="text-muted-foreground">Всё под рукой.</span>
           </h1>
-          <p className="line-clamp-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
             Путь, знания и подсказки собраны в одном спокойном месте: без хаоса, чатов и потерянных инструкций.
           </p>
         </div>
@@ -46,7 +46,7 @@ export function HeroGreeting({
           </span>
           <Link
             href="/onboarding-agent"
-            className="group inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
+            className="group inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
           >
             Продолжить
             <ArrowRight

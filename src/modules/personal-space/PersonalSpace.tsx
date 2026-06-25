@@ -23,15 +23,15 @@ function PersonalSpaceContent({
   route?: LearningRoute;
 }) {
   return (
-    <div className="grid h-full min-h-0 grid-rows-[auto_1fr_auto] gap-3">
+    <div className="grid gap-3">
       <HeroGreeting profile={profile} route={route} />
 
-      <div className="grid min-h-0 gap-3 lg:grid-cols-[1.25fr_0.85fr]">
-        <div className="grid min-h-0 gap-3 lg:grid-rows-[0.88fr_1.12fr]">
+      <div className="grid gap-3 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:items-start">
+        <div className="grid gap-3">
           <JourneyMap route={route} />
           <KnowledgeConstellation roleLabel={profile?.roleLabel} route={route} />
         </div>
-        <div className="grid min-h-0 gap-3 lg:grid-rows-[minmax(250px,1fr)_auto_auto]">
+        <div className="grid gap-3">
           <Assistant profile={profile} route={route} />
           <TodayFocus route={route} />
           <SupportPanel />
@@ -59,7 +59,7 @@ export function PersonalSpace({
   }
 
   return (
-    <MayakShell topBar={<TopBar />}>
+    <MayakShell scrollable topBar={<TopBar />}>
       <PersonalSpaceContent profile={profile} route={route} />
     </MayakShell>
   );

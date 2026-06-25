@@ -15,10 +15,12 @@ import { StepProgress, onboardingSteps } from "./components";
 export function OnboardingAgentPage() {
   const { state, actions } = useOnboardingAgentState();
   const currentStepIndex = onboardingSteps.findIndex((step) => step.id === state.currentStep) + 1;
+  const isLearningRouteStep = state.currentStep === "learning_route";
 
   return (
     <MayakShell
-      contentClassName="gap-3"
+      scrollable={isLearningRouteStep}
+      contentClassName={isLearningRouteStep ? "gap-3 pb-6" : "gap-3"}
       topBar={
         <MayakTopBar
           brand="Маяк"
@@ -36,7 +38,13 @@ export function OnboardingAgentPage() {
     >
       <StepProgress currentStep={state.currentStep} />
 
-      <section className="min-h-0 flex-1 overflow-hidden">
+      <section
+        className={
+          isLearningRouteStep
+            ? "flex-1 overflow-visible"
+            : "flex-1 overflow-visible lg:min-h-0 lg:overflow-hidden"
+        }
+      >
         {state.currentStep === "welcome" && (
           <WelcomeStep onStart={() => actions.goToStep("employee_profile")} />
         )}

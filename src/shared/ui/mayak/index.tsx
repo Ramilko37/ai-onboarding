@@ -12,8 +12,9 @@ export function cn(...classes: ClassValue[]) {
 }
 
 export const mayakSurface = {
-  page: "relative h-screen overflow-hidden text-foreground",
-  shell: "mx-auto flex h-[calc(100dvh-4rem)] max-w-6xl flex-col overflow-hidden px-4 py-3 sm:px-6 sm:py-4",
+  page: "relative min-h-screen overflow-x-hidden text-foreground lg:h-screen lg:overflow-hidden",
+  shell:
+    "mx-auto flex min-h-[calc(100dvh-4rem)] max-w-6xl flex-col px-4 py-3 sm:px-6 sm:py-4 lg:h-[calc(100dvh-4rem)] lg:min-h-0 lg:overflow-hidden",
   panel:
     "overflow-hidden rounded-3xl border border-border bg-card/80 backdrop-blur-sm shadow-[var(--shadow-card)]",
   interactive:
@@ -89,15 +90,29 @@ type MayakShellProps = {
   children: ReactNode;
   className?: string;
   contentClassName?: string;
+  scrollable?: boolean;
   topBar?: ReactNode;
 };
 
-export function MayakShell({ children, className, contentClassName, topBar }: MayakShellProps) {
+const mayakScrollableSurface = {
+  page: "relative min-h-screen overflow-x-hidden text-foreground",
+  shell: "mx-auto flex min-h-[calc(100dvh-4rem)] max-w-6xl flex-col px-4 py-3 sm:px-6 sm:py-4",
+} as const;
+
+export function MayakShell({
+  children,
+  className,
+  contentClassName,
+  scrollable = false,
+  topBar,
+}: MayakShellProps) {
+  const surface = scrollable ? mayakScrollableSurface : mayakSurface;
+
   return (
-    <div className={cn(mayakSurface.page, className)}>
+    <div className={cn(surface.page, className)}>
       <MayakAmbientBackground />
       {topBar}
-      <main className={cn(mayakSurface.shell, contentClassName)}>{children}</main>
+      <main className={cn(surface.shell, contentClassName)}>{children}</main>
     </div>
   );
 }
@@ -356,7 +371,7 @@ export function MayakLinkButton({
 
 function buttonClassName(variant: MayakButtonVariant) {
   const base =
-    "inline-flex min-h-10 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:pointer-events-none disabled:opacity-40";
+    "inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:cursor-not-allowed disabled:opacity-40";
 
   if (variant === "secondary") {
     return cn(base, "bg-secondary text-secondary-foreground hover:bg-secondary/80");
@@ -415,7 +430,7 @@ export function MayakOptionCard({
       aria-pressed={selected}
       onClick={onClick}
       className={cn(
-        "min-h-20 rounded-2xl border bg-card p-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
+        "min-h-20 cursor-pointer rounded-2xl border bg-card p-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
         selected
           ? "border-primary/60 bg-primary/5 ring-1 ring-primary/40 shadow-[var(--shadow-card)]"
           : "border-border hover:border-primary/40 hover:bg-primary/5",
@@ -585,11 +600,13 @@ export function MayakProgressRing({
   label = "путь",
   size = 112,
   className,
+  textClassName,
 }: {
   value: number;
   label?: ReactNode;
   size?: number;
   className?: string;
+  textClassName?: string;
 }) {
   const radius = 52;
   const circumference = 2 * Math.PI * radius;
@@ -597,7 +614,7 @@ export function MayakProgressRing({
   const offset = circumference - (safeValue / 100) * circumference;
 
   return (
-    <div className={cn("relative flex items-center justify-center", className)} style={{ height: size, width: size }}>
+    <div className={cn("relative flex items-center justify-center text-foreground", className)} style={{ height: size, width: size }}>
       <svg
         className="h-full w-full -rotate-90"
         viewBox="0 0 120 120"
@@ -617,9 +634,9 @@ export function MayakProgressRing({
           className="stroke-primary transition-[stroke-dashoffset] duration-700"
         />
       </svg>
-      <div className="absolute flex flex-col items-center">
-        <span className="text-xl font-semibold tracking-tight text-foreground">{safeValue}%</span>
-        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+      <div className={cn("absolute flex max-w-[72%] flex-col items-center", textClassName)}>
+        <span className="text-xl font-semibold tracking-tight text-current">{safeValue}%</span>
+        <span className="max-w-full truncate font-mono text-[10px] uppercase tracking-wider text-current/70">{label}</span>
       </div>
     </div>
   );
