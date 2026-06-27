@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { buildPersonalLearningRoute } from "../lib/buildPersonalLearningRoute";
 import { calculateDiagnosticResult } from "../lib/calculateDiagnosticResult";
 import { getDiagnosticQuestions } from "../lib/getDiagnosticQuestions";
@@ -27,6 +27,18 @@ const initialState: OnboardingState = {
   currentQuestionIndex: 0
 };
 
+const STORAGE_KEY = "mayak:onboarding-state:v1";
+
+const knownSteps = new Set<OnboardingStep>([
+  "welcome",
+  "employee_profile",
+  "competency_map",
+  "diagnostic_intro",
+  "diagnostic",
+  "diagnostic_result",
+  "learning_route",
+]);
+
 export type EmployeeProfileInput = {
   name: string;
   role: EmployeeRole;
@@ -35,8 +47,74 @@ export type EmployeeProfileInput = {
   startDate: string;
 };
 
+function readStoredState(): OnboardingState {
+  if (typeof window === "undefined") {
+    return initialState;
+  }
+
+  try {
+    const rawState = window.localStorage.getItem(STORAGE_KEY);
+    if (!rawState) {
+      return initialState;
+    }
+
+    const parsedState = JSON.parse(rawState) as Partial<OnboardingState>;
+
+    if (!parsedState.currentStep || !knownSteps.has(parsedState.currentStep)) {
+      return initialState;
+    }
+
+    if (
+      parsedState.currentStep !== "welcome" &&
+      parsedState.currentStep !== "employee_profile" &&
+      !parsedState.employee
+    ) {
+      return initialState;
+    }
+
+    return {
+      ...initialState,
+      ...parsedState,
+      diagnosticQuestions: Array.isArray(parsedState.diagnosticQuestions)
+        ? parsedState.diagnosticQuestions
+        : [],
+      diagnosticAnswers: Array.isArray(parsedState.diagnosticAnswers)
+        ? parsedState.diagnosticAnswers
+        : [],
+      currentQuestionIndex:
+        typeof parsedState.currentQuestionIndex === "number"
+          ? parsedState.currentQuestionIndex
+          : 0,
+    };
+  } catch {
+    return initialState;
+  }
+}
+
+function persistState(state: OnboardingState) {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // Persistence is a prototype convenience; the flow should still work without storage.
+  }
+}
+
 export function useOnboardingAgentState() {
   const [state, setState] = useState<OnboardingState>(initialState);
+  const [isRestored, setIsRestored] = useState(false);
+
+  useEffect(() => {
+    setState(readStoredState());
+    setIsRestored(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isRestored) {
+      return;
+    }
+
+    persistState(state);
+  }, [isRestored, state]);
 
   const actions = useMemo(
     () => ({

@@ -23,8 +23,8 @@ export function HeroGreeting({
   const upcomingDays = route ? Math.max(route.days.length - 1, 0) : 3;
 
   return (
-    <section className="grid shrink-0 gap-3 lg:grid-cols-[1fr_280px]">
-      <div className="flex items-center justify-between gap-4 rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm sm:p-5">
+    <section className="grid w-full min-w-0 shrink-0 gap-3 lg:grid-cols-[1fr_280px]">
+      <div className="flex min-w-0 items-center justify-between gap-4 rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm sm:p-5">
         <div className="min-w-0 space-y-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-secondary-foreground">
             <Heart className="h-3 w-3 text-primary" aria-hidden="true" />

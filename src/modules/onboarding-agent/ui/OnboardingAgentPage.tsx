@@ -41,8 +41,8 @@ export function OnboardingAgentPage() {
       <section
         className={
           isLearningRouteStep
-            ? "flex-1 overflow-visible"
-            : "flex-1 overflow-visible lg:min-h-0 lg:overflow-hidden"
+            ? "min-w-0 flex-1 overflow-visible"
+            : "min-w-0 flex-1 overflow-visible lg:min-h-0 lg:overflow-hidden"
         }
       >
         {state.currentStep === "welcome" && (

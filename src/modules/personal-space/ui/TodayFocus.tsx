@@ -16,7 +16,7 @@ export function TodayFocus({ route }: { route?: LearningRoute }) {
   }
 
   return (
-    <section className="rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm">
+    <section className="w-full min-w-0 rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm">
       <div className="mb-3 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
@@ -37,14 +37,14 @@ export function TodayFocus({ route }: { route?: LearningRoute }) {
         Эти задачи Маяк собрал по итогам диагностики
       </p>
 
-      <ul className="grid gap-2">
+      <ul className="grid min-w-0 gap-2">
         {tasks.map((task) => (
-          <li key={task.id}>
+          <li key={task.id} className="min-w-0">
             <button
               type="button"
               onClick={() => toggle(task.id)}
               aria-pressed={task.done}
-              className={`flex w-full cursor-pointer items-start gap-2.5 rounded-2xl border p-2.5 text-left transition ${
+              className={`flex w-full min-w-0 cursor-pointer items-start gap-2.5 rounded-2xl border p-2.5 text-left transition ${
                 task.done
                   ? "border-border bg-secondary/50"
                   : "border-border bg-card hover:border-primary/40 hover:bg-primary/5"

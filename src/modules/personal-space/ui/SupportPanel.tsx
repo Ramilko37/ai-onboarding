@@ -8,7 +8,7 @@ const quickLinks = [
 
 export function SupportPanel() {
   return (
-    <section className="rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm">
+    <section className="w-full min-w-0 rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm">
       <div className="mb-3 flex items-center gap-2.5">
         <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
           <LifeBuoy className="h-4 w-4 text-primary" aria-hidden="true" />

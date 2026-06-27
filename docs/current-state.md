@@ -11,6 +11,8 @@ The project is a Next.js prototype of an AI onboarding agent for a HORECA franch
 
 The prototype demonstrates personalization without backend, external LLM, embeddings, vector database, or real integrations: a new employee selects a role and grade, passes a soft knowledge diagnostic, sees topic-level results, reaches the Mayak personal-space screen after an automatically generated personal learning route is created in state, and can ask the mentor chat questions that are answered from a local demo knowledge base with visible source citations.
 
+The onboarding state is persisted in browser `localStorage` for prototype convenience, so diagnostic answers, result, and the generated route survive page reloads in the same browser.
+
 ## Implemented Routes
 
 The main prototype is available on the root route and on a dedicated onboarding route:
@@ -48,9 +50,11 @@ The onboarding flow uses the shared Mayak UI kit and a compact operational layou
 - Clickable controls use a pointer cursor; disabled controls use a not-allowed cursor.
 - Role, grade, competency, diagnostic, result, and route screens use denser cards and tables.
 - Diagnostic result details are collapsed behind a details section by default.
+- Diagnostic answers, results, and generated routes are restored from local browser storage after reload.
 - The generated learning route step opens the Mayak personal-space UI inside the onboarding shell.
 - The final personal-space screen uses the generated employee profile and learning route for the hero, journey map, knowledge map, today's focus, and mentor chat context.
 - The final Mayak personal-space screen uses normal page scroll and is not forced to fit into one viewport.
+- The final Mayak personal-space widgets are constrained with mobile-safe widths so embedded cards do not bleed outside the viewport.
 - On mobile, all onboarding screens may use normal page scroll instead of being compressed into one viewport.
 
 ## Implemented Diagnostic Logic

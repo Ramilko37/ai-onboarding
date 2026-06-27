@@ -41,7 +41,7 @@ export function KnowledgeConstellation({
   const nodeById = new Map(nodes.map((node) => [node.id, node]));
 
   return (
-    <section className="flex flex-col rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm">
+    <section className="flex w-full min-w-0 flex-col rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm">
       <div className="mb-3 flex shrink-0 items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
