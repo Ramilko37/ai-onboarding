@@ -4,6 +4,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { ArrowRight, CalendarDays, Coffee, MapPin, Sparkles } from "lucide-react";
 import {
   MayakField,
+  MayakBadge,
   MayakIconBadge,
   MayakInput,
   MayakInsightCard,
@@ -11,18 +12,12 @@ import {
   MayakSectionHeader,
   MayakSectionTitle,
 } from "@/shared/ui/mayak";
-import { gradeOptions, roleOptions } from "../../model/mockData";
+import { gradeOptions } from "../../model/mockData";
 import type { EmployeeGrade, EmployeeRole } from "../../model/types";
 import type { EmployeeProfileInput } from "../../model/useOnboardingAgentState";
-import { GradeSelector, PrimaryButton, RoleCard } from "../components";
+import { GradeSelector, PrimaryButton } from "../components";
 
 const today = new Date().toISOString().slice(0, 10);
-
-const roleRouteFocus: Record<EmployeeRole, string> = {
-  cook: "гигиена, техкарты, заготовки, качество",
-  admin: "заказы, гости, касса, претензии",
-  barista: "эспрессо, молоко, рецептуры, оборудование",
-};
 
 export function EmployeeProfileStep({
   onSubmit,
@@ -123,21 +118,32 @@ export function EmployeeProfileStep({
                   <Coffee className="h-4 w-4 text-primary" aria-hidden="true" />
                 </MayakIconBadge>
               }
-              title="Сценарий"
-              description="В этой ветке тестируем только бариста"
+              title="Сценарий тестирования"
+              description="Роль фиксирована для этой версии"
             />
-            <div className="grid h-[calc(100%-2.75rem)] min-h-0 gap-2">
-              {roleOptions.map((option) => (
-                <RoleCard
-                  description={option.description}
-                  meta={`В маршруте: ${roleRouteFocus[option.value]}`}
-                  key={option.value}
-                  onSelect={() => undefined}
-                  selected={option.value === role}
-                  title={option.label}
-                  value={option.value}
-                />
-              ))}
+            <div className="grid h-[calc(100%-2.75rem)] min-h-0 content-center gap-3 rounded-2xl border border-primary/25 bg-primary/5 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <MayakBadge tone="primary">Роль тестирования</MayakBadge>
+                  <h3 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
+                    Бариста
+                  </h3>
+                </div>
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
+                  <Coffee className="h-6 w-6" aria-hidden="true" />
+                </span>
+              </div>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                Проверяем эспрессо, молоко, рецептуры, оборудование и работу в потоке.
+              </p>
+              <ul className="grid gap-2 text-xs text-foreground/85 sm:grid-cols-2 lg:grid-cols-1">
+                {["Эспрессо", "Молоко", "Чистка оборудования", "Гостевой поток"].map((item) => (
+                  <li className="flex items-center gap-2" key={item}>
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
           </MayakPanel>
 

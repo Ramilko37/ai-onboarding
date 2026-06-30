@@ -575,7 +575,7 @@ export const baristaQuestions: DiagnosticQuestion[] = [
     topicId: "barista-beans-storage",
     type: "single_choice",
     difficulty: "basic",
-    question: "Как правильно обращаться с открытым пакетом зерна в demo-стандарте?",
+    question: "Как правильно обращаться с открытым пакетом зерна по стандарту сети?",
     options: [
       { id: "a", text: "Оставить открытым рядом с кофемолкой", isCorrect: false },
       { id: "b", text: "Закрыть, промаркировать и хранить вдали от влаги и тепла", isCorrect: true },
@@ -629,7 +629,7 @@ export const baristaQuestions: DiagnosticQuestion[] = [
     topicId: "barista-extraction-sensory",
     type: "single_choice",
     difficulty: "intermediate",
-    question: "Кислый и резкий эспрессо в demo-чек-листе чаще всего требует чего?",
+    question: "Кислый и резкий эспрессо по чек-листу чаще всего требует чего?",
     options: [
       { id: "a", text: "Проверить экстракцию и параметры рецепта", isCorrect: true },
       { id: "b", text: "Добавить сироп без предупреждения гостя", isCorrect: false },
@@ -668,7 +668,7 @@ export const baristaQuestions: DiagnosticQuestion[] = [
     question: "Если не уверен в рецептуре латте, что нужно сделать?",
     options: [
       { id: "a", text: "Сделать по памяти", isCorrect: false },
-      { id: "b", text: "Свериться с актуальной demo-рецептурой напитка", isCorrect: true },
+      { id: "b", text: "Свериться с актуальной рецептурой напитка", isCorrect: true },
       { id: "c", text: "Спросить гостя, сколько кофе налить", isCorrect: false },
       { id: "d", text: "Использовать рецепт капучино", isCorrect: false }
     ],
@@ -719,7 +719,7 @@ export const baristaQuestions: DiagnosticQuestion[] = [
     topicId: "barista-guest-communication",
     type: "single_choice",
     difficulty: "basic",
-    question: "Гость просит напиток, которого нет в demo-рецептурах. Как ответить?",
+    question: "Гость просит напиток, которого нет в рецептурах сети. Как ответить?",
     options: [
       { id: "a", text: "Придумать рецепт на месте", isCorrect: false },
       { id: "b", text: "Спокойно предложить ближайшую позицию из меню или уточнить у старшего", isCorrect: true },
@@ -791,7 +791,7 @@ export const baristaQuestions: DiagnosticQuestion[] = [
     topicId: "barista-equipment-cleaning",
     type: "single_choice",
     difficulty: "intermediate",
-    question: "Когда бариста делает обратную промывку группы по demo-чек-листу?",
+    question: "Когда бариста делает обратную промывку группы по чек-листу?",
     options: [
       { id: "a", text: "По чек-листу смены и при признаках загрязнения группы", isCorrect: true },
       { id: "b", text: "Только когда кофе перестал молоться", isCorrect: false },

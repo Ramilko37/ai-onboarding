@@ -28,7 +28,7 @@ export function answerMentorQuestion(params: MentorQuestionParams): MentorAnswer
       needsManagerReview: true,
       sources: [],
       answer:
-        "В демо-базе знаний нет надёжного источника для этого ответа. Чтобы не выдумывать правило точки, лучше уточнить у наставника или управляющего."
+        "В базе стандартов нет надёжного источника для этого ответа. Создайте вопрос наставнику или уточните у управляющего, чтобы не выдумывать правило точки."
     };
   }
 
@@ -41,11 +41,11 @@ export function answerMentorQuestion(params: MentorQuestionParams): MentorAnswer
   }));
 
   const lead = params.employeeName
-    ? `${params.employeeName}, по demo-базе знаний Valle Sanchez:`
-    : "По demo-базе знаний Valle Sanchez:";
+    ? `${params.employeeName}, по базе стандартов Valle Sanchez:`
+    : "По базе стандартов Valle Sanchez:";
   const sourceLines = sources
     .slice(0, 2)
-    .map((source) => `Источник: ${source.source} — ${source.excerpt}`)
+    .map((source) => `Источник: ${formatSourceName(source.source)} — ${source.excerpt}`)
     .join("\n");
   const routeLine = params.activeTaskTitles?.length
     ? `\n\nВ вашем маршруте рядом с этим: ${params.activeTaskTitles.slice(0, 2).join("; ")}.`
@@ -55,11 +55,15 @@ export function answerMentorQuestion(params: MentorQuestionParams): MentorAnswer
     isGrounded: true,
     needsManagerReview: false,
     sources,
-    answer: `${lead}\n${sourceLines}${routeLine}\n\nЕсли ситуация отличается от демо-регламента точки, остановитесь и уточните у старшего смены.`
+    answer: `${lead}\n${sourceLines}${routeLine}\n\nИспользуются примерные стандарты сети для показа. Если ситуация отличается от регламента точки, остановитесь и уточните у старшего смены.`
   };
 }
 
 function createExcerpt(content: string) {
   const sentence = content.split(/(?<=[.!?])\s+/)[0] ?? content;
   return sentence.length > 220 ? `${sentence.slice(0, 217)}...` : sentence;
+}
+
+function formatSourceName(source: string) {
+  return source.replace(/^Demo KB\s*·\s*/i, "пример стандарта сети · ");
 }

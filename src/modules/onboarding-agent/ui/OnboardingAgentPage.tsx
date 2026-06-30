@@ -14,8 +14,44 @@ import { StepProgress, onboardingSteps } from "./components";
 
 export function OnboardingAgentPage() {
   const { state, actions } = useOnboardingAgentState();
-  const currentStepIndex = onboardingSteps.findIndex((step) => step.id === state.currentStep) + 1;
+  const currentStepIndex =
+    onboardingSteps.findIndex((step) => step.stepIds.includes(state.currentStep)) + 1;
   const isLearningRouteStep = state.currentStep === "learning_route";
+  const canSelectStep = (step: (typeof onboardingSteps)[number]["id"]) => {
+    if (step === "employee_profile") {
+      return true;
+    }
+
+    if (step === "diagnostic") {
+      return Boolean(state.employee);
+    }
+
+    if (step === "diagnostic_result") {
+      return Boolean(state.diagnosticResult);
+    }
+
+    if (step === "learning_route") {
+      return Boolean(state.learningRoute);
+    }
+
+    return false;
+  };
+  const selectStep = (step: (typeof onboardingSteps)[number]["id"]) => {
+    if (!canSelectStep(step)) {
+      return;
+    }
+
+    if (step === "diagnostic") {
+      actions.goToStep(
+        state.diagnosticQuestions.length > 0 && !state.diagnosticResult
+          ? "diagnostic"
+          : "competency_map",
+      );
+      return;
+    }
+
+    actions.goToStep(step);
+  };
 
   return (
     <MayakShell
@@ -24,19 +60,23 @@ export function OnboardingAgentPage() {
       topBar={
         <MayakTopBar
           brand="Valle Sanchez"
-          subtitle="barista assessment"
+          subtitle="входное тестирование бариста"
           icon={<Coffee className="h-5 w-5" aria-hidden="true" />}
           meta={
             <>
               <Sparkles className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-              Шаг {currentStepIndex} из {onboardingSteps.length}
+              Этап {currentStepIndex} из {onboardingSteps.length}
             </>
           }
           userName={state.employee?.name ?? "Новый бариста"}
         />
       }
     >
-      <StepProgress currentStep={state.currentStep} />
+      <StepProgress
+        currentStep={state.currentStep}
+        canSelectStep={canSelectStep}
+        onSelectStep={selectStep}
+      />
 
       <section
         className={

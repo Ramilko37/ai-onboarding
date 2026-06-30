@@ -9,6 +9,8 @@ import type {
 import {
   buildLiveManagerRecord,
   demoManagerRecords,
+  getAttentionSummary,
+  getTopicAnalytics,
   mergeManagerRecords
 } from "./managerDashboardData";
 
@@ -36,6 +38,10 @@ test("buildLiveManagerRecord summarizes barista diagnostic result without raw an
   assert.equal(record.riskLevel, "high");
   assert.equal(record.readinessLabel, "Нужна поддержка перед сменой");
   assert.match(record.managerRecommendation, /эспрессо|молок|наставник/i);
+  assert.equal(record.routeStatus, "has_blockers");
+  assert.equal(record.taskStatusSummary.needs_mentor, 1);
+  assert.deepEqual(record.blockedTaskTitles, ["Потренировать молоко с наставником"]);
+  assert.match(record.manualCheck, /Проверить руками/i);
   assert.deepEqual(record.criticalTopicTitles, [
     "Настройка эспрессо",
     "Молоко и текстура"
@@ -70,6 +76,27 @@ test("buildLiveManagerRecord marks strong baristas ready for supervised shift", 
   assert.equal(record.riskLevel, "low");
   assert.equal(record.readinessLabel, "Готов к смене под обычным контролем");
   assert.match(record.managerRecommendation, /закрепить|контроль/i);
+});
+
+test("manager analytics summarize attention and repeated weak topics", () => {
+  const liveRecord = buildLiveManagerRecord({
+    employee,
+    result: makeResult({
+      totalScorePercent: 58,
+      criticalTopicIds: ["barista-milk-texture"]
+    }),
+    route: makeRoute()
+  });
+  const records = mergeManagerRecords([liveRecord]);
+  const attention = getAttentionSummary(records);
+  const topics = getTopicAnalytics(records);
+
+  assert.equal(attention.highRiskCount >= 1, true);
+  assert.equal(attention.milkCriticalCount >= 1, true);
+  assert.equal(
+    topics.some((topic) => /молок/i.test(topic.title) && topic.count >= 1),
+    true
+  );
 });
 
 function makeResult(params: {
@@ -138,14 +165,42 @@ function makeRoute(): LearningRoute {
         title: "День 1",
         goal: "Закрыть критичные стандарты стойки.",
         focus: "Эспрессо, молоко, чистка.",
-        tasks: []
+        tasks: [
+          {
+            id: "milk-help",
+            dayId: "day_1",
+            topicId: "barista-milk-texture",
+            title: "Потренировать молоко с наставником",
+            description: "Отработать микропену на капучино.",
+            type: "practice",
+            priority: "required",
+            status: "needs_mentor",
+            estimatedMinutes: 20,
+            source: "Стандарт молока",
+            reason: "Критичная тема требует контроля наставника."
+          }
+        ]
       },
       {
         id: "day_7",
         title: "День 7",
         goal: "Отработать напитки в потоке.",
         focus: "Практика под контролем.",
-        tasks: []
+        tasks: [
+          {
+            id: "espresso-progress",
+            dayId: "day_7",
+            topicId: "barista-espresso-setup",
+            title: "Контрольные шоты в потоке",
+            description: "Проверить повторяемость эспрессо.",
+            type: "check",
+            priority: "recommended",
+            status: "in_progress",
+            estimatedMinutes: 15,
+            source: "Стандарт эспрессо",
+            reason: "Нужно закрепить настройку на практике."
+          }
+        ]
       },
       {
         id: "day_14",

@@ -21,7 +21,7 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
           kicker={
             <>
               <Heart className="h-3 w-3 text-primary" aria-hidden="true" />
-              Valle Sanchez · barista assessment
+              Valle Sanchez · входное тестирование бариста
             </>
           }
           title={
@@ -31,14 +31,14 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
               <span className="text-muted-foreground">Стандарты кофе, диагностика и личный план.</span>
             </>
           }
-          description="Система мягко определяет стартовый уровень по demo-стандартам кофеварения, показывает skill gaps и собирает маршрут развития на 1, 7 и 14 дней. Это поддержка обучения, а не кадровое решение."
+          description="Система мягко определяет стартовый уровень по примерным стандартам кофеварения, показывает зоны развития и собирает маршрут на День 1, День 7 и День 14. Это поддержка обучения, а не кадровое решение."
         />
 
         <div className="grid gap-2 sm:grid-cols-3">
           {[
             ["1", "Профиль", "грейд и кофейня"],
             ["2", "Диагностика", "кофейные стандарты"],
-            ["3", "Маршрут", "day 1 / 7 / 14"],
+            ["3", "Маршрут", "День 1 / 7 / 14"],
           ].map(([number, title, caption]) => (
             <div className="rounded-2xl border border-border bg-card p-3" key={number}>
               <MayakBadge tone="primary">{number}</MayakBadge>
@@ -52,14 +52,21 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
           <MayakInsightCard
             tone="primary"
             icon={<Sparkles className="h-4 w-4" aria-hidden="true" />}
-            title="Сократим знакомое, усилим новое"
-            description="Темы, которые вы уже знаете, пройдём короче."
+            title="Узнаем, где уже уверенно"
+            description="Знакомые стандарты пройдём короче, чтобы не тратить время зря."
           />
           <MayakInsightCard
             tone="accent"
             icon={<Compass className="h-4 w-4" aria-hidden="true" />}
-            title="Покажем, что делать сегодня"
-            description="После диагностики появится первый план развития."
+            title="Покажем, где нужен наставник"
+            description="После диагностики появятся зоны развития и первый план поддержки."
+          />
+          <MayakInsightCard
+            tone="neutral"
+            icon={<Sparkles className="h-4 w-4" aria-hidden="true" />}
+            title="Соберём план развития"
+            description="План будет разбит на День 1, День 7 и День 14."
+            className="sm:col-span-2"
           />
         </div>
 
@@ -69,7 +76,7 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </PrimaryButton>
           <span className="max-w-xs text-xs leading-relaxed text-muted-foreground">
-            Диагностика не оценивает человека — она убирает лишнее обучение.
+            Это не кадровое решение. Итог помогает руководителю подобрать обучение и поддержку.
           </span>
         </div>
       </MayakPanel>

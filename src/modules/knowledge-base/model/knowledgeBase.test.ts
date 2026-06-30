@@ -83,7 +83,7 @@ test("answerMentorQuestion returns grounded answer and citations", () => {
   assert.ok(response.sources.some((source) => source.title === "Регламент хранения продуктов"));
 });
 
-test("answerMentorQuestion returns grounded barista answer with demo-source disclaimer", () => {
+test("answerMentorQuestion returns grounded barista answer with sample-standard disclaimer", () => {
   const response = answerMentorQuestion({
     question: "Что делать если эспрессо течёт слишком быстро?",
     role: "barista",
@@ -93,7 +93,8 @@ test("answerMentorQuestion returns grounded barista answer with demo-source disc
 
   assert.equal(response.isGrounded, true);
   assert.equal(response.needsManagerReview, false);
-  assert.match(response.answer, /Demo KB|демо/i);
+  assert.match(response.answer, /примерные стандарты сети/i);
+  assert.equal(response.answer.includes("Demo KB"), false);
   assert.ok(response.sources.some((source) => /эспрессо/i.test(source.title)));
 });
 
@@ -119,5 +120,5 @@ test("answerMentorQuestion falls back for unknown questions even with route topi
   assert.equal(response.isGrounded, false);
   assert.equal(response.needsManagerReview, true);
   assert.deepEqual(response.sources, []);
-  assert.match(response.answer, /нет надёжного источника|уточнить/i);
+  assert.match(response.answer, /нет надёжного источника|Создайте вопрос наставнику|уточнить/i);
 });

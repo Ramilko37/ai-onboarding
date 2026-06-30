@@ -1,6 +1,10 @@
-import { ArrowRight, Check, MapPin } from "lucide-react";
+import { ArrowRight, Check, HelpCircle, MapPin } from "lucide-react";
 import Link from "next/link";
-import type { LearningRoute } from "../../onboarding-agent/model/learningRouteTypes";
+import type {
+  LearningRoute,
+  LearningRouteDay,
+  LearningTaskStatus
+} from "../../onboarding-agent/model/learningRouteTypes";
 import { journeyStages, type JourneyStage } from "../data";
 
 function StageNode({ status }: { status: JourneyStage["status"] }) {
@@ -27,11 +31,27 @@ function StageNode({ status }: { status: JourneyStage["status"] }) {
   );
 }
 
-export function JourneyMap({ route }: { route?: LearningRoute }) {
+const taskStatusOptions: Array<{ value: LearningTaskStatus; label: string }> = [
+  { value: "todo", label: "Не начато" },
+  { value: "in_progress", label: "В работе" },
+  { value: "done", label: "Готово" },
+  { value: "needs_mentor", label: "Нужна помощь наставника" },
+];
+
+export function JourneyMap({
+  route,
+  onUpdateTaskStatus,
+}: {
+  route?: LearningRoute;
+  onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
+}) {
   const stages = route ? getRouteStages(route) : journeyStages;
 
   return (
-    <section className="flex w-full min-w-0 flex-col rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm">
+    <section
+      className="flex w-full min-w-0 flex-col rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm"
+      id="route-plan"
+    >
       <div className="mb-3 flex shrink-0 items-center gap-2.5">
         <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
           <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
@@ -105,6 +125,31 @@ export function JourneyMap({ route }: { route?: LearningRoute }) {
           );
         })}
       </ol>
+
+      {route && (
+        <div className="mt-4 border-t border-border pt-4">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 className="text-sm font-semibold tracking-tight text-foreground">
+                Задачи маршрута
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Статусы видны руководителю в дашборде
+              </p>
+            </div>
+            <RouteStatusPill route={route} />
+          </div>
+          <div className="grid gap-3">
+            {route.days.map((day) => (
+              <RouteDayTasks
+                day={day}
+                key={day.id}
+                onUpdateTaskStatus={onUpdateTaskStatus}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -126,4 +171,73 @@ function getRouteStages(route: LearningRoute): JourneyStage[] {
       day: day.title,
     })),
   ];
+}
+
+function RouteDayTasks({
+  day,
+  onUpdateTaskStatus,
+}: {
+  day: LearningRouteDay;
+  onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
+}) {
+  return (
+    <div className="rounded-2xl border border-border bg-secondary/30 p-3">
+      <p className="text-xs font-semibold text-foreground">{day.title}</p>
+      <div className="mt-2 grid gap-2">
+        {day.tasks.slice(0, 4).map((task) => (
+          <article
+            className="grid gap-2 rounded-xl border border-border bg-card px-3 py-2 sm:grid-cols-[1fr_auto] sm:items-center"
+            key={task.id}
+          >
+            <div className="min-w-0">
+              <p className="text-xs font-semibold leading-snug text-foreground">
+                {task.title}
+              </p>
+              <p className="mt-0.5 line-clamp-2 text-[11px] leading-relaxed text-muted-foreground">
+                {task.reason}
+              </p>
+            </div>
+            <select
+              aria-label={`Статус задачи ${task.title}`}
+              className="min-h-9 rounded-full border border-border bg-card px-3 text-xs font-medium text-foreground outline-none transition hover:border-primary/40 focus:border-primary/50"
+              disabled={!onUpdateTaskStatus}
+              onChange={(event) =>
+                onUpdateTaskStatus?.(task.id, event.target.value as LearningTaskStatus)
+              }
+              value={task.status}
+            >
+              {taskStatusOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function RouteStatusPill({ route }: { route: LearningRoute }) {
+  const tasks = route.days.flatMap((day) => day.tasks);
+  const needsMentor = tasks.filter((task) => task.status === "needs_mentor").length;
+  const done = tasks.filter((task) => task.status === "done").length;
+  const inProgress = tasks.filter((task) => task.status === "in_progress").length;
+  const total = tasks.length;
+  const label =
+    needsMentor > 0
+      ? "есть блокеры"
+      : total > 0 && done === total
+        ? "завершён"
+        : done > 0 || inProgress > 0
+          ? "в работе"
+          : "не начат";
+
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-secondary-foreground">
+      {needsMentor > 0 && <HelpCircle className="h-3 w-3 text-primary" aria-hidden="true" />}
+      {label}
+    </span>
+  );
 }

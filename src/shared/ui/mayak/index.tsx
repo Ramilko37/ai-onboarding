@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from "react
 import Link from "next/link";
 import type { LinkProps } from "next/link";
 
-export type MayakTone = "primary" | "secondary" | "accent" | "muted" | "success" | "danger";
+export type MayakTone = "primary" | "secondary" | "accent" | "muted" | "success" | "danger" | "warning" | "info";
 export type MayakButtonVariant = "primary" | "secondary" | "ghost";
 
 type ClassValue = string | false | null | undefined;
@@ -25,7 +25,7 @@ export const mayakSurface = {
 
 export const mayakTypography = {
   eyebrow: "font-mono text-[10px] font-medium uppercase tracking-wider",
-  h1: "text-pretty text-2xl font-semibold leading-tight tracking-tight text-foreground sm:text-3xl",
+  h1: "font-brand text-pretty text-2xl font-semibold leading-tight tracking-tight text-foreground sm:text-3xl",
   h2: "text-sm font-semibold tracking-tight text-foreground",
   body: "text-pretty text-sm leading-relaxed text-muted-foreground",
   caption: "text-xs leading-relaxed text-muted-foreground",
@@ -39,8 +39,10 @@ const badgeTone: Record<MayakTone, string> = {
   secondary: "bg-secondary text-secondary-foreground",
   accent: "bg-accent text-accent-foreground",
   muted: "bg-muted text-muted-foreground",
-  success: "bg-[color-mix(in_oklch,oklch(0.7_0.12_160)_22%,transparent)] text-[oklch(0.45_0.1_160)]",
-  danger: "bg-[color-mix(in_oklch,oklch(0.7_0.13_35)_22%,transparent)] text-[oklch(0.5_0.13_32)]",
+  success: "bg-[color-mix(in_oklch,var(--success)_14%,transparent)] text-success",
+  danger: "bg-[color-mix(in_oklch,var(--danger)_14%,transparent)] text-danger",
+  warning: "bg-[color-mix(in_oklch,var(--warning)_16%,transparent)] text-warning",
+  info: "bg-[color-mix(in_oklch,var(--info)_14%,transparent)] text-info",
 };
 
 const iconTone: Record<MayakTone, string> = {
@@ -48,8 +50,10 @@ const iconTone: Record<MayakTone, string> = {
   secondary: "bg-secondary text-secondary-foreground",
   accent: "bg-accent text-accent-foreground",
   muted: "bg-muted text-muted-foreground",
-  success: "bg-[color-mix(in_oklch,oklch(0.7_0.12_160)_22%,transparent)] text-[oklch(0.45_0.1_160)]",
-  danger: "bg-[color-mix(in_oklch,oklch(0.7_0.13_35)_22%,transparent)] text-[oklch(0.5_0.13_32)]",
+  success: "bg-[color-mix(in_oklch,var(--success)_14%,transparent)] text-success",
+  danger: "bg-[color-mix(in_oklch,var(--danger)_14%,transparent)] text-danger",
+  warning: "bg-[color-mix(in_oklch,var(--warning)_16%,transparent)] text-warning",
+  info: "bg-[color-mix(in_oklch,var(--info)_14%,transparent)] text-info",
 };
 
 type MayakAmbientBackgroundProps = {
@@ -151,7 +155,7 @@ export function MayakTopBar({
             </span>
           )}
           <div className="min-w-0 leading-tight">
-            <p className="truncate text-sm font-semibold tracking-tight text-foreground">{brand}</p>
+            <p className="font-brand truncate text-sm font-semibold tracking-tight text-foreground">{brand}</p>
             {subtitle && (
               <p className="truncate font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                 {subtitle}

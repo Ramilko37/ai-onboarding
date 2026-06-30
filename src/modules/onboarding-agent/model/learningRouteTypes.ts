@@ -2,7 +2,13 @@ export type LearningTaskStatus =
   | "todo"
   | "in_progress"
   | "done"
-  | `${"block"}ed`;
+  | "needs_mentor";
+
+export type LearningRouteStatus =
+  | "not_started"
+  | "in_progress"
+  | "has_blockers"
+  | "completed";
 
 export type LearningTaskType =
   | "intro"

@@ -113,7 +113,7 @@ export function Assistant({
             </span>
           </div>
           <p className="truncate text-xs text-muted-foreground">
-            Отвечает по demo-базе кофейных стандартов
+            Отвечает по базе кофейных стандартов
           </p>
         </div>
       </div>
@@ -213,7 +213,7 @@ function createOpeningMessages(employeeName?: string): AssistantMessage[] {
     {
       id: "m1",
       author: "guide",
-      text: `Привет, ${name}. Я помощник Valle Sanchez на старте. Я отвечаю только по demo-базе знаний и показываю источники, чтобы не выдумывать правила точки.`,
+      text: `Привет, ${name}. Я помощник Valle Sanchez на старте. Я отвечаю по базе стандартов и показываю источники, чтобы не выдумывать правила точки.`,
     },
     {
       id: "m2",

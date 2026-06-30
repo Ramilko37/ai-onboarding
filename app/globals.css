@@ -1,17 +1,8 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Tenor Sans";
-  src:
-    url("https://vallesanchez.ru/assets/cee72614/fonts/TenorSans-Regular.woff2") format("woff2"),
-    url("https://vallesanchez.ru/assets/cee72614/fonts/TenorSans-Regular.woff") format("woff");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 400;
-}
-
 @theme inline {
-  --font-sans: "Tenor Sans", var(--font-geist-sans), "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-brand: "Tenor Sans", Georgia, "Times New Roman", ui-serif, serif;
   --font-mono: var(--font-geist-mono), "Geist Mono Fallback", ui-monospace, monospace;
 
   --color-background: var(--background);
@@ -31,6 +22,10 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+  --color-info: var(--info);
 
   --color-aurora-1: var(--aurora-1);
   --color-aurora-2: var(--aurora-2);
@@ -69,6 +64,11 @@
 
   --accent: #e2c49e;
   --accent-foreground: #4e2015;
+
+  --danger: #b42318;
+  --warning: #b05c3b;
+  --success: #1f7a4d;
+  --info: #2f5f7c;
 
   --border: color-mix(in oklch, #951d1f 22%, #fff0cf);
   --input: color-mix(in oklch, #951d1f 22%, #fff0cf);

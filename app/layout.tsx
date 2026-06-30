@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Valle Sanchez · тестирование бариста",
   description:
-    "Бариста-версия прототипа для входной диагностики, skill gap analysis и персонального маршрута развития.",
+    "Входное тестирование бариста, анализ зон развития и персональный маршрут обучения.",
 };
 
 export const viewport: Viewport = {

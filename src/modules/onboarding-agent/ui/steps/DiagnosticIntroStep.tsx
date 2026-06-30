@@ -115,7 +115,7 @@ export function DiagnosticIntroStep({
         </div>
 
         <p className="text-xs leading-relaxed text-deep-muted">
-          Знакомые темы пройдём короче, а где нужно — добавим demo-стандарт, практику или наставника.
+          Знакомые темы пройдём короче, а где нужно — добавим стандарт сети, практику или наставника.
         </p>
       </MayakPanel>
     </MayakPanel>

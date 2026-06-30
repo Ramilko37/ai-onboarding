@@ -1,4 +1,8 @@
-import type { LearningRoute } from "../../onboarding-agent/model/learningRouteTypes";
+import type {
+  LearningRoute,
+  LearningRouteStatus,
+  LearningTaskStatus
+} from "../../onboarding-agent/model/learningRouteTypes";
 import type {
   DiagnosticResult,
   EmployeeGrade,
@@ -28,6 +32,24 @@ export type ManagerDashboardRecord = {
   requiredTopicTitles: string[];
   routeSummary: string;
   routeHighlights: string[];
+  routeStatus: LearningRouteStatus;
+  taskStatusSummary: Record<LearningTaskStatus, number>;
+  mentorName: string;
+  manualCheck: string;
+  retestDate: string;
+  nextAction: string;
+  blockedTaskTitles: string[];
+};
+
+export type ManagerAttentionSummary = {
+  highRiskCount: number;
+  milkCriticalCount: number;
+  day7RetestCount: number;
+};
+
+export type ManagerTopicAnalyticsItem = {
+  title: string;
+  count: number;
 };
 
 export const demoManagerRecords: ManagerDashboardRecord[] = [
@@ -50,7 +72,14 @@ export const demoManagerRecords: ManagerDashboardRecord[] = [
     requiredTopicTitles: ["Гигиена стойки", "Молоко и текстура", "Чистка оборудования"],
     routeSummary:
       "Маршрут сфокусирован на повторяемости эспрессо и коротком контроле обязательных стандартов.",
-    routeHighlights: ["День 1: контроль чистки", "День 7: эспрессо в потоке", "День 14: повторная проверка"]
+    routeHighlights: ["День 1: контроль чистки", "День 7: эспрессо в потоке", "День 14: повторная проверка"],
+    routeStatus: "in_progress",
+    taskStatusSummary: { todo: 2, in_progress: 1, done: 3, needs_mentor: 0 },
+    mentorName: "Екатерина, старший бариста",
+    manualCheck: "Контрольные шоты эспрессо и чистка группы в конце смены",
+    retestDate: "2026-07-01",
+    nextAction: "Подтвердить готовность",
+    blockedTaskTitles: []
   },
   {
     id: "demo-barista-2",
@@ -71,7 +100,14 @@ export const demoManagerRecords: ManagerDashboardRecord[] = [
     requiredTopicTitles: ["Гигиена стойки", "Молоко и текстура", "Чистка оборудования"],
     routeSummary:
       "Маршрут усиливает обязательные блоки и переносит напитки в поток только после практики с наставником.",
-    routeHighlights: ["День 1: полный модуль", "День 7: практика под контролем", "День 14: повторная проверка"]
+    routeHighlights: ["День 1: полный модуль", "День 7: практика под контролем", "День 14: повторная проверка"],
+    routeStatus: "has_blockers",
+    taskStatusSummary: { todo: 4, in_progress: 1, done: 0, needs_mentor: 2 },
+    mentorName: "Илья, наставник кофейни",
+    manualCheck: "Первые молочные напитки и обратная промывка группы только под наблюдением",
+    retestDate: "2026-07-02",
+    nextAction: "Назначить наставника",
+    blockedTaskTitles: ["Настройка эспрессо перед потоком", "Молоко и текстура"]
   },
   {
     id: "demo-barista-3",
@@ -85,14 +121,21 @@ export const demoManagerRecords: ManagerDashboardRecord[] = [
     riskLevel: "medium",
     readinessLabel: "Можно в смену с точечным контролем",
     managerRecommendation:
-      "Дать смену с контролем рецептур молочных напитков и короткой сверкой demo-стандартов.",
+      "Дать смену с контролем рецептур молочных напитков и короткой сверкой стандартов сети.",
     strongTopicTitles: ["Зерно и хранение", "Работа в потоке"],
     weakTopicTitles: ["Рецептуры напитков", "Молоко и текстура"],
     criticalTopicTitles: ["Молоко и текстура"],
     requiredTopicTitles: ["Гигиена стойки", "Молоко и текстура", "Чистка оборудования"],
     routeSummary:
       "Маршрут короткий по знакомым темам, но сохраняет повторную проверку молока.",
-    routeHighlights: ["День 1: контроль молока", "День 7: поток", "День 14: чек рецептур"]
+    routeHighlights: ["День 1: контроль молока", "День 7: поток", "День 14: чек рецептур"],
+    routeStatus: "in_progress",
+    taskStatusSummary: { todo: 3, in_progress: 2, done: 1, needs_mentor: 1 },
+    mentorName: "Анна, старший бариста",
+    manualCheck: "Текстура молока на капучино и сверка рецептур молочных напитков",
+    retestDate: "2026-07-03",
+    nextAction: "Допустить с точечным контролем",
+    blockedTaskTitles: ["Молоко и текстура"]
   }
 ];
 
@@ -104,6 +147,9 @@ export function buildLiveManagerRecord(params: {
   const riskLevel = getRiskLevel(params.result);
   const criticalTopicTitles = params.result.criticalTopics.map((topic) => topic.topicTitle);
   const weakTopicTitles = params.result.weakTopics.map((topic) => topic.topicTitle);
+
+  const routeStatus = getRouteStatus(params.route);
+  const taskStatusSummary = getTaskStatusSummary(params.route);
 
   return {
     id: params.employee.id,
@@ -126,7 +172,17 @@ export function buildLiveManagerRecord(params: {
     criticalTopicTitles,
     requiredTopicTitles: params.result.requiredTopics.map((topic) => topic.topicTitle),
     routeSummary: params.route.summary,
-    routeHighlights: params.route.days.map((day) => `${day.title}: ${day.goal}`)
+    routeHighlights: params.route.days.map((day) => `${day.title}: ${day.goal}`),
+    routeStatus,
+    taskStatusSummary,
+    mentorName: chooseMentorName(riskLevel),
+    manualCheck: buildManualCheck(criticalTopicTitles, weakTopicTitles),
+    retestDate: buildRetestDate(params.result.completedAt, riskLevel),
+    nextAction: getDefaultNextAction(riskLevel),
+    blockedTaskTitles: params.route.days
+      .flatMap((day) => day.tasks)
+      .filter((task) => task.status === "needs_mentor")
+      .map((task) => task.title)
   };
 }
 
@@ -151,6 +207,33 @@ export function mergeManagerRecords(
   );
 }
 
+export function getAttentionSummary(records: ManagerDashboardRecord[]): ManagerAttentionSummary {
+  return {
+    highRiskCount: records.filter((record) => record.riskLevel === "high").length,
+    milkCriticalCount: records.filter((record) =>
+      record.criticalTopicTitles.some((topic) => /молок|текстур/i.test(topic))
+    ).length,
+    day7RetestCount: records.filter((record) =>
+      record.routeHighlights.some((highlight) => /день 7|повторн|провер/i.test(highlight))
+    ).length
+  };
+}
+
+export function getTopicAnalytics(records: ManagerDashboardRecord[]): ManagerTopicAnalyticsItem[] {
+  const counts = new Map<string, number>();
+
+  for (const record of records) {
+    for (const topic of record.weakTopicTitles) {
+      counts.set(topic, (counts.get(topic) ?? 0) + 1);
+    }
+  }
+
+  return [...counts.entries()]
+    .map(([title, count]) => ({ title, count }))
+    .sort((first, second) => second.count - first.count || first.title.localeCompare(second.title))
+    .slice(0, 5);
+}
+
 export function readLiveManagerRecords(): ManagerDashboardRecord[] {
   if (typeof window === "undefined") {
     return [];
@@ -163,10 +246,32 @@ export function readLiveManagerRecords(): ManagerDashboardRecord[] {
     }
 
     const records = JSON.parse(rawRecords);
-    return Array.isArray(records) ? records.filter(isManagerRecord) : [];
+    return Array.isArray(records)
+      ? records.filter(isManagerRecord).map(normalizeManagerRecord)
+      : [];
   } catch {
     return [];
   }
+}
+
+function normalizeManagerRecord(record: ManagerDashboardRecord): ManagerDashboardRecord {
+  const riskLevel = record.riskLevel ?? "medium";
+
+  return {
+    ...record,
+    routeStatus: record.routeStatus ?? "not_started",
+    taskStatusSummary: record.taskStatusSummary ?? {
+      todo: 0,
+      in_progress: 0,
+      done: 0,
+      needs_mentor: 0
+    },
+    mentorName: record.mentorName ?? chooseMentorName(riskLevel),
+    manualCheck: record.manualCheck ?? buildManualCheck(record.criticalTopicTitles, record.weakTopicTitles),
+    retestDate: record.retestDate ?? buildRetestDate(record.completedAt, riskLevel),
+    nextAction: record.nextAction ?? getDefaultNextAction(riskLevel),
+    blockedTaskTitles: record.blockedTaskTitles ?? []
+  };
 }
 
 export function saveLiveManagerRecord(record: ManagerDashboardRecord) {
@@ -225,6 +330,79 @@ function buildManagerRecommendation(params: {
   }
 
   return "Закрепить сильные темы коротким контролем и оставить обычный контроль обязательных стандартов стойки.";
+}
+
+function getTaskStatusSummary(route: LearningRoute): Record<LearningTaskStatus, number> {
+  const summary: Record<LearningTaskStatus, number> = {
+    todo: 0,
+    in_progress: 0,
+    done: 0,
+    needs_mentor: 0
+  };
+
+  for (const task of route.days.flatMap((day) => day.tasks)) {
+    summary[task.status] += 1;
+  }
+
+  return summary;
+}
+
+function getRouteStatus(route: LearningRoute): LearningRouteStatus {
+  const summary = getTaskStatusSummary(route);
+  const totalTasks = Object.values(summary).reduce((sum, count) => sum + count, 0);
+
+  if (summary.needs_mentor > 0) {
+    return "has_blockers";
+  }
+
+  if (totalTasks > 0 && summary.done === totalTasks) {
+    return "completed";
+  }
+
+  if (summary.done > 0 || summary.in_progress > 0) {
+    return "in_progress";
+  }
+
+  return "not_started";
+}
+
+function chooseMentorName(riskLevel: ManagerRiskLevel) {
+  const mentors: Record<ManagerRiskLevel, string> = {
+    high: "Старший бариста смены",
+    medium: "Наставник кофейни",
+    low: "Ответственный за смену"
+  };
+
+  return mentors[riskLevel];
+}
+
+function buildManualCheck(criticalTopicTitles: string[], weakTopicTitles: string[]) {
+  const focusTopics = criticalTopicTitles.length > 0 ? criticalTopicTitles : weakTopicTitles;
+  const focus = formatTopicList(focusTopics);
+
+  return `Проверить руками: ${focus}. Отметить результат после первой практики в смене.`;
+}
+
+function buildRetestDate(completedAt: string, riskLevel: ManagerRiskLevel) {
+  const daysToAdd: Record<ManagerRiskLevel, number> = {
+    high: 7,
+    medium: 7,
+    low: 14
+  };
+  const date = new Date(completedAt);
+  date.setDate(date.getDate() + daysToAdd[riskLevel]);
+
+  return date.toISOString().slice(0, 10);
+}
+
+function getDefaultNextAction(riskLevel: ManagerRiskLevel) {
+  const actions: Record<ManagerRiskLevel, string> = {
+    high: "Назначить наставника",
+    medium: "Допустить с точечным контролем",
+    low: "Подтвердить готовность"
+  };
+
+  return actions[riskLevel];
 }
 
 function formatTopicList(topics: string[]) {

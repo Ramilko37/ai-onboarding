@@ -257,21 +257,33 @@ export function useOnboardingAgentState() {
       },
       updateLearningTaskStatus(taskId: string, status: LearningTaskStatus) {
         setState((previous) => {
-          if (!previous.learningRoute) {
+          if (!previous.employee || !previous.diagnosticResult || !previous.learningRoute) {
             return previous;
+          }
+
+          const learningRoute = {
+            ...previous.learningRoute,
+            days: previous.learningRoute.days.map((day) => ({
+              ...day,
+              tasks: day.tasks.map((task) =>
+                task.id === taskId ? { ...task, status } : task
+              )
+            }))
+          };
+
+          if (previous.employee.role === "barista") {
+            saveLiveManagerRecord(
+              buildLiveManagerRecord({
+                employee: previous.employee,
+                result: previous.diagnosticResult,
+                route: learningRoute
+              })
+            );
           }
 
           return {
             ...previous,
-            learningRoute: {
-              ...previous.learningRoute,
-              days: previous.learningRoute.days.map((day) => ({
-                ...day,
-                tasks: day.tasks.map((task) =>
-                  task.id === taskId ? { ...task, status } : task
-                )
-              }))
-            }
+            learningRoute
           };
         });
       },

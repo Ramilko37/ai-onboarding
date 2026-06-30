@@ -10,6 +10,8 @@ import type {
 export function LearningRouteStep({
   employee,
   route,
+  onReset,
+  onUpdateTaskStatus,
 }: {
   employee: EmployeeProfile;
   route: LearningRoute;
@@ -27,6 +29,8 @@ export function LearningRouteStep({
         location: employee.location,
       }}
       route={route}
+      onReset={onReset}
+      onUpdateTaskStatus={onUpdateTaskStatus}
     />
   );
 }

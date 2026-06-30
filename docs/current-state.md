@@ -1,6 +1,6 @@
 # Current Project State
 
-Last updated: 2026-06-28
+Last updated: 2026-06-30
 
 ## Product Scope
 
@@ -10,9 +10,11 @@ The visible product flow is now centered on one role:
 
 - Barista.
 
-The prototype supports high-volume onboarding of new baristas: an employee enters profile data and grade, passes a soft first-day diagnostic based on demo coffee standards, receives topic-level skill-gap analysis, and gets a personal development route for day 1, day 7, and day 14.
+The prototype supports high-volume onboarding of new baristas: an employee enters profile data and grade, passes a soft first-day diagnostic based on sample coffee standards, receives topic-level development areas, and gets a personal development route for day 1, day 7, and day 14.
 
 The manager dashboard shows a demo cohort plus live diagnostic results saved in this browser. There is still no backend, external LLM, external embeddings service, or production vector database.
+
+The UX/UI layer has been prepared for customer demo: visible wording is product-facing, the role is fixed as the barista scenario, the employee route links directly to the manager dashboard, and the manager dashboard now includes next actions, attention items, topic analytics, route statuses, and mock action capture.
 
 ## Implemented Routes
 
@@ -30,21 +32,24 @@ The manager dashboard shows a demo cohort plus live diagnostic results saved in 
 
 Current employee flow:
 
-1. Welcome screen for Valle Sanchez barista assessment.
+1. Welcome screen for Valle Sanchez barista entry testing.
 2. Barista profile form: name, grade, coffee shop, start date.
 3. Barista competency map for day 1, day 7, and day 14.
 4. Diagnostic explanation screen.
 5. Diagnostic question flow.
 6. Topic-level diagnostic result.
 7. Automatically generated personal development route for day 1, day 7, and day 14.
-8. Final personal-space screen with route, today focus, knowledge map, and source-backed mentor chat.
+8. Final personal-space screen with route, today focus, knowledge map, source-backed mentor chat, task status controls, and a direct link to the manager dashboard.
 
 Current manager flow:
 
 1. Open `/manager`.
 2. Review cohort metrics: count, average score, high-risk baristas, ready baristas.
-3. Filter by risk level.
-4. Select a barista and review readiness, critical topics, development areas, manager recommendation, and route highlights.
+3. Review "today requires attention" and frequent development topics.
+4. Filter by risk level.
+5. Compare baristas in a desktop card-table layout or mobile cards.
+6. Select a barista and review readiness, critical topics, development areas, manager recommendation, next action, mentor, manual check, repeat test date, route status, and day 1/7/14 timeline.
+7. Click a mock manager action and see "action captured in demo" feedback.
 
 ## Domain Data
 
@@ -80,6 +85,15 @@ Current barista question bank:
 - Every barista diagnostic covers every barista competency topic.
 - Required topics stay in the route even when the score is high.
 
+Visible onboarding progress is grouped into four customer-facing stages:
+
+- Profile.
+- Test.
+- Result.
+- Development plan.
+
+The four-stage progress control is clickable: users can return to available stages without resetting completed data. Result and development-plan stages become selectable only after the corresponding result or route exists.
+
 ## Knowledge Base And Mentor Chat
 
 The knowledge base is still local demo content, now with a lightweight mock vector index:
@@ -89,6 +103,7 @@ The knowledge base is still local demo content, now with a lightweight mock vect
 - retrieval combines lexical matching with deterministic hashed-vector scoring;
 - vector score only boosts already relevant matches, so unrelated questions still fall back safely;
 - mentor answers cite source titles and excerpts;
+- mentor answers format demo source names as sample network standards in the visible UI;
 - unknown, HR, medical, legal, payroll, disciplinary, or sensitive questions fall back to manager / HR / mentor review.
 
 Barista demo sources include:
@@ -110,6 +125,8 @@ barista:assessment-results:v1
 ```
 
 The manager dashboard record stores summary data only: profile summary, total score, topic labels, critical topics, route highlights, risk level, readiness label, and manager recommendation. It does not store raw diagnostic answers.
+
+The manager dashboard record now also stores route status, task status counts, task titles marked as "needs mentor", default mentor label, manual check text, repeat test date, and next action. This is still local browser persistence only.
 
 ## Important Files
 
@@ -138,13 +155,15 @@ npm run test:manager-dashboard
 npm run build
 ```
 
-Latest completed verification on 2026-06-28:
+Latest completed verification on 2026-06-30:
 
 - `npm run test:diagnostic`
 - `npm run test:learning-route`
 - `npm run test:knowledge-base`
 - `npm run test:manager-dashboard`
 - `npm run build`
+- Browser smoke: completed barista diagnostic, generated route, marked a route task as needing mentor help, verified the saved barista appears in `/manager`, verified manager action feedback, checked desktop and mobile manager/onboarding screens, and confirmed no browser console errors after removing the blocked remote font request.
+- 2026-06-30 follow-up: `npm run build` after enabling clickable stage navigation.
 
 ## Explicitly Not Implemented
 
