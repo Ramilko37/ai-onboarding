@@ -41,11 +41,11 @@ export function answerMentorQuestion(params: MentorQuestionParams): MentorAnswer
   }));
 
   const lead = params.employeeName
-    ? `${params.employeeName}, по базе знаний Маяка:`
-    : "По базе знаний Маяка:";
+    ? `${params.employeeName}, по demo-базе знаний Valle Sanchez:`
+    : "По demo-базе знаний Valle Sanchez:";
   const sourceLines = sources
     .slice(0, 2)
-    .map((source) => `Источник: ${source.title} — ${source.excerpt}`)
+    .map((source) => `Источник: ${source.source} — ${source.excerpt}`)
     .join("\n");
   const routeLine = params.activeTaskTitles?.length
     ? `\n\nВ вашем маршруте рядом с этим: ${params.activeTaskTitles.slice(0, 2).join("; ")}.`

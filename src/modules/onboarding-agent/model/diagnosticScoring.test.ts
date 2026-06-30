@@ -11,7 +11,7 @@ import type {
 import { calculateDiagnosticResult } from "../lib/calculateDiagnosticResult";
 import { getDiagnosticQuestions } from "../lib/getDiagnosticQuestions";
 
-const roles: EmployeeRole[] = ["cook", "admin"];
+const roles: EmployeeRole[] = ["cook", "admin", "barista"];
 const grades: EmployeeGrade[] = [
   "no_experience",
   "horeca_experience",
@@ -62,6 +62,25 @@ test("getDiagnosticQuestions keeps basic anchors for network employees when a to
   assert.equal(adminNetworkTopicIds.has("admin-communication"), true);
   assert.equal(adminNetworkTopicIds.has("admin-orders"), true);
   assert.equal(adminNetworkTopicIds.has("admin-discounts"), true);
+});
+
+test("barista diagnostic covers coffee standards and keeps safety topics required", () => {
+  const questions = getDiagnosticQuestions({
+    role: "barista",
+    grade: "network_experience"
+  });
+  const selectedTopicIds = new Set(questions.map((question) => question.topicId));
+
+  assert.equal(questions.length, 12);
+  assert.equal(questions.every((question) => question.role === "barista"), true);
+  assert.equal(selectedTopicIds.has("barista-espresso-setup"), true);
+  assert.equal(selectedTopicIds.has("barista-milk-texture"), true);
+  assert.equal(selectedTopicIds.has("barista-equipment-cleaning"), true);
+  assert.deepEqual(getRoleTopicIds("barista", true), [
+    "barista-equipment-cleaning",
+    "barista-hygiene",
+    "barista-milk-texture"
+  ]);
 });
 
 test("calculateDiagnosticResult scores topics and keeps required topics mandatory", () => {
@@ -156,6 +175,57 @@ test("calculateDiagnosticResult scores topics and keeps required topics mandator
     result.requiredTopics.map((topic) => topic.topicId).sort(),
     getRoleTopicIds("cook", true)
   );
+});
+
+test("calculateDiagnosticResult scores barista gaps by coffee topic", () => {
+  const employee: EmployeeProfile = {
+    id: "barista-emp-1",
+    name: "София",
+    role: "barista",
+    grade: "horeca_experience",
+    location: "Valle Sanchez · Арбат",
+    startDate: "2026-06-28"
+  };
+  const questions = getDiagnosticQuestions({
+    role: employee.role,
+    grade: employee.grade
+  });
+  const answers: DiagnosticAnswer[] = questions.map((question) => {
+    const selectedOption =
+      question.topicId === "barista-espresso-setup"
+        ? question.options.find((option) => !option.isCorrect)
+        : question.options.find((option) => option.isCorrect);
+
+    assert.ok(selectedOption);
+
+    return {
+      questionId: question.id,
+      selectedOptionId: selectedOption.id,
+      isCorrect: selectedOption.isCorrect,
+      topicId: question.topicId,
+      weight: question.weight
+    };
+  });
+
+  const result = calculateDiagnosticResult({
+    employee,
+    questions,
+    answers,
+    topics: competencyTopics
+  });
+  const espresso = result.topicScores.find(
+    (topic) => topic.topicId === "barista-espresso-setup"
+  );
+  const cleaning = result.topicScores.find(
+    (topic) => topic.topicId === "barista-equipment-cleaning"
+  );
+
+  assert.equal(result.role, "barista");
+  assert.equal(result.topicScores.length, getRoleTopicIds("barista").length);
+  assert.equal(espresso?.status, "critical_gap");
+  assert.equal(espresso?.recommendation, "full_module_with_mentor");
+  assert.equal(cleaning?.required, true);
+  assert.equal(cleaning?.recommendation, "short_summary");
 });
 
 function getRoleTopicIds(role: EmployeeRole, requiredOnly = false) {

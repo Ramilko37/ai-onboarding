@@ -550,7 +550,281 @@ export const adminQuestions: DiagnosticQuestion[] = [
   }
 ];
 
+export const baristaQuestions: DiagnosticQuestion[] = [
+  {
+    id: "barista-q-001",
+    role: "barista",
+    topicId: "barista-hygiene",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Что бариста проверяет перед первым напитком на смене?",
+    options: [
+      { id: "a", text: "Только наличие стаканов на стойке", isCorrect: false },
+      { id: "b", text: "Чистоту рук, станции, инвентаря и готовность оборудования", isCorrect: true },
+      { id: "c", text: "Только очередь заказов", isCorrect: false },
+      { id: "d", text: "Только температуру в зале", isCorrect: false }
+    ],
+    explanation:
+      "Перед работой бариста проверяет личную гигиену, чистоту станции и безопасную готовность оборудования.",
+    source: "Demo KB · Стандарт гигиены кофейной стойки",
+    weight: 3
+  },
+  {
+    id: "barista-q-002",
+    role: "barista",
+    topicId: "barista-beans-storage",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Как правильно обращаться с открытым пакетом зерна в demo-стандарте?",
+    options: [
+      { id: "a", text: "Оставить открытым рядом с кофемолкой", isCorrect: false },
+      { id: "b", text: "Закрыть, промаркировать и хранить вдали от влаги и тепла", isCorrect: true },
+      { id: "c", text: "Пересыпать в любую свободную ёмкость без даты", isCorrect: false },
+      { id: "d", text: "Смешать с остатками предыдущего зерна", isCorrect: false }
+    ],
+    explanation:
+      "Зерно защищают от воздуха, влаги и тепла, а открытие партии фиксируют для ротации.",
+    source: "Demo KB · Стандарт хранения зерна",
+    weight: 2
+  },
+  {
+    id: "barista-q-003",
+    role: "barista",
+    topicId: "barista-espresso-setup",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Эспрессо течёт слишком быстро и получается водянистым. Что сделать первым?",
+    options: [
+      { id: "a", text: "Увеличить объём напитка, чтобы скрыть вкус", isCorrect: false },
+      { id: "b", text: "Остановить выдачу, проверить помол, дозу и рецепт по стандарту", isCorrect: true },
+      { id: "c", text: "Добавить больше молока", isCorrect: false },
+      { id: "d", text: "Продолжить работу, если гость спешит", isCorrect: false }
+    ],
+    explanation:
+      "Быстрый водянистый пролив — сигнал проверить настройку, а не отдавать нестабильный напиток.",
+    source: "Demo KB · Стандарт настройки эспрессо",
+    weight: 3
+  },
+  {
+    id: "barista-q-004",
+    role: "barista",
+    topicId: "barista-grind-dose-tamp",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Что влияет на повторяемость эспрессо в первую очередь?",
+    options: [
+      { id: "a", text: "Помол, доза, распределение и ровная трамбовка", isCorrect: true },
+      { id: "b", text: "Цвет чашки", isCorrect: false },
+      { id: "c", text: "Громкость музыки в зале", isCorrect: false },
+      { id: "d", text: "Только скорость бариста", isCorrect: false }
+    ],
+    explanation:
+      "Повторяемость начинается с контролируемого помола, дозы, распределения и трамбовки.",
+    source: "Demo KB · Карта помола и дозы",
+    weight: 2
+  },
+  {
+    id: "barista-q-005",
+    role: "barista",
+    topicId: "barista-extraction-sensory",
+    type: "single_choice",
+    difficulty: "intermediate",
+    question: "Кислый и резкий эспрессо в demo-чек-листе чаще всего требует чего?",
+    options: [
+      { id: "a", text: "Проверить экстракцию и параметры рецепта", isCorrect: true },
+      { id: "b", text: "Добавить сироп без предупреждения гостя", isCorrect: false },
+      { id: "c", text: "Сделать напиток горячее любой ценой", isCorrect: false },
+      { id: "d", text: "Не менять ничего до конца смены", isCorrect: false }
+    ],
+    explanation:
+      "Сенсорная проверка помогает понять, где сбился рецепт или экстракция.",
+    source: "Demo KB · Сенсорный чек-лист эспрессо",
+    weight: 2
+  },
+  {
+    id: "barista-q-006",
+    role: "barista",
+    topicId: "barista-milk-texture",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Какая текстура молока нужна для базового капучино?",
+    options: [
+      { id: "a", text: "Сухая крупная пена отдельным слоем", isCorrect: false },
+      { id: "b", text: "Гладкая микропена без крупных пузырей", isCorrect: true },
+      { id: "c", text: "Молоко без пены", isCorrect: false },
+      { id: "d", text: "Любая, если напиток горячий", isCorrect: false }
+    ],
+    explanation:
+      "Для стабильного капучино нужна глянцевая микропена без крупных пузырей.",
+    source: "Demo KB · Стандарт молока для напитков",
+    weight: 3
+  },
+  {
+    id: "barista-q-007",
+    role: "barista",
+    topicId: "barista-drink-recipes",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Если не уверен в рецептуре латте, что нужно сделать?",
+    options: [
+      { id: "a", text: "Сделать по памяти", isCorrect: false },
+      { id: "b", text: "Свериться с актуальной demo-рецептурой напитка", isCorrect: true },
+      { id: "c", text: "Спросить гостя, сколько кофе налить", isCorrect: false },
+      { id: "d", text: "Использовать рецепт капучино", isCorrect: false }
+    ],
+    explanation:
+      "Рецептура — источник истины для объёма, состава и последовательности сборки напитка.",
+    source: "Demo KB · Рецептуры базовых напитков",
+    weight: 2
+  },
+  {
+    id: "barista-q-008",
+    role: "barista",
+    topicId: "barista-equipment-cleaning",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Что делать после работы с молоком и перед следующим напитком?",
+    options: [
+      { id: "a", text: "Оставить питчер до паузы", isCorrect: false },
+      { id: "b", text: "Очистить паровую трубку и промыть питчер по чек-листу", isCorrect: true },
+      { id: "c", text: "Протереть только внешнюю сторону кофемашины", isCorrect: false },
+      { id: "d", text: "Ничего, если очередь большая", isCorrect: false }
+    ],
+    explanation:
+      "Чистка после молока — обязательный блок безопасности и качества напитков.",
+    source: "Demo KB · Чек-лист чистки кофейного оборудования",
+    weight: 3
+  },
+  {
+    id: "barista-q-009",
+    role: "barista",
+    topicId: "barista-service-flow",
+    type: "single_choice",
+    difficulty: "intermediate",
+    question: "Как действовать в утренний пик, чтобы не потерять качество?",
+    options: [
+      { id: "a", text: "Упростить рецептуры без согласования", isCorrect: false },
+      { id: "b", text: "Держать порядок заказов, группировать операции и не пропускать контроль", isCorrect: true },
+      { id: "c", text: "Готовить молоко заранее на весь поток", isCorrect: false },
+      { id: "d", text: "Не сообщать о задержках", isCorrect: false }
+    ],
+    explanation:
+      "Поток ускоряют организацией операций, а не отказом от стандартов качества.",
+    source: "Demo KB · Стандарт работы в пиковый поток",
+    weight: 2
+  },
+  {
+    id: "barista-q-010",
+    role: "barista",
+    topicId: "barista-guest-communication",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Гость просит напиток, которого нет в demo-рецептурах. Как ответить?",
+    options: [
+      { id: "a", text: "Придумать рецепт на месте", isCorrect: false },
+      { id: "b", text: "Спокойно предложить ближайшую позицию из меню или уточнить у старшего", isCorrect: true },
+      { id: "c", text: "Отказать без объяснения", isCorrect: false },
+      { id: "d", text: "Обещать любой состав", isCorrect: false }
+    ],
+    explanation:
+      "Бариста не придумывает правила меню: предлагает доступную альтернативу или уточняет.",
+    source: "Demo KB · Стандарт гостевого диалога",
+    weight: 1
+  },
+  {
+    id: "barista-q-011",
+    role: "barista",
+    topicId: "barista-espresso-setup",
+    type: "single_choice",
+    difficulty: "advanced",
+    question: "После смены зерна вкус эспрессо стал нестабильным. Что корректнее?",
+    options: [
+      { id: "a", text: "Работать по старой настройке до конца дня", isCorrect: false },
+      { id: "b", text: "Перенастроить рецепт, сделать контрольные шоты и зафиксировать параметры", isCorrect: true },
+      { id: "c", text: "Смешать новое зерно со старым без отметки", isCorrect: false },
+      { id: "d", text: "Скрывать вкус молоком во всех напитках", isCorrect: false }
+    ],
+    explanation:
+      "Смена зерна требует настройки рецепта и фиксации параметров для повторяемости.",
+    source: "Demo KB · Стандарт настройки эспрессо",
+    weight: 3
+  },
+  {
+    id: "barista-q-012",
+    role: "barista",
+    topicId: "barista-milk-texture",
+    type: "single_choice",
+    difficulty: "advanced",
+    question: "Молоко перегрелось и потеряло сладость. Как поступить?",
+    options: [
+      { id: "a", text: "Отдать, если рисунок получился красивым", isCorrect: false },
+      { id: "b", text: "Не отдавать напиток, приготовить заново и проверить технику вспенивания", isCorrect: true },
+      { id: "c", text: "Разбавить холодным молоком", isCorrect: false },
+      { id: "d", text: "Добавить сироп без согласования", isCorrect: false }
+    ],
+    explanation:
+      "Перегретое молоко ухудшает вкус и текстуру; напиток лучше переделать по стандарту.",
+    source: "Demo KB · Стандарт молока для напитков",
+    weight: 3
+  },
+  {
+    id: "barista-q-013",
+    role: "barista",
+    topicId: "barista-extraction-sensory",
+    type: "single_choice",
+    difficulty: "advanced",
+    question: "Эспрессо горчит и сушит послевкусие. Что нужно проверить?",
+    options: [
+      { id: "a", text: "Параметры экстракции, свежесть шота и чистоту группы", isCorrect: true },
+      { id: "b", text: "Только температуру в зале", isCorrect: false },
+      { id: "c", text: "Добавить больше воды в готовый шот", isCorrect: false },
+      { id: "d", text: "Сменить название напитка в заказе", isCorrect: false }
+    ],
+    explanation:
+      "Горечь и сухость — повод проверить экстракцию и чистоту, а не маскировать дефект.",
+    source: "Demo KB · Сенсорный чек-лист эспрессо",
+    weight: 2
+  },
+  {
+    id: "barista-q-014",
+    role: "barista",
+    topicId: "barista-equipment-cleaning",
+    type: "single_choice",
+    difficulty: "intermediate",
+    question: "Когда бариста делает обратную промывку группы по demo-чек-листу?",
+    options: [
+      { id: "a", text: "По чек-листу смены и при признаках загрязнения группы", isCorrect: true },
+      { id: "b", text: "Только когда кофе перестал молоться", isCorrect: false },
+      { id: "c", text: "Раз в месяц, если поток большой", isCorrect: false },
+      { id: "d", text: "Никогда во время рабочей недели", isCorrect: false }
+    ],
+    explanation:
+      "Группа кофемашины требует регулярной чистки по чек-листу, особенно при признаках загрязнения.",
+    source: "Demo KB · Чек-лист чистки кофейного оборудования",
+    weight: 3
+  },
+  {
+    id: "barista-q-015",
+    role: "barista",
+    topicId: "barista-espresso-setup",
+    type: "single_choice",
+    difficulty: "advanced",
+    question: "В течение часа шоты стали заметно быстрее. Что делать без выдумывания правил?",
+    options: [
+      { id: "a", text: "Проверить помол и рецепт, сделать контрольный шот и позвать старшего при сомнении", isCorrect: true },
+      { id: "b", text: "Отдавать как есть, если напитки с молоком", isCorrect: false },
+      { id: "c", text: "Менять зерно без фиксации", isCorrect: false },
+      { id: "d", text: "Добавлять сироп в каждый напиток", isCorrect: false }
+    ],
+    explanation:
+      "Смещение пролива требует контрольной настройки и обращения к старшему бариста при сомнении.",
+    source: "Demo KB · Стандарт настройки эспрессо",
+    weight: 3
+  }
+];
+
 export const diagnosticQuestions: DiagnosticQuestion[] = [
   ...cookQuestions,
-  ...adminQuestions
+  ...adminQuestions,
+  ...baristaQuestions
 ];

@@ -34,7 +34,7 @@ export function TodayFocus({ route }: { route?: LearningRoute }) {
 
       <p className="mb-2 flex items-center gap-1.5 rounded-xl bg-primary/8 px-2.5 py-1.5 text-[11px] font-medium text-primary">
         <Sparkles className="h-3 w-3" aria-hidden="true" />
-        Эти задачи Маяк собрал по итогам диагностики
+        Эти задачи собраны по итогам диагностики
       </p>
 
       <ul className="grid min-w-0 gap-2">

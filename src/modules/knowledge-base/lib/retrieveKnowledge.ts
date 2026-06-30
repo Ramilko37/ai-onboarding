@@ -25,7 +25,8 @@ const stopWords = new Set([
   "делать",
   "сотрудник",
   "администратор",
-  "повар"
+  "повар",
+  "бариста"
 ]);
 
 const synonymTerms: Record<string, string[]> = {
@@ -36,7 +37,20 @@ const synonymTerms: Record<string, string[]> = {
   задержка: ["претензия", "статус", "гость", "заказ"],
   претензия: ["задержка", "гость", "статус"],
   маркировка: ["этикетка", "дата", "срок"],
-  хранить: ["хранение", "холодильник", "температурный"]
+  хранить: ["хранение", "холодильник", "температурный"],
+  эспрессо: ["помол", "доза", "трамбовка", "экстракция", "пролив"],
+  пролив: ["эспрессо", "помол", "экстракция", "водянистый"],
+  водянистый: ["быстрый", "пролив", "эспрессо", "помол"],
+  быстрый: ["пролив", "эспрессо", "помол"],
+  помол: ["доза", "трамбовка", "эспрессо"],
+  молоко: ["капучино", "латте", "микропена", "питчер", "текстура"],
+  капучино: ["молоко", "микропена", "текстура"],
+  латте: ["молоко", "микропена", "рецептура"],
+  питчер: ["молоко", "промывать", "питчеры", "питчера", "текстура"],
+  группа: ["кофемашина", "группы", "чистка", "чистки", "промывка"],
+  группу: ["кофемашина", "группы", "чистка", "чистки", "промывка"],
+  промывать: ["очищает", "промывает", "промывается", "чистка", "чистки", "питчер", "группа", "оборудование"],
+  чистка: ["чистки", "оборудование", "группа", "питчер", "паровая"]
 };
 
 export function retrieveKnowledge(params: RetrieveKnowledgeParams): RetrieveKnowledgeResult {
@@ -44,12 +58,19 @@ export function retrieveKnowledge(params: RetrieveKnowledgeParams): RetrieveKnow
   const topicIds = new Set(params.topicIds ?? []);
   const matches = knowledgeDocuments
     .flatMap((document) =>
-      createChunks(document).map((chunk) => ({
-        chunk,
-        document,
-        score: scoreChunk({ chunk, document, queryTerms, topicIds }),
-        matchedTerms: getMatchedTerms(chunk, document, queryTerms)
-      }))
+      createChunks(document).map((chunk) => {
+        const lexicalScore = scoreChunk({ chunk, document, queryTerms, topicIds });
+        const vectorScore = scoreVectorMatch({ chunk, document, queryTerms });
+        const score = lexicalScore > 0 ? lexicalScore + vectorScore : 0;
+
+        return {
+          chunk,
+          document,
+          score,
+          vectorScore,
+          matchedTerms: getMatchedTerms(chunk, document, queryTerms)
+        };
+      })
     )
     .filter((match) => match.document.roles.includes(params.role))
     .filter((match) => match.score > 0)
@@ -151,4 +172,67 @@ function normalize(text: string) {
     .replace(/[^a-zа-я0-9]+/gi, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function scoreVectorMatch(params: {
+  chunk: KnowledgeChunk;
+  document: KnowledgeDocument;
+  queryTerms: string[];
+}) {
+  if (params.queryTerms.length === 0) {
+    return 0;
+  }
+
+  const queryVector = createVector(params.queryTerms.join(" "));
+  const chunkVector = createVector(
+    [
+      params.document.title,
+      params.document.source,
+      params.document.topicIds.join(" "),
+      params.chunk.title,
+      params.chunk.content
+    ].join(" ")
+  );
+  const similarity = cosineSimilarity(queryVector, chunkVector);
+
+  return Math.round(similarity * 10);
+}
+
+function createVector(text: string) {
+  const vector = new Array<number>(32).fill(0);
+  const terms = tokenize(text);
+
+  for (const term of terms) {
+    vector[hashTerm(term) % vector.length] += 1;
+  }
+
+  return vector;
+}
+
+function hashTerm(term: string) {
+  let hash = 0;
+
+  for (let index = 0; index < term.length; index += 1) {
+    hash = (hash * 31 + term.charCodeAt(index)) >>> 0;
+  }
+
+  return hash;
+}
+
+function cosineSimilarity(first: number[], second: number[]) {
+  let dot = 0;
+  let firstLength = 0;
+  let secondLength = 0;
+
+  for (let index = 0; index < first.length; index += 1) {
+    dot += first[index] * second[index];
+    firstLength += first[index] * first[index];
+    secondLength += second[index] * second[index];
+  }
+
+  if (firstLength === 0 || secondLength === 0) {
+    return 0;
+  }
+
+  return dot / (Math.sqrt(firstLength) * Math.sqrt(secondLength));
 }

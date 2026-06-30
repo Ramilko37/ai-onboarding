@@ -142,7 +142,7 @@ export function DiagnosticProgress({
         className="mb-0"
         kicker="Диагностика знаний"
         title={`Вопрос ${currentNumber} из ${totalQuestions}`}
-        description="Один вопрос на экран. После ответа Маяк двигает вас дальше без перегруза."
+        description="Один вопрос на экран. После ответа система двигает вас дальше без перегруза."
       />
       <div className="rounded-2xl border border-border bg-card p-3">
         <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">

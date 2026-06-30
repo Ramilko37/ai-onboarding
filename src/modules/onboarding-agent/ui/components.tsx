@@ -28,7 +28,7 @@ export const onboardingSteps: Array<{ id: OnboardingStep; label: string; caption
   { id: "diagnostic_intro", label: "Вводная", caption: "контекст" },
   { id: "diagnostic", label: "Вопросы", caption: "8 минут" },
   { id: "diagnostic_result", label: "Результат", caption: "итоги" },
-  { id: "learning_route", label: "Маяк", caption: "маршрут" },
+  { id: "learning_route", label: "План", caption: "развитие" },
 ];
 
 type ButtonProps = {
@@ -220,7 +220,7 @@ export function EmployeeSummaryCard({ employee }: { employee: EmployeeProfile })
           <SummaryFact label="Дата выхода" value={formatDate(employee.startDate)} />
         </dl>
         <p className="line-clamp-3 text-xs leading-relaxed text-deep-muted">
-          Маяк использует роль и грейд только для персонализации: что знакомо — сократит, где нужна поддержка — подсветит.
+          Система использует грейд только для персонализации: что знакомо — сократит, где нужна поддержка — подсветит.
         </p>
       </div>
     </MayakPanel>

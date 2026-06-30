@@ -41,6 +41,36 @@ test("retrieveKnowledge keeps administrator answers inside administrator sources
   assert.match(result.matches[0].document.title, /возврат|кассов/i);
 });
 
+test("retrieveKnowledge uses mock vector matches for barista espresso standards", () => {
+  const result = retrieveKnowledge({
+    question: "Как настроить эспрессо если пролив слишком быстрый и водянистый?",
+    role: "barista",
+    topicIds: ["barista-espresso-setup"],
+    limit: 3
+  });
+
+  assert.ok(result.matches.length > 0);
+  assert.equal(result.matches[0].document.roles.includes("barista"), true);
+  assert.match(result.matches[0].document.title, /эспрессо/i);
+  assert.equal(result.matches[0].vectorScore > 0, true);
+});
+
+test("retrieveKnowledge finds milk texture and equipment cleaning sources for barista", () => {
+  const milk = retrieveKnowledge({
+    question: "Какая текстура молока нужна для капучино?",
+    role: "barista",
+    limit: 2
+  });
+  const cleaning = retrieveKnowledge({
+    question: "Когда промывать группу и питчер после напитков?",
+    role: "barista",
+    limit: 2
+  });
+
+  assert.ok(milk.matches.some((match) => /молок|капучино/i.test(match.document.title)));
+  assert.ok(cleaning.matches.some((match) => /чист|оборудован/i.test(match.document.title)));
+});
+
 test("answerMentorQuestion returns grounded answer and citations", () => {
   const response = answerMentorQuestion({
     question: "Где хранить лосось после открытия упаковки?",
@@ -51,6 +81,20 @@ test("answerMentorQuestion returns grounded answer and citations", () => {
   assert.equal(response.needsManagerReview, false);
   assert.ok(response.answer.includes("Источник"));
   assert.ok(response.sources.some((source) => source.title === "Регламент хранения продуктов"));
+});
+
+test("answerMentorQuestion returns grounded barista answer with demo-source disclaimer", () => {
+  const response = answerMentorQuestion({
+    question: "Что делать если эспрессо течёт слишком быстро?",
+    role: "barista",
+    topicIds: ["barista-espresso-setup"],
+    employeeName: "София"
+  });
+
+  assert.equal(response.isGrounded, true);
+  assert.equal(response.needsManagerReview, false);
+  assert.match(response.answer, /Demo KB|демо/i);
+  assert.ok(response.sources.some((source) => /эспрессо/i.test(source.title)));
 });
 
 test("answerMentorQuestion falls back for HR or disciplinary questions", () => {

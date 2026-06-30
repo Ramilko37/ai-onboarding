@@ -39,7 +39,7 @@ function PersonalSpaceContent({
       </div>
 
       <footer className="shrink-0 text-center text-[11px] text-muted-foreground">
-        Маяк сопровождает спокойно: один экран, один следующий шаг.
+        Valle Sanchez ведёт развитие спокойно: один экран, один следующий шаг.
       </footer>
     </div>
   );

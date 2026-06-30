@@ -1,6 +1,6 @@
 "use client";
 
-import { Compass, Sparkles } from "lucide-react";
+import { Coffee, Sparkles } from "lucide-react";
 import { MayakShell, MayakTopBar } from "@/shared/ui/mayak";
 import { useOnboardingAgentState } from "../model/useOnboardingAgentState";
 import { CompetencyMapStep } from "./steps/CompetencyMapStep";
@@ -23,16 +23,16 @@ export function OnboardingAgentPage() {
       contentClassName={isLearningRouteStep ? "gap-3 pb-6" : "gap-3"}
       topBar={
         <MayakTopBar
-          brand="Маяк"
-          subtitle="единый путь адаптации"
-          icon={<Compass className="h-5 w-5" aria-hidden="true" />}
+          brand="Valle Sanchez"
+          subtitle="barista assessment"
+          icon={<Coffee className="h-5 w-5" aria-hidden="true" />}
           meta={
             <>
               <Sparkles className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
               Шаг {currentStepIndex} из {onboardingSteps.length}
             </>
           }
-          userName={state.employee?.name ?? "Новый сотрудник"}
+          userName={state.employee?.name ?? "Новый бариста"}
         />
       }
     >

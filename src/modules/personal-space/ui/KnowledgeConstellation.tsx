@@ -50,7 +50,7 @@ export function KnowledgeConstellation({
           <div>
             <h2 className="text-sm font-semibold tracking-tight text-foreground">Созвездие знаний</h2>
             <p className="text-xs text-muted-foreground">
-              Карта навыков {roleLabel?.toLowerCase() ?? "повара"}
+              Карта навыков {roleLabel?.toLowerCase() ?? "бариста"}
             </p>
           </div>
         </div>
@@ -114,7 +114,7 @@ export function KnowledgeConstellation({
       </div>
 
       <p className="mt-3 shrink-0 text-xs leading-relaxed text-muted-foreground">
-        После диагностики Маяк подсвечивает сильные стороны и показывает, что стоит освоить дальше.
+        После диагностики система подсвечивает сильные стороны и показывает, что стоит освоить дальше.
       </p>
     </section>
   );

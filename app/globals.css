@@ -1,7 +1,17 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Tenor Sans";
+  src:
+    url("https://vallesanchez.ru/assets/cee72614/fonts/TenorSans-Regular.woff2") format("woff2"),
+    url("https://vallesanchez.ru/assets/cee72614/fonts/TenorSans-Regular.woff") format("woff");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
 @theme inline {
-  --font-sans: var(--font-geist-sans), "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Tenor Sans", var(--font-geist-sans), "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), "Geist Mono Fallback", ui-monospace, monospace;
 
   --color-background: var(--background);
@@ -39,48 +49,42 @@
 :root {
   --radius: 1.25rem;
 
-  /* Warm, airy paper background */
-  --background: oklch(0.987 0.004 106);
-  --foreground: oklch(0.27 0.024 252);
+  --background: #fff5de;
+  --foreground: #951d1f;
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.27 0.024 252);
+  --card: #fffaf0;
+  --card-foreground: #951d1f;
 
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.27 0.024 252);
+  --popover: #fffaf0;
+  --popover-foreground: #951d1f;
 
-  /* Calm teal — growth, trust, calm */
-  --primary: oklch(0.6 0.092 193);
-  --primary-foreground: oklch(0.99 0.01 193);
+  --primary: #951d1f;
+  --primary-foreground: #fff0cf;
 
-  --secondary: oklch(0.955 0.012 200);
-  --secondary-foreground: oklch(0.32 0.03 235);
+  --secondary: #fff0cf;
+  --secondary-foreground: #951d1f;
 
-  --muted: oklch(0.965 0.006 240);
-  --muted-foreground: oklch(0.52 0.022 250);
+  --muted: color-mix(in oklch, #fff0cf 72%, white);
+  --muted-foreground: color-mix(in oklch, #951d1f 68%, #4e2015);
 
-  /* Warm sand accent — friendliness, warmth */
-  --accent: oklch(0.91 0.052 76);
-  --accent-foreground: oklch(0.42 0.066 58);
+  --accent: #e2c49e;
+  --accent-foreground: #4e2015;
 
-  --border: oklch(0.92 0.008 240);
-  --input: oklch(0.92 0.008 240);
-  --ring: oklch(0.6 0.092 193);
+  --border: color-mix(in oklch, #951d1f 22%, #fff0cf);
+  --input: color-mix(in oklch, #951d1f 22%, #fff0cf);
+  --ring: #951d1f;
 
-  /* Soft aurora accents for ambient, futuristic glow */
-  --aurora-1: oklch(0.86 0.07 195);
-  --aurora-2: oklch(0.9 0.06 150);
-  --aurora-3: oklch(0.91 0.05 76);
+  --aurora-1: color-mix(in oklch, #951d1f 32%, transparent);
+  --aurora-2: color-mix(in oklch, #c99167 46%, transparent);
+  --aurora-3: color-mix(in oklch, #e2c49e 58%, transparent);
 
-  /* Deep teal surface for immersive panels (kept calm, never harsh) */
-  --deep: oklch(0.34 0.045 205);
-  --deep-foreground: oklch(0.97 0.012 200);
-  --deep-muted: oklch(0.78 0.03 200);
+  --deep: #951d1f;
+  --deep-foreground: #fff0cf;
+  --deep-muted: color-mix(in oklch, #fff0cf 78%, white);
   --deep-border: color-mix(in oklch, var(--deep-foreground) 22%, transparent);
 
-  /* Soft, tinted shadow */
-  --shadow-soft: 0 20px 50px color-mix(in oklch, var(--primary) 14%, transparent);
-  --shadow-card: 0 10px 30px color-mix(in oklch, var(--primary) 9%, transparent);
+  --shadow-soft: 0 20px 50px color-mix(in oklch, #4e2015 18%, transparent);
+  --shadow-card: 0 10px 30px color-mix(in oklch, #4e2015 12%, transparent);
 
   color-scheme: light;
 }
@@ -151,7 +155,7 @@ body {
   background-color: var(--deep);
   background-image: radial-gradient(
     70% 90% at 0% 0%,
-    color-mix(in oklch, var(--primary) 32%, transparent),
+    color-mix(in oklch, #c99167 38%, transparent),
     transparent 60%
   );
 }

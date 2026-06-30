@@ -1,4 +1,4 @@
-import { Compass, Sparkles } from "lucide-react";
+import { Coffee, Sparkles } from "lucide-react";
 import { company, newcomer } from "../data";
 
 export function TopBar() {
@@ -7,11 +7,11 @@ export function TopBar() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
         <div className="flex items-center gap-3">
           <span className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-            <Compass className="h-5 w-5" aria-hidden="true" />
+            <Coffee className="h-5 w-5" aria-hidden="true" />
           </span>
           <div className="leading-tight">
             <p className="text-sm font-semibold tracking-tight text-foreground">
-              Маяк
+              Valle Sanchez
             </p>
             <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
               {company.name} · {company.tagline}

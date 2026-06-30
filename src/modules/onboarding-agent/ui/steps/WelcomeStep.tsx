@@ -21,24 +21,24 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
           kicker={
             <>
               <Heart className="h-3 w-3 text-primary" aria-hidden="true" />
-              HORECA franchise onboarding
+              Valle Sanchez · barista assessment
             </>
           }
           title={
             <>
-              AI-агент адаптации сотрудников.
+              Входное тестирование бариста.
               <br />
-              <span className="text-muted-foreground">Один экран — один понятный шаг.</span>
+              <span className="text-muted-foreground">Стандарты кофе, диагностика и личный план.</span>
             </>
           }
-          description="Маяк сначала понимает ваш стартовый уровень, затем за пару минут собирает персональный маршрут на 1, 7 и 14 дней. Без экзамена и без длинных полотен интерфейса."
+          description="Система мягко определяет стартовый уровень по demo-стандартам кофеварения, показывает skill gaps и собирает маршрут развития на 1, 7 и 14 дней. Это поддержка обучения, а не кадровое решение."
         />
 
         <div className="grid gap-2 sm:grid-cols-3">
           {[
-            ["1", "Профиль", "роль и грейд"],
-            ["2", "Диагностика", "мягкие вопросы"],
-            ["3", "Маршрут", "под реальные зоны"],
+            ["1", "Профиль", "грейд и кофейня"],
+            ["2", "Диагностика", "кофейные стандарты"],
+            ["3", "Маршрут", "day 1 / 7 / 14"],
           ].map(([number, title, caption]) => (
             <div className="rounded-2xl border border-border bg-card p-3" key={number}>
               <MayakBadge tone="primary">{number}</MayakBadge>
@@ -59,13 +59,13 @@ export function WelcomeStep({ onStart }: { onStart: () => void }) {
             tone="accent"
             icon={<Compass className="h-4 w-4" aria-hidden="true" />}
             title="Покажем, что делать сегодня"
-            description="После диагностики Маяк соберёт ваш первый день."
+            description="После диагностики появится первый план развития."
           />
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
           <PrimaryButton onClick={onStart}>
-            Начать адаптацию
+            Начать тестирование
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </PrimaryButton>
           <span className="max-w-xs text-xs leading-relaxed text-muted-foreground">

@@ -39,10 +39,10 @@ export type AssistantMessage = {
 };
 
 export const newcomer = {
-  name: "Алина",
-  fullName: "Алина Соколова",
-  role: "Повар-стажёр",
-  location: "Нори · Покровка",
+  name: "София",
+  fullName: "София Кузнецова",
+  role: "Бариста",
+  location: "Valle Sanchez · Арбат",
   dayIndex: 3,
   dayTotal: 14,
   progress: 38,
@@ -54,8 +54,8 @@ export const newcomer = {
 };
 
 export const company = {
-  name: "Нори",
-  tagline: "сеть доставки",
+  name: "Valle Sanchez",
+  tagline: "barista standard",
 };
 
 export const journeyStages: JourneyStage[] = [
@@ -85,7 +85,7 @@ export const journeyStages: JourneyStage[] = [
   {
     id: "route",
     title: "Персональный маршрут обучения",
-    caption: "Маяк соберёт план под вас по итогам диагностики.",
+    caption: "Система соберёт план под вас по итогам диагностики.",
     status: "upcoming",
     day: "День 3–7",
   },
@@ -107,26 +107,26 @@ export const journeyStages: JourneyStage[] = [
 
 export const knowledgeNodes: KnowledgeNode[] = [
   { id: "hygiene", label: "Гигиена", mastery: "strong", x: 20, y: 30, size: 58 },
-  { id: "storage", label: "Хранение", mastery: "strong", x: 41, y: 18, size: 46 },
-  { id: "labeling", label: "Маркировка", mastery: "learning", x: 63, y: 26, size: 44 },
-  { id: "techcards", label: "Техкарты", mastery: "learning", x: 80, y: 44, size: 52 },
-  { id: "assembly", label: "Сборка", mastery: "new", x: 66, y: 66, size: 48 },
-  { id: "packaging", label: "Упаковка", mastery: "learning", x: 44, y: 72, size: 40 },
-  { id: "defects", label: "Качество", mastery: "new", x: 23, y: 64, size: 46 },
-  { id: "matrix", label: "Меню", mastery: "strong", x: 14, y: 47, size: 38 },
+  { id: "beans", label: "Зерно", mastery: "strong", x: 41, y: 18, size: 46 },
+  { id: "espresso", label: "Эспрессо", mastery: "learning", x: 63, y: 26, size: 52 },
+  { id: "grind", label: "Помол", mastery: "learning", x: 80, y: 44, size: 44 },
+  { id: "milk", label: "Молоко", mastery: "new", x: 66, y: 66, size: 48 },
+  { id: "recipes", label: "Рецепты", mastery: "learning", x: 44, y: 72, size: 42 },
+  { id: "cleaning", label: "Чистка", mastery: "new", x: 23, y: 64, size: 46 },
+  { id: "flow", label: "Поток", mastery: "strong", x: 14, y: 47, size: 38 },
 ];
 
 export const knowledgeLinks: KnowledgeLink[] = [
-  ["hygiene", "storage"],
-  ["storage", "labeling"],
-  ["labeling", "techcards"],
-  ["techcards", "assembly"],
-  ["assembly", "packaging"],
-  ["packaging", "defects"],
-  ["defects", "matrix"],
-  ["matrix", "hygiene"],
-  ["storage", "matrix"],
-  ["labeling", "assembly"],
+  ["hygiene", "beans"],
+  ["beans", "espresso"],
+  ["espresso", "grind"],
+  ["grind", "milk"],
+  ["milk", "recipes"],
+  ["recipes", "cleaning"],
+  ["cleaning", "flow"],
+  ["flow", "hygiene"],
+  ["beans", "flow"],
+  ["espresso", "milk"],
 ];
 
 export const initialTodayTasks: TodayTask[] = [
@@ -139,15 +139,15 @@ export const initialTodayTasks: TodayTask[] = [
   },
   {
     id: "t2",
-    title: "Освежить стандарт гигиены кухни",
-    meta: "Короткий конспект от Маяка",
+    title: "Освежить стандарт чистки стойки",
+    meta: "Короткий конспект Valle Sanchez",
     minutes: 5,
     done: true,
   },
   {
     id: "t3",
-    title: "Познакомиться с продуктовой матрицей",
-    meta: "10 популярных позиций смены",
+    title: "Проверить рецепт капучино",
+    meta: "Эспрессо, молоко, подача",
     minutes: 6,
     done: false,
   },
@@ -155,7 +155,7 @@ export const initialTodayTasks: TodayTask[] = [
 
 export const assistantSuggestions = [
   "С чего начать сегодня?",
-  "Где найти техкарту филадельфии?",
+  "Что делать с быстрым проливом?",
   "Что важно в первый день?",
 ];
 
@@ -163,23 +163,23 @@ export const assistantOpening: AssistantMessage[] = [
   {
     id: "m1",
     author: "guide",
-    text: "Привет, Алина. Я Маяк — ваш проводник на старте. Я рядом, чтобы день был спокойным и понятным.",
+    text: "Привет, София. Я помощник Valle Sanchez на старте. Я рядом, чтобы день был спокойным и понятным.",
   },
   {
     id: "m2",
     author: "guide",
-    text: "Сегодня всего один важный шаг — лёгкая диагностика. Это не экзамен: она просто поможет собрать обучение под вас.",
+    text: "Сегодня всего один важный шаг — лёгкая диагностика бариста. Это не экзамен: она просто поможет собрать обучение под вас.",
   },
 ];
 
 export const assistantReplies: Record<string, string> = {
   "С чего начать сегодня?":
-    "Начните с диагностики — это 8 минут и без оценок. После неё я соберу персональный маршрут и уберу из плана то, что вы уже знаете.",
-  "Где найти техкарту филадельфии?":
-    "Техкарта лежит в базе знаний → «Техкарты популярных роллов». Я открою её рядом с вашей станцией, когда дойдём до практики.",
+    "Начните с диагностики — это 8 минут и без оценок. После неё появится персональный маршрут и лишние знакомые темы уйдут в короткое повторение.",
+  "Что делать с быстрым проливом?":
+    "Проверьте помол, дозу, распределение и актуальный demo-рецепт эспрессо. Если сомневаетесь, подключите старшего бариста до выдачи спорного шота.",
   "Что важно в первый день?":
-    "В первый день важно спокойно освоиться: гигиена, рабочее место и кто за что отвечает на смене. Остальное освоим шаг за шагом.",
+    "В первый день важно спокойно освоиться: чистая стойка, оборудование, базовый эспрессо и молоко. Остальное освоим шаг за шагом.",
 };
 
 export const defaultAssistantReply =
-  "Хороший вопрос. Я подскажу спокойно и по шагам, а если нужно — позову вашего наставника Максима. Здесь не бывает «глупых» вопросов.";
+  "Хороший вопрос. Я подскажу спокойно и по шагам, а если нужно — позову старшего бариста. Здесь не бывает «глупых» вопросов.";

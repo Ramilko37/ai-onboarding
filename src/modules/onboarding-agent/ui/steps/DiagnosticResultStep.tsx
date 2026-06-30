@@ -85,7 +85,7 @@ export function DiagnosticResultStep({
                 основа маршрута собрана
               </MayakBadge>
               <h1 className="mt-2 text-pretty text-xl font-semibold leading-tight tracking-tight text-deep-foreground">
-                Маяк собрал маршрут для {employee.name.split(" ")[0]}
+                Маршрут Valle Sanchez собран для {employee.name.split(" ")[0]}
               </h1>
               <p className="mt-1.5 text-sm leading-relaxed text-deep-muted">
                 Начнём с тем, где пригодится поддержка, а знакомые блоки пройдём короче. Это не

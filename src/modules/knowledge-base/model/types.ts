@@ -33,6 +33,7 @@ export type KnowledgeMatch = {
   chunk: KnowledgeChunk;
   document: KnowledgeDocument;
   score: number;
+  vectorScore: number;
   matchedTerms: string[];
 };
 

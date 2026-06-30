@@ -55,7 +55,7 @@ export function Assistant({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           question: trimmed,
-          role: route?.role ?? "cook",
+          role: route?.role ?? "barista",
           topicIds: getRouteTopicIds(route),
           employeeName: profile?.name,
           routeSummary: route?.summary,
@@ -105,7 +105,7 @@ export function Assistant({
         <div className="min-w-0 flex-1">
           <div className="flex min-w-0 items-center gap-2">
             <h2 className="truncate text-sm font-semibold tracking-tight text-foreground">
-              Маяк · AI-проводник
+              Valle Sanchez · AI-наставник
             </h2>
             <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-medium text-primary">
               <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
@@ -113,7 +113,7 @@ export function Assistant({
             </span>
           </div>
           <p className="truncate text-xs text-muted-foreground">
-            Уже собрал подсказки по вашему маршруту
+            Отвечает по demo-базе кофейных стандартов
           </p>
         </div>
       </div>
@@ -188,7 +188,7 @@ export function Assistant({
           <input
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            placeholder="Спросите Маяк"
+            placeholder="Спросите про стандарт"
             aria-label="Сообщение проводнику"
             className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
           />
@@ -213,13 +213,13 @@ function createOpeningMessages(employeeName?: string): AssistantMessage[] {
     {
       id: "m1",
       author: "guide",
-      text: `Привет, ${name}. Я Маяк — ваш проводник на старте. Я отвечаю только по демо-базе знаний и показываю источники, чтобы не выдумывать правила точки.`,
+      text: `Привет, ${name}. Я помощник Valle Sanchez на старте. Я отвечаю только по demo-базе знаний и показываю источники, чтобы не выдумывать правила точки.`,
     },
     {
       id: "m2",
       author: "guide",
       text:
-        "Можно спросить про хранение, маркировку, техкарты, кассу, возвраты или претензии. Если источника нет, я честно отправлю вопрос к наставнику.",
+        "Можно спросить про эспрессо, молоко, чистку оборудования, зерно или работу в потоке. Если источника нет, я честно отправлю вопрос к наставнику.",
     },
   ];
 }

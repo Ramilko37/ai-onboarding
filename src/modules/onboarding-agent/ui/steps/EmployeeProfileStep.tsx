@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
-import { ArrowRight, CalendarDays, MapPin, Sparkles, UserRound } from "lucide-react";
+import { ArrowRight, CalendarDays, Coffee, MapPin, Sparkles } from "lucide-react";
 import {
   MayakField,
   MayakIconBadge,
@@ -21,6 +21,7 @@ const today = new Date().toISOString().slice(0, 10);
 const roleRouteFocus: Record<EmployeeRole, string> = {
   cook: "гигиена, техкарты, заготовки, качество",
   admin: "заказы, гости, касса, претензии",
+  barista: "эспрессо, молоко, рецептуры, оборудование",
 };
 
 export function EmployeeProfileStep({
@@ -28,10 +29,10 @@ export function EmployeeProfileStep({
 }: {
   onSubmit: (input: EmployeeProfileInput) => void;
 }) {
-  const [name, setName] = useState("Мария Иванова");
-  const [role, setRole] = useState<EmployeeRole>("admin");
+  const [name, setName] = useState("София Кузнецова");
+  const role: EmployeeRole = "barista";
   const [grade, setGrade] = useState<EmployeeGrade>("horeca_experience");
-  const [location, setLocation] = useState("Точка №1");
+  const [location, setLocation] = useState("Valle Sanchez · Арбат");
   const [startDate, setStartDate] = useState(today);
 
   const canSubmit = useMemo(
@@ -62,15 +63,15 @@ export function EmployeeProfileStep({
           <MayakSectionHeader
             className="mb-0"
             kicker="Шаг 1 · профиль"
-            title="Соберём профиль адаптации"
-            description="Минимум данных, чтобы Маяк собрал релевантную карту: роль, грейд, точка и дата выхода."
+            title="Профиль бариста"
+            description="Минимум данных для входного тестирования: грейд, кофейня и дата выхода на смену."
           />
 
           <MayakInsightCard
             tone="primary"
             icon={<Sparkles className="h-4 w-4" aria-hidden="true" />}
-            title="Зачем это Маяку"
-            description="Роль определяет карту и вопросы, грейд — глубину тем. Так маршрут становится персональным, а не общим для всех."
+            title="Зачем это Valle Sanchez"
+            description="Грейд определяет глубину вопросов. Система покажет, какие кофейные стандарты уже уверенные, а где нужен маршрут развития."
           />
 
           <div className="grid gap-3">
@@ -90,7 +91,7 @@ export function EmployeeProfileStep({
                   <MayakInput
                     className="pl-9"
                     onChange={(event) => setLocation(event.target.value)}
-                    placeholder="Точка №1"
+                    placeholder="Valle Sanchez · кофейня"
                     type="text"
                     value={location}
                   />
@@ -119,19 +120,19 @@ export function EmployeeProfileStep({
             <MayakSectionTitle
               icon={
                 <MayakIconBadge>
-                  <UserRound className="h-4 w-4 text-primary" aria-hidden="true" />
+                  <Coffee className="h-4 w-4 text-primary" aria-hidden="true" />
                 </MayakIconBadge>
               }
-              title="Роль"
-              description="От роли зависит карта и вопросы"
+              title="Сценарий"
+              description="В этой ветке тестируем только бариста"
             />
-            <div className="grid h-[calc(100%-2.75rem)] min-h-0 gap-2 md:grid-cols-2">
+            <div className="grid h-[calc(100%-2.75rem)] min-h-0 gap-2">
               {roleOptions.map((option) => (
                 <RoleCard
                   description={option.description}
                   meta={`В маршруте: ${roleRouteFocus[option.value]}`}
                   key={option.value}
-                  onSelect={setRole}
+                  onSelect={() => undefined}
                   selected={option.value === role}
                   title={option.label}
                   value={option.value}
@@ -170,7 +171,7 @@ function ProfileSubmitBlock({
       </PrimaryButton>
       <p className="mt-2 text-center text-xs text-muted-foreground">
         {canSubmit
-          ? "Дальше Маяк покажет карту роли и темы для диагностики."
+          ? "Дальше система покажет карту бариста и темы диагностики."
           : "Заполните имя и точку, чтобы продолжить."}
       </p>
     </div>

@@ -43,10 +43,11 @@ export type LearningRouteDay = {
 
 export type LearningRoute = {
   employeeId: string;
-  role: "cook" | "admin";
-  grade: "no_experience" | "horeca_experience" | "network_experience";
+  role: EmployeeRole;
+  grade: EmployeeGrade;
   generatedAt: string;
   totalScorePercent: number;
   summary: string;
   days: LearningRouteDay[];
 };
+import type { EmployeeGrade, EmployeeRole } from "./types";
