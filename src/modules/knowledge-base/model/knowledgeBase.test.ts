@@ -71,6 +71,41 @@ test("retrieveKnowledge finds milk texture and equipment cleaning sources for ba
   assert.ok(cleaning.matches.some((match) => /чист|оборудован/i.test(match.document.title)));
 });
 
+test("retrieveKnowledge finds methodologist espresso day-one recipe guidance", () => {
+  const result = retrieveKnowledge({
+    question: "Что значит рецепт эспрессо 18-27-38 и какая закладка по дате обжарки?",
+    role: "barista",
+    topicIds: ["barista-espresso-setup", "barista-grind-dose-tamp"],
+    limit: 3
+  });
+
+  assert.ok(result.matches.length > 0);
+  assert.equal(
+    result.matches.some((match) => match.document.id === "barista-methodologist-espresso-day-1"),
+    true
+  );
+  assert.equal(
+    result.matches.some((match) => /18-27-38|17\.5|18\.5|закладк/i.test(match.chunk.content)),
+    true
+  );
+});
+
+test("answerMentorQuestion cites methodologist milk temperature guidance", () => {
+  const response = answerMentorQuestion({
+    question: "До какой температуры греть молоко для капучино?",
+    role: "barista",
+    topicIds: ["barista-milk-texture"],
+    employeeName: "София"
+  });
+
+  assert.equal(response.isGrounded, true);
+  assert.equal(response.needsManagerReview, false);
+  assert.ok(
+    response.sources.some((source) => source.documentId === "barista-methodologist-espresso-day-1")
+  );
+  assert.match(response.answer, /55-65|60|температур/i);
+});
+
 test("answerMentorQuestion returns grounded answer and citations", () => {
   const response = answerMentorQuestion({
     question: "Где хранить лосось после открытия упаковки?",

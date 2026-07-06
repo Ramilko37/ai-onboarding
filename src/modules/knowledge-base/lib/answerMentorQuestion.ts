@@ -43,8 +43,7 @@ export function answerMentorQuestion(params: MentorQuestionParams): MentorAnswer
   const lead = params.employeeName
     ? `${params.employeeName}, по базе стандартов Valle Sanchez:`
     : "По базе стандартов Valle Sanchez:";
-  const sourceLines = sources
-    .slice(0, 2)
+  const sourceLines = pickVisibleSources(sources, 2)
     .map((source) => `Источник: ${formatSourceName(source.source)} — ${source.excerpt}`)
     .join("\n");
   const routeLine = params.activeTaskTitles?.length
@@ -62,6 +61,26 @@ export function answerMentorQuestion(params: MentorQuestionParams): MentorAnswer
 function createExcerpt(content: string) {
   const sentence = content.split(/(?<=[.!?])\s+/)[0] ?? content;
   return sentence.length > 220 ? `${sentence.slice(0, 217)}...` : sentence;
+}
+
+function pickVisibleSources(sources: MentorSource[], limit: number) {
+  const seenDocumentIds = new Set<string>();
+  const visibleSources: MentorSource[] = [];
+
+  for (const source of sources) {
+    if (seenDocumentIds.has(source.documentId)) {
+      continue;
+    }
+
+    seenDocumentIds.add(source.documentId);
+    visibleSources.push(source);
+
+    if (visibleSources.length === limit) {
+      return visibleSources;
+    }
+  }
+
+  return sources.slice(0, limit);
 }
 
 function formatSourceName(source: string) {

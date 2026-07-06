@@ -1,6 +1,6 @@
 # Current Project State
 
-Last updated: 2026-06-30
+Last updated: 2026-07-06
 
 ## Product Scope
 
@@ -106,8 +106,9 @@ The knowledge base is still local demo content, now with a lightweight mock vect
 - mentor answers format demo source names as sample network standards in the visible UI;
 - unknown, HR, medical, legal, payroll, disciplinary, or sensitive questions fall back to manager / HR / mentor review.
 
-Barista demo sources include:
+Barista demo and methodologist-supplied sources include:
 
+- day-1 espresso dictionary, recipe, extraction timing, grind adjustment, and milk temperature;
 - coffee bar hygiene;
 - beans and storage;
 - espresso setup;
