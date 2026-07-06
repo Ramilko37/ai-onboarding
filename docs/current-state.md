@@ -80,7 +80,8 @@ Required topics:
 
 Current barista question bank:
 
-- 15 mock single-choice questions.
+- 15 single-choice questions, including methodologist-supplied day-1 espresso checks.
+- The diagnostic now checks the 18-27-38 espresso recipe, roast-date dose range, extraction timing, grind adjustment, milk temperature, and flat white recipe basics.
 - Question selection remains grade-aware and stable.
 - Every barista diagnostic covers every barista competency topic.
 - Required topics stay in the route even when the score is high.

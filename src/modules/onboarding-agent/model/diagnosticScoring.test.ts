@@ -83,6 +83,27 @@ test("barista diagnostic covers coffee standards and keeps safety topics require
   ]);
 });
 
+test("barista diagnostic includes methodologist day-one espresso material", () => {
+  const questions = getDiagnosticQuestions({
+    role: "barista",
+    grade: "no_experience"
+  });
+  const methodologistQuestions = questions.filter(
+    (question) => question.source === "Материалы методолога · День 1: Эспрессо"
+  );
+  const questionText = questions.map((question) => question.question).join(" ");
+  const optionText = questions
+    .flatMap((question) => question.options.map((option) => option.text))
+    .join(" ");
+
+  assert.equal(methodologistQuestions.length >= 5, true);
+  assert.match(questionText, /18-27-38/);
+  assert.match(questionText, /закладк/i);
+  assert.match(questionText, /времени экстракции/i);
+  assert.match(questionText, /температур/i);
+  assert.match(optionText, /55-65°C|23-32 секунды|17\.5 г/);
+});
+
 test("calculateDiagnosticResult scores topics and keeps required topics mandatory", () => {
   const employee: EmployeeProfile = {
     id: "emp-1",
