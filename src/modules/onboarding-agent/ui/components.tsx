@@ -21,14 +21,36 @@ import type {
 import { getGradeLabel } from "../lib/getGradeLabel";
 import { getRoleLabel } from "../lib/getRoleLabel";
 
-export const onboardingSteps: Array<{ id: OnboardingStep; label: string; caption: string }> = [
-  { id: "welcome", label: "Старт", caption: "знакомство" },
-  { id: "employee_profile", label: "Профиль", caption: "роль" },
-  { id: "competency_map", label: "Карта", caption: "темы" },
-  { id: "diagnostic_intro", label: "Вводная", caption: "контекст" },
-  { id: "diagnostic", label: "Вопросы", caption: "8 минут" },
-  { id: "diagnostic_result", label: "Результат", caption: "итоги" },
-  { id: "learning_route", label: "Маяк", caption: "маршрут" },
+export const onboardingSteps: Array<{
+  id: OnboardingStep;
+  label: string;
+  caption: string;
+  stepIds: OnboardingStep[];
+}> = [
+  {
+    id: "employee_profile",
+    label: "Профиль",
+    caption: "данные",
+    stepIds: ["welcome", "employee_profile"],
+  },
+  {
+    id: "diagnostic",
+    label: "Тест",
+    caption: "стандарты",
+    stepIds: ["competency_map", "diagnostic_intro", "diagnostic"],
+  },
+  {
+    id: "diagnostic_result",
+    label: "Результат",
+    caption: "уровень",
+    stepIds: ["diagnostic_result"],
+  },
+  {
+    id: "learning_route",
+    label: "План развития",
+    caption: "1 / 7 / 14",
+    stepIds: ["learning_route"],
+  },
 ];
 
 type ButtonProps = {
@@ -39,10 +61,21 @@ type ButtonProps = {
   className?: string;
 };
 
-export function StepProgress({ currentStep }: { currentStep: OnboardingStep }) {
-  const currentIndex = onboardingSteps.findIndex((step) => step.id === currentStep);
+export function StepProgress({
+  currentStep,
+  canSelectStep,
+  onSelectStep,
+}: {
+  currentStep: OnboardingStep;
+  canSelectStep?: (step: OnboardingStep) => boolean;
+  onSelectStep?: (step: OnboardingStep) => void;
+}) {
+  const currentIndex = onboardingSteps.findIndex((step) =>
+    step.stepIds.includes(currentStep),
+  );
   const progressPercent = Math.round(((currentIndex + 1) / onboardingSteps.length) * 100);
   const currentStepData = onboardingSteps[currentIndex] ?? onboardingSteps[0];
+  const canNavigate = Boolean(canSelectStep && onSelectStep);
 
   return (
     <nav
@@ -73,18 +106,25 @@ export function StepProgress({ currentStep }: { currentStep: OnboardingStep }) {
         </span>
       </div>
 
-      <div className="mt-2 grid grid-cols-7 gap-1 sm:hidden" aria-hidden="true">
+      <div className="mt-2 grid grid-cols-4 gap-1 sm:hidden">
         {onboardingSteps.map((step, index) => {
           const isDone = index < currentIndex;
           const isActive = index === currentIndex;
+          const isAvailable = canSelectStep?.(step.id) ?? false;
 
           return (
-            <span
+            <button
+              type="button"
+              aria-label={`Перейти к этапу ${step.label}`}
+              disabled={!canNavigate || !isAvailable}
+              onClick={() => onSelectStep?.(step.id)}
               className={cn(
-                "h-1.5 rounded-full transition",
+                "h-1.5 rounded-full transition disabled:cursor-not-allowed",
+                canNavigate && isAvailable && "cursor-pointer hover:scale-y-150",
                 isDone && "bg-primary/70",
                 isActive && "bg-primary",
-                !isDone && !isActive && "bg-secondary",
+                !isDone && !isActive && isAvailable && "bg-secondary",
+                !isDone && !isActive && !isAvailable && "bg-muted",
               )}
               key={step.id}
             />
@@ -96,14 +136,21 @@ export function StepProgress({ currentStep }: { currentStep: OnboardingStep }) {
         {onboardingSteps.map((step, index) => {
           const isDone = index < currentIndex;
           const isActive = index === currentIndex;
+          const isAvailable = canSelectStep?.(step.id) ?? false;
 
           return (
-            <div
+            <button
+              type="button"
+              disabled={!canNavigate || !isAvailable}
+              onClick={() => onSelectStep?.(step.id)}
+              aria-current={isActive ? "step" : undefined}
               className={cn(
-                "flex min-w-fit items-center gap-2 rounded-full border px-2.5 py-1.5 transition",
+                "flex min-w-fit items-center gap-2 rounded-full border px-2.5 py-1.5 text-left transition disabled:cursor-not-allowed",
+                canNavigate && isAvailable && "cursor-pointer hover:border-primary/40 hover:bg-primary/5",
                 isActive && "border-primary/40 bg-primary/10 text-primary shadow-sm",
                 isDone && "border-border bg-card text-foreground",
-                !isDone && !isActive && "border-transparent text-muted-foreground",
+                !isDone && !isActive && isAvailable && "border-transparent text-muted-foreground",
+                !isDone && !isActive && !isAvailable && "border-transparent text-muted-foreground/45",
               )}
               key={step.id}
             >
@@ -112,7 +159,8 @@ export function StepProgress({ currentStep }: { currentStep: OnboardingStep }) {
                   "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold",
                   isDone && "bg-primary text-primary-foreground",
                   isActive && "animate-pulse-ring bg-card text-primary ring-1 ring-primary/40",
-                  !isDone && !isActive && "bg-secondary text-muted-foreground",
+                  !isDone && !isActive && isAvailable && "bg-secondary text-muted-foreground",
+                  !isDone && !isActive && !isAvailable && "bg-muted text-muted-foreground/50",
                 )}
                 aria-hidden="true"
               >
@@ -120,7 +168,7 @@ export function StepProgress({ currentStep }: { currentStep: OnboardingStep }) {
               </span>
               <span className="text-xs font-semibold">{step.label}</span>
               {isActive && <span className="hidden text-[11px] text-muted-foreground sm:inline">{step.caption}</span>}
-            </div>
+            </button>
           );
         })}
       </div>
@@ -220,7 +268,7 @@ export function EmployeeSummaryCard({ employee }: { employee: EmployeeProfile })
           <SummaryFact label="Дата выхода" value={formatDate(employee.startDate)} />
         </dl>
         <p className="line-clamp-3 text-xs leading-relaxed text-deep-muted">
-          Маяк использует роль и грейд только для персонализации: что знакомо — сократит, где нужна поддержка — подсветит.
+          Система использует грейд только для персонализации: что знакомо — сократит, где нужна поддержка — подсветит.
         </p>
       </div>
     </MayakPanel>

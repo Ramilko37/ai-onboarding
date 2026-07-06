@@ -1,166 +1,148 @@
 # Current Project State
 
-Last updated: 2026-06-25
+Last updated: 2026-07-06
 
 ## Product Scope
 
-The project is a Next.js prototype of an AI onboarding agent for a HORECA franchise network. The current iteration remains focused on two roles:
+This branch is a Valle Sanchez barista-focused version of the onboarding prototype.
 
-- Cook.
-- Cafe / shift administrator.
+The visible product flow is now centered on one role:
 
-The prototype demonstrates personalization without backend, external LLM, embeddings, vector database, or real integrations: a new employee selects a role and grade, passes a soft knowledge diagnostic, sees topic-level results, reaches the Mayak personal-space screen after an automatically generated personal learning route is created in state, and can ask the mentor chat questions that are answered from a local demo knowledge base with visible source citations.
+- Barista.
 
-The onboarding state is persisted in browser `localStorage` for prototype convenience, so diagnostic answers, result, and the generated route survive page reloads in the same browser.
+The prototype supports high-volume onboarding of new baristas: an employee enters profile data and grade, passes a soft first-day diagnostic based on sample coffee standards, receives topic-level development areas, and gets a personal development route for day 1, day 7, and day 14.
+
+The manager dashboard shows a demo cohort plus live diagnostic results saved in this browser. There is still no backend, external LLM, external embeddings service, or production vector database.
+
+The UX/UI layer has been prepared for customer demo: visible wording is product-facing, the role is fixed as the barista scenario, the employee route links directly to the manager dashboard, and the manager dashboard now includes next actions, attention items, topic analytics, route statuses, and mock action capture.
 
 ## Implemented Routes
-
-The main prototype is available on the root route and on a dedicated onboarding route:
 
 ```text
 /
 /onboarding-agent
+/manager
 ```
 
-Both routes render `OnboardingAgentPage`. The Mayak personal-space UI in `src/modules/personal-space/` is used as the final target state after the learning route is generated.
+- `/` and `/onboarding-agent` render the barista diagnostic and learning-route flow.
+- `/manager` renders the manager dashboard with demo baristas plus locally saved live results.
+- `/api/mentor-chat` answers mentor questions from the local demo knowledge base.
 
 ## Implemented Flow
 
-Current user flow:
+Current employee flow:
 
-1. Welcome screen.
-2. Employee profile form.
-3. Role selection: cook or administrator.
-4. Grade selection: no experience, HORECA experience, or network experience.
-5. Employee summary card.
-6. Competency map for day 1, day 7, and day 14.
-7. Diagnostic explanation screen.
-8. Diagnostic question flow.
-9. Topic-level diagnostic result.
-10. Automatically generated personal learning route for day 1, day 7, and day 14.
-11. Mayak personal-space screen embedded inside the onboarding shell.
+1. Welcome screen for Valle Sanchez barista entry testing.
+2. Barista profile form: name, grade, coffee shop, start date.
+3. Barista competency map for day 1, day 7, and day 14.
+4. Diagnostic explanation screen.
+5. Diagnostic question flow.
+6. Topic-level diagnostic result.
+7. Automatically generated personal development route for day 1, day 7, and day 14.
+8. Final personal-space screen with route, today focus, knowledge map, source-backed mentor chat, task status controls, and a direct link to the manager dashboard.
 
-## Current UX Structure
+Current manager flow:
 
-The onboarding flow uses the shared Mayak UI kit and a compact operational layout rather than large promo-style cards:
+1. Open `/manager`.
+2. Review cohort metrics: count, average score, high-risk baristas, ready baristas.
+3. Review "today requires attention" and frequent development topics.
+4. Filter by risk level.
+5. Compare baristas in a desktop card-table layout or mobile cards.
+6. Select a barista and review readiness, critical topics, development areas, manager recommendation, next action, mentor, manual check, repeat test date, route status, and day 1/7/14 timeline.
+7. Click a mock manager action and see "action captured in demo" feedback.
 
-- The scenario progress is shown as a compact “Step X of 7” stepper with a thin progress bar.
-- On mobile, the scenario progress does not use an inner horizontal scroller; it shows the current step summary and seven fixed progress segments.
-- Main actions are kept close to the active panel so forward/back actions stay reachable on desktop and mobile.
-- Clickable controls use a pointer cursor; disabled controls use a not-allowed cursor.
-- Role, grade, competency, diagnostic, result, and route screens use denser cards and tables.
-- Diagnostic result details are collapsed behind a details section by default.
-- Diagnostic answers, results, and generated routes are restored from local browser storage after reload.
-- The generated learning route step opens the Mayak personal-space UI inside the onboarding shell.
-- The final personal-space screen uses the generated employee profile and learning route for the hero, journey map, knowledge map, today's focus, and mentor chat context.
-- The final Mayak personal-space screen uses normal page scroll and is not forced to fit into one viewport.
-- The final Mayak personal-space widgets are constrained with mobile-safe widths so embedded cards do not bleed outside the viewport.
-- On mobile, all onboarding screens may use normal page scroll instead of being compressed into one viewport.
+## Domain Data
 
-## Implemented Diagnostic Logic
+Visible role:
 
-Stage 2 is implemented with mock logic and no backend, AI, LLM, or RAG.
+- `barista`.
 
-Current diagnostic behavior:
+Hidden legacy role data for `cook` and `admin` remains in code so existing tests and prior demo logic stay stable, but the visible profile path is barista-only.
 
-- Questions are selected by role.
-- Questions are selected by grade difficulty.
-- Each selected diagnostic covers every competency topic for the employee role.
-- Experienced network employees may receive basic anchor questions for topics that do not yet have harder questions, so no role topic disappears from the flow.
-- Selection is stable and predictable for demo use.
-- Only `single_choice` questions are implemented in the UI.
-- Data types leave room for future question types.
-- Answers are scored by topic, not only by total score.
-- Diagnostic results include the full topic map for the role, including topics with zero diagnostic questions.
-- Topic status is calculated from weighted score.
-- Recommendations preserve required topics even when an employee scores highly.
+Barista competency topics:
 
-Current question bank:
+- Hygiene and safety at the coffee bar.
+- Beans and storage.
+- Espresso setup.
+- Grind, dose, and tamping.
+- Extraction and sensory check.
+- Milk and texture.
+- Drink recipes.
+- Equipment cleaning.
+- Service flow.
+- Guest communication.
 
-- Cook: 16 mock questions.
-- Administrator: 16 mock questions.
+Required topics:
 
-## Implemented Personal Learning Route
+- Hygiene and safety at the coffee bar.
+- Milk and texture.
+- Equipment cleaning.
 
-The placeholder after diagnostic results is no longer part of the main user flow. The button “Сформировать персональный маршрут” now builds a real `LearningRoute` from `DiagnosticResult` and opens the `learning_route` step.
+Current barista question bank:
 
-Implemented route behavior:
+- 15 single-choice questions, including methodologist-supplied day-1 espresso checks.
+- The diagnostic now checks the 18-27-38 espresso recipe, roast-date dose range, extraction timing, grind adjustment, milk temperature, and flat white recipe basics.
+- Question selection remains grade-aware and stable.
+- Every barista diagnostic covers every barista competency topic.
+- Required topics stay in the route even when the score is high.
 
-- Route is generated automatically by `buildPersonalLearningRoute`.
-- Route uses employee role, grade, total diagnostic score, topic scores, strong topics, weak topics, critical topics, required topics, and topic recommendations.
-- Route has three blocks: day 1, day 7, and day 14.
-- Required topics always stay in the route.
-- Strong topics receive a short summary or control task instead of a full module.
-- Medium topics receive a short module and practice.
-- Weak topics receive a full module, practice, and repeated check.
-- Critical topics receive a full module, practice under manager or mentor supervision, and repeated check.
-- Each learning task has type, priority, status, estimated duration, source, and assignment reason.
-- The final Mayak screen uses the generated `LearningRoute` and employee profile instead of the previous static employee demo state.
-- The Mayak screen contains static mentor / knowledge-base / team shortcut buttons for the prototype; they do not open real external systems.
-- The Mayak screen is scrollable; internal fixed-height compression is avoided for the journey map and knowledge map.
-- Blocked tasks are only displayed as blockers inside the prototype; they do not create escalations.
+Visible onboarding progress is grouped into four customer-facing stages:
 
-## Implemented Knowledge Base And Mentor Chat
+- Profile.
+- Test.
+- Result.
+- Development plan.
 
-The project now includes a local demo knowledge base and a RAG-ready mentor-chat layer. It is intentionally lightweight: source-grounded lexical retrieval over curated demo documents, not a production vector RAG pipeline.
+The four-stage progress control is clickable: users can return to available stages without resetting completed data. Result and development-plan stages become selectable only after the corresponding result or route exists.
 
-Implemented behavior:
+## Knowledge Base And Mentor Chat
 
-- Knowledge documents are explicitly marked as demo content.
-- Documents are role-scoped for cook and administrator.
-- The retriever searches document titles, sources, topic ids, section titles, and section text.
-- Required topics and route topic ids boost relevant matches only after a textual match exists; they do not force an unrelated answer.
-- The mentor answer includes source lines and returns structured `sources` for UI citations.
-- Unknown, unrelated, HR, medical, legal, payroll, disciplinary, or sensitive questions fall back to manager / HR / mentor review instead of inventing an answer.
-- The `/api/mentor-chat` route validates JSON, required question text, and role.
-- The embedded personal-space assistant sends the current role, route topic ids, employee name, route summary, and active task titles to the API.
+The knowledge base is still local demo content, now with a lightweight mock vector index:
 
-Current demo sources include:
+- knowledge documents are role-scoped and source-backed;
+- barista standards are explicitly marked as `Demo KB`;
+- retrieval combines lexical matching with deterministic hashed-vector scoring;
+- vector score only boosts already relevant matches, so unrelated questions still fall back safely;
+- mentor answers cite source titles and excerpts;
+- mentor answers format demo source names as sample network standards in the visible UI;
+- unknown, HR, medical, legal, payroll, disciplinary, or sensitive questions fall back to manager / HR / mentor review.
 
-- cook hygiene;
-- cook storage and labeling;
-- cook tech cards and quality defects;
-- administrator order handling;
-- administrator payment, refund, complaint, and kitchen interaction rules.
+Barista demo and methodologist-supplied sources include:
+
+- day-1 espresso dictionary, recipe, extraction timing, grind adjustment, and milk temperature;
+- coffee bar hygiene;
+- beans and storage;
+- espresso setup;
+- milk texture and drink recipes;
+- equipment cleaning;
+- peak-flow and guest communication.
+
+## Persistence
+
+Prototype browser persistence uses localStorage:
+
+```text
+valle-sanchez:barista-onboarding-state:v1
+barista:assessment-results:v1
+```
+
+The manager dashboard record stores summary data only: profile summary, total score, topic labels, critical topics, route highlights, risk level, readiness label, and manager recommendation. It does not store raw diagnostic answers.
+
+The manager dashboard record now also stores route status, task status counts, task titles marked as "needs mentor", default mentor label, manual check text, repeat test date, and next action. This is still local browser persistence only.
 
 ## Important Files
 
 ```text
 app/page.tsx
 app/onboarding-agent/page.tsx
+app/manager/page.tsx
 app/api/mentor-chat/route.ts
-app/layout.tsx
+app/globals.css
 src/modules/onboarding-agent/
-  model/types.ts
-  model/learningRouteTypes.ts
-  model/mockData.ts
-  model/diagnosticQuestions.ts
-  model/learningRouteData.ts
-  model/useOnboardingAgentState.ts
-  model/diagnosticScoring.test.ts
-  model/learningRouteBuilder.test.ts
-  lib/getDiagnosticQuestions.ts
-  lib/calculateDiagnosticResult.ts
-  lib/buildPersonalLearningRoute.ts
-  lib/getTopicStatus.ts
-  lib/getTopicRecommendation.ts
-  lib/getRecommendationLabel.ts
-  ui/OnboardingAgentPage.tsx
-  ui/steps/DiagnosticStep.tsx
-  ui/steps/DiagnosticResultStep.tsx
-  ui/steps/LearningRouteStep.tsx
-  ui/steps/LearningRouteStep.module.css
-src/modules/personal-space/
-  PersonalSpace.tsx
-  data.ts
-  ui/
 src/modules/knowledge-base/
-  index.ts
-  model/
-  lib/
+src/modules/manager-dashboard/
+src/modules/personal-space/
 src/shared/ui/mayak/
-  index.tsx
-  styleguide.ts
 ```
 
 ## Verification
@@ -171,58 +153,39 @@ Expected passing commands:
 npm run test:diagnostic
 npm run test:learning-route
 npm run test:knowledge-base
+npm run test:manager-dashboard
 npm run build
 ```
 
-Latest browser smoke check on 2026-06-24 covered:
+Latest completed verification on 2026-06-30:
 
-- `/onboarding-agent` desktop flow: welcome, profile, role and grade selection, competency map, diagnostic intro, 12 diagnostic questions, diagnostic result, generated route, and final Mayak screen.
-- Final screen personalization: employee profile and generated route data appear in the Mayak personal-space UI instead of the previous static employee state.
-- Mentor chat: "Где хранить лосось после открытия упаковки?" returns a grounded answer with `Регламент хранения продуктов` citations.
-- Mentor chat fallback: a disciplinary / HR question does not receive an invented operational answer and points to manager / HR review.
-- `/` mobile first screen at 390x844.
-- Browser console warnings/errors during the checked flow: none observed.
+- `npm run test:diagnostic`
+- `npm run test:learning-route`
+- `npm run test:knowledge-base`
+- `npm run test:manager-dashboard`
+- `npm run build`
+- Browser smoke: completed barista diagnostic, generated route, marked a route task as needing mentor help, verified the saved barista appears in `/manager`, verified manager action feedback, checked desktop and mobile manager/onboarding screens, and confirmed no browser console errors after removing the blocked remote font request.
+- 2026-06-30 follow-up: `npm run build` after enabling clickable stage navigation.
 
-The knowledge-base test covers:
+## Explicitly Not Implemented
 
-- demo documents being marked and source-backed;
-- role-specific retrieval;
-- grounded answers with citations;
-- HR / disciplinary fallback;
-- unknown-question fallback even when route topic ids are present.
+The prototype still does not include:
 
-The route builder test covers:
-
-- day 1 / day 7 / day 14 route structure;
-- required topics staying in the route;
-- strong topics receiving shortened learning tasks;
-- critical topics receiving reinforced tasks;
-- task reasons and topic sources;
-- deterministic builder output except `generatedAt`.
-
-## Explicitly Not Implemented Yet
-
-The current prototype still does not include:
-
+- real franchise standards from Valle Sanchez;
 - external LLM answer generation;
-- embeddings;
-- vector database or semantic search;
-- production RAG ingestion pipeline;
-- uploaded real franchise documents;
-- escalation to a human;
-- ticket creation;
-- HR / manager notifications;
-- backend;
-- real HRIS, LMS, SSO, calendar, service desk, or messaging integrations.
+- external embeddings;
+- production vector database;
+- backend persistence;
+- cross-device manager dashboard sync;
+- HRM, LMS, POS, SSO, payroll, calendar, service desk, or messaging integrations;
+- employment-status, payroll, disciplinary, legal, or medical decisions.
 
 ## Next Product Stage
 
-The next stage can harden the assistive AI layer on top of the already implemented route:
+Recommended next stage:
 
-- import real franchise documents into the knowledge base;
-- add embeddings and a vector store;
-- connect an LLM answer generator that is constrained by retrieved sources;
-- keep safe fallback for unknown or sensitive questions;
-- HR / manager dashboard;
-- demo-only support queue, if it is explicitly in scope;
-- mock integrations for a broader end-to-end demo.
+- import real Valle Sanchez standards and replace demo documents;
+- choose a production vector store and embedding strategy;
+- add backend persistence for manager dashboard results;
+- add manager review workflow for high-risk diagnostic results;
+- run a demo pilot with barista leads and store managers.

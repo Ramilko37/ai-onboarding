@@ -191,6 +191,59 @@ test("network employee diagnostic route keeps every role topic in the generated 
   }
 });
 
+test("barista route creates day 1, day 7 and day 14 development plan", () => {
+  const baristaEmployee: EmployeeProfile = {
+    id: "barista-route-1",
+    name: "София",
+    role: "barista",
+    grade: "horeca_experience",
+    location: "Valle Sanchez · Арбат",
+    startDate: "2026-06-28"
+  };
+  const questions = getDiagnosticQuestions({
+    role: baristaEmployee.role,
+    grade: baristaEmployee.grade
+  });
+  const diagnosticResult = calculateDiagnosticResult({
+    employee: baristaEmployee,
+    questions,
+    answers: createBaristaGapAnswers(questions),
+    topics: competencyTopics
+  });
+  const route = buildPersonalLearningRoute({
+    employee: baristaEmployee,
+    result: diagnosticResult
+  });
+  const tasks = getAllTasks(route);
+
+  assert.equal(route.role, "barista");
+  assert.deepEqual(
+    route.days.map((day) => day.id),
+    ["day_1", "day_7", "day_14"]
+  );
+  assert.match(route.days[0].focus, /эспрессо|гигиена|оборудован/i);
+  assert.equal(
+    tasks.some((task) => task.topicId === "barista-milk-texture"),
+    true
+  );
+  assert.equal(
+    tasks.some(
+      (task) =>
+        task.topicId === "barista-espresso-setup" &&
+        task.title.includes("под контролем управляющего")
+    ),
+    true
+  );
+
+  for (const topic of diagnosticResult.requiredTopics) {
+    assert.equal(
+      tasks.some((task) => task.topicId === topic.topicId),
+      true,
+      `barista route misses required topic ${topic.topicId}`
+    );
+  }
+});
+
 function makeTopic(
   overrides: Partial<TopicScore> & Pick<TopicScore, "topicId" | "topicTitle">
 ): TopicScore {
@@ -232,6 +285,26 @@ function createCorrectAnswers(questions: DiagnosticQuestion[]): DiagnosticAnswer
       questionId: question.id,
       selectedOptionId: correctOption.id,
       isCorrect: true,
+      topicId: question.topicId,
+      weight: question.weight
+    };
+  });
+}
+
+function createBaristaGapAnswers(questions: DiagnosticQuestion[]): DiagnosticAnswer[] {
+  return questions.map((question) => {
+    const option =
+      question.topicId === "barista-espresso-setup" ||
+      question.topicId === "barista-milk-texture"
+        ? question.options.find((item) => !item.isCorrect)
+        : question.options.find((item) => item.isCorrect);
+
+    assert.ok(option);
+
+    return {
+      questionId: question.id,
+      selectedOptionId: option.id,
+      isCorrect: option.isCorrect,
       topicId: question.topicId,
       weight: question.weight
     };

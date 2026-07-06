@@ -53,7 +53,7 @@ export function DiagnosticStep({
       }
 
       onNext();
-    }, 160);
+    }, 420);
   }
 
   if (!currentQuestion) {
@@ -142,7 +142,7 @@ export function DiagnosticProgress({
         className="mb-0"
         kicker="Диагностика знаний"
         title={`Вопрос ${currentNumber} из ${totalQuestions}`}
-        description="Один вопрос на экран. После ответа Маяк двигает вас дальше без перегруза."
+        description="Один вопрос на экран. После выбора вы увидите подтверждение, затем система перейдёт дальше."
       />
       <div className="rounded-2xl border border-border bg-card p-3">
         <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
@@ -168,7 +168,11 @@ export function DiagnosticQuestionCard({
     <MayakPanel padding="md" className="flex min-h-0 flex-1 flex-col shadow-none">
       <div className="mb-3 flex shrink-0 flex-wrap gap-2">
         <MayakBadge tone="primary">{getDifficultyLabel(question.difficulty)}</MayakBadge>
-        {question.source && <MayakBadge tone="secondary">{question.source}</MayakBadge>}
+        {question.source && (
+          <span className="inline-flex min-h-6 items-center rounded-full bg-secondary px-2.5 text-[11px] font-medium text-secondary-foreground">
+            Источник: {formatQuestionSource(question.source)}
+          </span>
+        )}
       </div>
       <h2 className="shrink-0 text-xl font-semibold leading-snug tracking-tight text-foreground sm:text-2xl">
         {question.question}
@@ -236,6 +240,9 @@ export function DiagnosticOption({
       >
         {selected && <Check className="h-3 w-3" />}
       </span>
+      {selected && (
+        <span className="sr-only">Выбранный ответ</span>
+      )}
     </button>
   );
 }
@@ -266,4 +273,12 @@ function getDifficultyLabel(difficulty: DiagnosticQuestion["difficulty"]) {
   }
 
   return "Сетевой стандарт";
+}
+
+function formatQuestionSource(source: string) {
+  return source
+    .replace(/^Demo KB\s*·\s*/i, "")
+    .replace(/^Стандарт\s+/i, "стандарт ")
+    .replace(/^Чек-лист\s+/i, "чек-лист ")
+    .replace(/^Карта\s+/i, "карта ");
 }

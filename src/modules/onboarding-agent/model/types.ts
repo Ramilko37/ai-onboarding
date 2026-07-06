@@ -1,6 +1,6 @@
 import type { LearningRoute } from "./learningRouteTypes";
 
-export type EmployeeRole = "cook" | "admin";
+export type EmployeeRole = "cook" | "admin" | "barista";
 
 export type EmployeeGrade =
   | "no_experience"

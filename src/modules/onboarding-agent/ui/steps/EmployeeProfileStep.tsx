@@ -1,9 +1,10 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
-import { ArrowRight, CalendarDays, MapPin, Sparkles, UserRound } from "lucide-react";
+import { ArrowRight, CalendarDays, Coffee, MapPin, Sparkles } from "lucide-react";
 import {
   MayakField,
+  MayakBadge,
   MayakIconBadge,
   MayakInput,
   MayakInsightCard,
@@ -11,27 +12,22 @@ import {
   MayakSectionHeader,
   MayakSectionTitle,
 } from "@/shared/ui/mayak";
-import { gradeOptions, roleOptions } from "../../model/mockData";
+import { gradeOptions } from "../../model/mockData";
 import type { EmployeeGrade, EmployeeRole } from "../../model/types";
 import type { EmployeeProfileInput } from "../../model/useOnboardingAgentState";
-import { GradeSelector, PrimaryButton, RoleCard } from "../components";
+import { GradeSelector, PrimaryButton } from "../components";
 
 const today = new Date().toISOString().slice(0, 10);
-
-const roleRouteFocus: Record<EmployeeRole, string> = {
-  cook: "гигиена, техкарты, заготовки, качество",
-  admin: "заказы, гости, касса, претензии",
-};
 
 export function EmployeeProfileStep({
   onSubmit,
 }: {
   onSubmit: (input: EmployeeProfileInput) => void;
 }) {
-  const [name, setName] = useState("Мария Иванова");
-  const [role, setRole] = useState<EmployeeRole>("admin");
+  const [name, setName] = useState("София Кузнецова");
+  const role: EmployeeRole = "barista";
   const [grade, setGrade] = useState<EmployeeGrade>("horeca_experience");
-  const [location, setLocation] = useState("Точка №1");
+  const [location, setLocation] = useState("Valle Sanchez · Арбат");
   const [startDate, setStartDate] = useState(today);
 
   const canSubmit = useMemo(
@@ -62,15 +58,15 @@ export function EmployeeProfileStep({
           <MayakSectionHeader
             className="mb-0"
             kicker="Шаг 1 · профиль"
-            title="Соберём профиль адаптации"
-            description="Минимум данных, чтобы Маяк собрал релевантную карту: роль, грейд, точка и дата выхода."
+            title="Профиль бариста"
+            description="Минимум данных для входного тестирования: грейд, кофейня и дата выхода на смену."
           />
 
           <MayakInsightCard
             tone="primary"
             icon={<Sparkles className="h-4 w-4" aria-hidden="true" />}
-            title="Зачем это Маяку"
-            description="Роль определяет карту и вопросы, грейд — глубину тем. Так маршрут становится персональным, а не общим для всех."
+            title="Зачем это Valle Sanchez"
+            description="Грейд определяет глубину вопросов. Система покажет, какие кофейные стандарты уже уверенные, а где нужен маршрут развития."
           />
 
           <div className="grid gap-3">
@@ -90,7 +86,7 @@ export function EmployeeProfileStep({
                   <MayakInput
                     className="pl-9"
                     onChange={(event) => setLocation(event.target.value)}
-                    placeholder="Точка №1"
+                    placeholder="Valle Sanchez · кофейня"
                     type="text"
                     value={location}
                   />
@@ -119,24 +115,35 @@ export function EmployeeProfileStep({
             <MayakSectionTitle
               icon={
                 <MayakIconBadge>
-                  <UserRound className="h-4 w-4 text-primary" aria-hidden="true" />
+                  <Coffee className="h-4 w-4 text-primary" aria-hidden="true" />
                 </MayakIconBadge>
               }
-              title="Роль"
-              description="От роли зависит карта и вопросы"
+              title="Сценарий тестирования"
+              description="Роль фиксирована для этой версии"
             />
-            <div className="grid h-[calc(100%-2.75rem)] min-h-0 gap-2 md:grid-cols-2">
-              {roleOptions.map((option) => (
-                <RoleCard
-                  description={option.description}
-                  meta={`В маршруте: ${roleRouteFocus[option.value]}`}
-                  key={option.value}
-                  onSelect={setRole}
-                  selected={option.value === role}
-                  title={option.label}
-                  value={option.value}
-                />
-              ))}
+            <div className="grid h-[calc(100%-2.75rem)] min-h-0 content-center gap-3 rounded-2xl border border-primary/25 bg-primary/5 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <MayakBadge tone="primary">Роль тестирования</MayakBadge>
+                  <h3 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
+                    Бариста
+                  </h3>
+                </div>
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
+                  <Coffee className="h-6 w-6" aria-hidden="true" />
+                </span>
+              </div>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                Проверяем эспрессо, молоко, рецептуры, оборудование и работу в потоке.
+              </p>
+              <ul className="grid gap-2 text-xs text-foreground/85 sm:grid-cols-2 lg:grid-cols-1">
+                {["Эспрессо", "Молоко", "Чистка оборудования", "Гостевой поток"].map((item) => (
+                  <li className="flex items-center gap-2" key={item}>
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
           </MayakPanel>
 
@@ -170,7 +177,7 @@ function ProfileSubmitBlock({
       </PrimaryButton>
       <p className="mt-2 text-center text-xs text-muted-foreground">
         {canSubmit
-          ? "Дальше Маяк покажет карту роли и темы для диагностики."
+          ? "Дальше система покажет карту бариста и темы диагностики."
           : "Заполните имя и точку, чтобы продолжить."}
       </p>
     </div>

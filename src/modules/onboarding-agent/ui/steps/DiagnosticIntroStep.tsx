@@ -52,7 +52,7 @@ export function DiagnosticIntroStep({
           description={
             <>
               Сотрудник: {employee.name}. Роль — {getRoleLabel(employee.role).toLowerCase()}. Сейчас
-              мы настроим ваш персональный маршрут адаптации.
+              мы настроим персональный маршрут развития по кофейным стандартам.
             </>
           }
         />
@@ -71,7 +71,7 @@ export function DiagnosticIntroStep({
         <MayakInsightCard
           tone="primary"
           icon={<ShieldCheck className="h-4 w-4" aria-hidden="true" />}
-          title="Маяк не ставит оценку"
+          title="Это не экзамен"
           description="Ответы нужны только для настройки маршрута и не влияют на кадровые решения."
         />
 
@@ -95,7 +95,7 @@ export function DiagnosticIntroStep({
           </MayakIconBadge>
           <div className="min-w-0">
             <h2 className="text-lg font-semibold tracking-tight text-deep-foreground">
-              После диагностики Маяк сразу соберёт маршрут
+              После диагностики система сразу соберёт маршрут
             </h2>
           </div>
         </div>
@@ -115,7 +115,7 @@ export function DiagnosticIntroStep({
         </div>
 
         <p className="text-xs leading-relaxed text-deep-muted">
-          Знакомые темы пройдём короче, а где нужно — добавим конспект, практику или наставника.
+          Знакомые темы пройдём короче, а где нужно — добавим стандарт сети, практику или наставника.
         </p>
       </MayakPanel>
     </MayakPanel>

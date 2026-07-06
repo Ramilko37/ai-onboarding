@@ -24,7 +24,7 @@ export async function POST(request: Request) {
   }
 
   if (!isEmployeeRole(body.role)) {
-    return json({ error: "role must be cook or admin" }, 400);
+    return json({ error: "role must be cook, admin or barista" }, 400);
   }
 
   const answer = answerMentorQuestion({
@@ -49,7 +49,7 @@ function json(payload: unknown, status: number) {
 }
 
 function isEmployeeRole(value: unknown): value is EmployeeRole {
-  return value === "cook" || value === "admin";
+  return value === "cook" || value === "admin" || value === "barista";
 }
 
 function parseStringArray(value: unknown) {

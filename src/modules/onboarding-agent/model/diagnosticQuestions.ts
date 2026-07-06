@@ -550,7 +550,281 @@ export const adminQuestions: DiagnosticQuestion[] = [
   }
 ];
 
+export const baristaQuestions: DiagnosticQuestion[] = [
+  {
+    id: "barista-q-001",
+    role: "barista",
+    topicId: "barista-hygiene",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Что бариста проверяет перед первым напитком на смене?",
+    options: [
+      { id: "a", text: "Только наличие стаканов на стойке", isCorrect: false },
+      { id: "b", text: "Чистоту рук, станции, инвентаря и готовность оборудования", isCorrect: true },
+      { id: "c", text: "Только очередь заказов", isCorrect: false },
+      { id: "d", text: "Только температуру в зале", isCorrect: false }
+    ],
+    explanation:
+      "Перед работой бариста проверяет личную гигиену, чистоту станции и безопасную готовность оборудования.",
+    source: "Demo KB · Стандарт гигиены кофейной стойки",
+    weight: 3
+  },
+  {
+    id: "barista-q-002",
+    role: "barista",
+    topicId: "barista-beans-storage",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Как правильно обращаться с открытым пакетом зерна по стандарту сети?",
+    options: [
+      { id: "a", text: "Оставить открытым рядом с кофемолкой", isCorrect: false },
+      { id: "b", text: "Закрыть, промаркировать и хранить вдали от влаги и тепла", isCorrect: true },
+      { id: "c", text: "Пересыпать в любую свободную ёмкость без даты", isCorrect: false },
+      { id: "d", text: "Смешать с остатками предыдущего зерна", isCorrect: false }
+    ],
+    explanation:
+      "Зерно защищают от воздуха, влаги и тепла, а открытие партии фиксируют для ротации.",
+    source: "Demo KB · Стандарт хранения зерна",
+    weight: 2
+  },
+  {
+    id: "barista-q-003",
+    role: "barista",
+    topicId: "barista-espresso-setup",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Что означает учебный рецепт эспрессо 18-27-38?",
+    options: [
+      { id: "a", text: "18 мл воды, 27 г кофе и 38 секунд прогрева группы", isCorrect: false },
+      { id: "b", text: "18 г закладка, 27 секунд экстракция и 38 мл выход напитка", isCorrect: true },
+      { id: "c", text: "18 секунд помол, 27 мл молока и 38°C температура напитка", isCorrect: false },
+      { id: "d", text: "Номер рецептуры, который не связан с параметрами шота", isCorrect: false }
+    ],
+    explanation:
+      "В учебном рецепте 18-27-38 фиксируются закладка, время экстракции и выход эспрессо.",
+    source: "Материалы методолога · День 1: Эспрессо",
+    weight: 3
+  },
+  {
+    id: "barista-q-004",
+    role: "barista",
+    topicId: "barista-grind-dose-tamp",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Как бариста выбирает закладку эспрессо по учебному материалу?",
+    options: [
+      { id: "a", text: "По дате обжарки зерна: примерно от 17.5 г до 18.5 г", isCorrect: true },
+      { id: "b", text: "Всегда ровно 15 г, независимо от зерна", isCorrect: false },
+      { id: "c", text: "По размеру очереди у стойки", isCorrect: false },
+      { id: "d", text: "По температуре молока в питчере", isCorrect: false }
+    ],
+    explanation:
+      "Методологический материал связывает закладку с датой обжарки: чем старше зерно, тем выше учебная закладка.",
+    source: "Материалы методолога · День 1: Эспрессо",
+    weight: 2
+  },
+  {
+    id: "barista-q-005",
+    role: "barista",
+    topicId: "barista-extraction-sensory",
+    type: "single_choice",
+    difficulty: "intermediate",
+    question: "Какой диапазон времени экстракции указан в учебном стандарте эспрессо?",
+    options: [
+      { id: "a", text: "23-32 секунды, с целевым диапазоном 27-30 секунд", isCorrect: true },
+      { id: "b", text: "10-12 секунд, чтобы не задерживать очередь", isCorrect: false },
+      { id: "c", text: "45-60 секунд для любой партии зерна", isCorrect: false },
+      { id: "d", text: "Время не контролируется, важен только объём чашки", isCorrect: false }
+    ],
+    explanation:
+      "Материал фиксирует стандарт 23-32 секунды и целевой ориентир 27-30 секунд.",
+    source: "Материалы методолога · День 1: Эспрессо",
+    weight: 2
+  },
+  {
+    id: "barista-q-006",
+    role: "barista",
+    topicId: "barista-milk-texture",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "До какой температуры рекомендуется греть молоко для капучино?",
+    options: [
+      { id: "a", text: "55-65°C, около 60°C как ориентир сладости", isCorrect: true },
+      { id: "b", text: "30-35°C, чтобы молоко осталось почти холодным", isCorrect: false },
+      { id: "c", text: "80-90°C, чтобы пена была максимально горячей", isCorrect: false },
+      { id: "d", text: "Температура не важна, если есть рисунок", isCorrect: false }
+    ],
+    explanation:
+      "В материале указано 55-65°C; около 60°C молоко лучше раскрывает сладость.",
+    source: "Материалы методолога · День 1: Эспрессо",
+    weight: 3
+  },
+  {
+    id: "barista-q-007",
+    role: "barista",
+    topicId: "barista-drink-recipes",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Чем флэт уайт отличается от капучино в учебном материале?",
+    options: [
+      { id: "a", text: "Готовится с двумя порциями эспрессо и очень тонкой пеной", isCorrect: true },
+      { id: "b", text: "Всегда готовится без эспрессо", isCorrect: false },
+      { id: "c", text: "Должен иметь самую толстую сухую пену", isCorrect: false },
+      { id: "d", text: "Отличается только цветом чашки", isCorrect: false }
+    ],
+    explanation:
+      "Флэт уайт в материале описан как напиток 150-180 мл с двумя порциями эспрессо и тонкой пеной около 0.25 см.",
+    source: "Материалы методолога · День 1: Эспрессо",
+    weight: 2
+  },
+  {
+    id: "barista-q-008",
+    role: "barista",
+    topicId: "barista-equipment-cleaning",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Что делать после работы с молоком и перед следующим напитком?",
+    options: [
+      { id: "a", text: "Оставить питчер до паузы", isCorrect: false },
+      { id: "b", text: "Очистить паровую трубку и промыть питчер по чек-листу", isCorrect: true },
+      { id: "c", text: "Протереть только внешнюю сторону кофемашины", isCorrect: false },
+      { id: "d", text: "Ничего, если очередь большая", isCorrect: false }
+    ],
+    explanation:
+      "Чистка после молока — обязательный блок безопасности и качества напитков.",
+    source: "Demo KB · Чек-лист чистки кофейного оборудования",
+    weight: 3
+  },
+  {
+    id: "barista-q-009",
+    role: "barista",
+    topicId: "barista-service-flow",
+    type: "single_choice",
+    difficulty: "intermediate",
+    question: "Как действовать в утренний пик, чтобы не потерять качество?",
+    options: [
+      { id: "a", text: "Упростить рецептуры без согласования", isCorrect: false },
+      { id: "b", text: "Держать порядок заказов, группировать операции и не пропускать контроль", isCorrect: true },
+      { id: "c", text: "Готовить молоко заранее на весь поток", isCorrect: false },
+      { id: "d", text: "Не сообщать о задержках", isCorrect: false }
+    ],
+    explanation:
+      "Поток ускоряют организацией операций, а не отказом от стандартов качества.",
+    source: "Demo KB · Стандарт работы в пиковый поток",
+    weight: 2
+  },
+  {
+    id: "barista-q-010",
+    role: "barista",
+    topicId: "barista-guest-communication",
+    type: "single_choice",
+    difficulty: "basic",
+    question: "Гость просит напиток, которого нет в рецептурах сети. Как ответить?",
+    options: [
+      { id: "a", text: "Придумать рецепт на месте", isCorrect: false },
+      { id: "b", text: "Спокойно предложить ближайшую позицию из меню или уточнить у старшего", isCorrect: true },
+      { id: "c", text: "Отказать без объяснения", isCorrect: false },
+      { id: "d", text: "Обещать любой состав", isCorrect: false }
+    ],
+    explanation:
+      "Бариста не придумывает правила меню: предлагает доступную альтернативу или уточняет.",
+    source: "Demo KB · Стандарт гостевого диалога",
+    weight: 1
+  },
+  {
+    id: "barista-q-011",
+    role: "barista",
+    topicId: "barista-espresso-setup",
+    type: "single_choice",
+    difficulty: "advanced",
+    question: "После смены зерна вкус эспрессо стал нестабильным. Что корректнее?",
+    options: [
+      { id: "a", text: "Работать по старой настройке до конца дня", isCorrect: false },
+      { id: "b", text: "Перенастроить рецепт, сделать контрольные шоты и зафиксировать параметры", isCorrect: true },
+      { id: "c", text: "Смешать новое зерно со старым без отметки", isCorrect: false },
+      { id: "d", text: "Скрывать вкус молоком во всех напитках", isCorrect: false }
+    ],
+    explanation:
+      "Смена зерна требует настройки рецепта и фиксации параметров для повторяемости.",
+    source: "Demo KB · Стандарт настройки эспрессо",
+    weight: 3
+  },
+  {
+    id: "barista-q-012",
+    role: "barista",
+    topicId: "barista-milk-texture",
+    type: "single_choice",
+    difficulty: "advanced",
+    question: "Почему молоко для капучино не стоит перегревать выше учебного диапазона?",
+    options: [
+      { id: "a", text: "Молоко хуже воспринимается по сладости, а текстура становится нестабильной", isCorrect: true },
+      { id: "b", text: "Потому что при любой температуре выше 40°C эспрессо исчезает", isCorrect: false },
+      { id: "c", text: "Перегрев нужен всегда, если напиток на вынос", isCorrect: false },
+      { id: "d", text: "Температура влияет только на скорость обслуживания", isCorrect: false }
+    ],
+    explanation:
+      "Около 60°C сладость воспринимается лучше, а правильно нагретое молоко даёт устойчивую тонкую пену.",
+    source: "Материалы методолога · День 1: Эспрессо",
+    weight: 3
+  },
+  {
+    id: "barista-q-013",
+    role: "barista",
+    topicId: "barista-extraction-sensory",
+    type: "single_choice",
+    difficulty: "advanced",
+    question: "Эспрессо горчит и сушит послевкусие. Что нужно проверить?",
+    options: [
+      { id: "a", text: "Параметры экстракции, свежесть шота и чистоту группы", isCorrect: true },
+      { id: "b", text: "Только температуру в зале", isCorrect: false },
+      { id: "c", text: "Добавить больше воды в готовый шот", isCorrect: false },
+      { id: "d", text: "Сменить название напитка в заказе", isCorrect: false }
+    ],
+    explanation:
+      "Горечь и сухость — повод проверить экстракцию и чистоту, а не маскировать дефект.",
+    source: "Demo KB · Сенсорный чек-лист эспрессо",
+    weight: 2
+  },
+  {
+    id: "barista-q-014",
+    role: "barista",
+    topicId: "barista-equipment-cleaning",
+    type: "single_choice",
+    difficulty: "intermediate",
+    question: "Когда бариста делает обратную промывку группы по чек-листу?",
+    options: [
+      { id: "a", text: "По чек-листу смены и при признаках загрязнения группы", isCorrect: true },
+      { id: "b", text: "Только когда кофе перестал молоться", isCorrect: false },
+      { id: "c", text: "Раз в месяц, если поток большой", isCorrect: false },
+      { id: "d", text: "Никогда во время рабочей недели", isCorrect: false }
+    ],
+    explanation:
+      "Группа кофемашины требует регулярной чистки по чек-листу, особенно при признаках загрязнения.",
+    source: "Demo KB · Чек-лист чистки кофейного оборудования",
+    weight: 3
+  },
+  {
+    id: "barista-q-015",
+    role: "barista",
+    topicId: "barista-espresso-setup",
+    type: "single_choice",
+    difficulty: "advanced",
+    question: "Что делать с помолом, если эспрессо проливается слишком быстро?",
+    options: [
+      { id: "a", text: "Уменьшить помол, менять шагом 0.1 и после изменения смолоть одну порцию в сброс", isCorrect: true },
+      { id: "b", text: "Увеличить помол сразу на несколько делений и продолжать выдачу", isCorrect: false },
+      { id: "c", text: "Не менять помол, а увеличить объём воды в готовом напитке", isCorrect: false },
+      { id: "d", text: "Сменить чашку, не проверяя параметры рецепта", isCorrect: false }
+    ],
+    explanation:
+      "В материале указано: быстрый пролив корректируют уменьшением помола; шаг изменения — 0.1, после изменения одна порция уходит в сброс.",
+    source: "Материалы методолога · День 1: Эспрессо",
+    weight: 3
+  }
+];
+
 export const diagnosticQuestions: DiagnosticQuestion[] = [
   ...cookQuestions,
-  ...adminQuestions
+  ...adminQuestions,
+  ...baristaQuestions
 ];

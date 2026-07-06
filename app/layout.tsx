@@ -13,13 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI-агент адаптации HORECA",
+  title: "Valle Sanchez · тестирование бариста",
   description:
-    "Прототип AI-агента для диагностики знаний и персонального маршрута адаптации сотрудников HORECA-франчайзинговой сети.",
+    "Входное тестирование бариста, анализ зон развития и персональный маршрут обучения.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fafaf7",
+  themeColor: "#951d1f",
   width: "device-width",
   initialScale: 1,
 };

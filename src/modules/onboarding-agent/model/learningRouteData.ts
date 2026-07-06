@@ -35,7 +35,17 @@ const topicConfigs: Record<string, LearningTopicConfig> = {
   "admin-delivery": { shortTitle: "Доставка и самовывоз", role: "admin", source: "Регламент доставки и самовывоза" },
   "admin-discounts": { shortTitle: "Акции и скидки", role: "admin", source: "Регламент акций и скидок" },
   "admin-shift-close": { shortTitle: "Закрытие смены", role: "admin", source: "Чек-лист закрытия смены" },
-  "admin-reporting": { shortTitle: "Отчётность", role: "admin", source: "Инструкция по сменной отчётности" }
+  "admin-reporting": { shortTitle: "Отчётность", role: "admin", source: "Инструкция по сменной отчётности" },
+  "barista-hygiene": { shortTitle: "Гигиена стойки", role: "barista", source: "Demo KB · Стандарт гигиены кофейной стойки" },
+  "barista-beans-storage": { shortTitle: "Зерно и хранение", role: "barista", source: "Demo KB · Стандарт хранения зерна" },
+  "barista-espresso-setup": { shortTitle: "Настройка эспрессо", role: "barista", source: "Материалы методолога · День 1: Эспрессо" },
+  "barista-grind-dose-tamp": { shortTitle: "Помол, доза и трамбовка", role: "barista", source: "Материалы методолога · День 1: Эспрессо" },
+  "barista-extraction-sensory": { shortTitle: "Экстракция и сенсорика", role: "barista", source: "Материалы методолога · День 1: Эспрессо" },
+  "barista-milk-texture": { shortTitle: "Молоко и текстура", role: "barista", source: "Материалы методолога · День 1: Эспрессо" },
+  "barista-drink-recipes": { shortTitle: "Рецептуры напитков", role: "barista", source: "Материалы методолога · День 1: Эспрессо" },
+  "barista-equipment-cleaning": { shortTitle: "Чистка оборудования", role: "barista", source: "Demo KB · Чек-лист чистки кофейного оборудования" },
+  "barista-service-flow": { shortTitle: "Работа в потоке", role: "barista", source: "Demo KB · Стандарт работы в пиковый поток" },
+  "barista-guest-communication": { shortTitle: "Коммуникация с гостем", role: "barista", source: "Demo KB · Стандарт гостевого диалога" }
 };
 
 export const learningTopicMaterials = Object.fromEntries(
@@ -62,11 +72,21 @@ function createLearningTopicMaterial(
     };
   }
 
+  if (config.role === "admin") {
+    return {
+      ...config,
+      day1Task: `Разобрать материал «${config.shortTitle}»: путь гостя или заказа, обязательные поля, корректные формулировки и источник актуального правила.`,
+      practiceTask: `Отработать учебный сценарий по теме «${config.shortTitle}» и зафиксировать следующий шаг так, как это сделал бы администратор в смене.`,
+      checkTask: `Пройти короткую проверку по теме «${config.shortTitle}»: статус, коммуникация с гостем, фиксация обращения и обмен информацией с кухней.`,
+      summaryTask: `Коротко повторить «${config.shortTitle}» и отметить, где смотреть актуальные условия или регламент перед ответом гостю.`
+    };
+  }
+
   return {
     ...config,
-    day1Task: `Разобрать материал «${config.shortTitle}»: путь гостя или заказа, обязательные поля, корректные формулировки и источник актуального правила.`,
-    practiceTask: `Отработать учебный сценарий по теме «${config.shortTitle}» и зафиксировать следующий шаг так, как это сделал бы администратор в смене.`,
-    checkTask: `Пройти короткую проверку по теме «${config.shortTitle}»: статус, коммуникация с гостем, фиксация обращения и обмен информацией с кухней.`,
-    summaryTask: `Коротко повторить «${config.shortTitle}» и отметить, где смотреть актуальные условия или регламент перед ответом гостю.`
+    day1Task: `Разобрать стандарт «${config.shortTitle}»: что проверить до первого напитка, где источник правила и когда остановиться для уточнения у наставника.`,
+    practiceTask: `Отработать учебный сценарий по теме «${config.shortTitle}» на стойке: подготовка, выполнение, самопроверка качества и короткая обратная связь.`,
+    checkTask: `Пройти повторную проверку по теме «${config.shortTitle}»: стабильность напитка, безопасность, чистота оборудования и момент обращения к старшему бариста.`,
+    summaryTask: `Коротко повторить «${config.shortTitle}» и отметить 2–3 действия, которые нужно держать в каждой кофейной смене.`
   };
 }

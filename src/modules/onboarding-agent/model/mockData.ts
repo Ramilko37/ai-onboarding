@@ -11,14 +11,10 @@ export const roleOptions: Array<{
   description: string;
 }> = [
   {
-    value: "cook",
-    label: "Повар",
-    description: "Кухня, техкарты, безопасность, заготовки и качество блюд."
-  },
-  {
-    value: "admin",
-    label: "Администратор кафе",
-    description: "Заказы, гости, касса, доставка, претензии и коммуникация."
+    value: "barista",
+    label: "Бариста",
+    description:
+      "Кофейная стойка, эспрессо, молоко, рецептуры, оборудование и гостевой поток."
   }
 ];
 
@@ -117,6 +113,42 @@ export const competencyMilestones: CompetencyMilestone[] = [
       "касса",
       "отчётность",
       "закрытие смены"
+    ]
+  },
+  {
+    day: 1,
+    role: "barista",
+    goal: "Безопасно войти за кофейную стойку и закрыть обязательные стандарты.",
+    competencies: [
+      "гигиена рук и станции",
+      "чистка группы и питчера",
+      "базовая настройка эспрессо",
+      "хранение зерна",
+      "рецептуры базовых напитков"
+    ]
+  },
+  {
+    day: 7,
+    role: "barista",
+    goal: "Стабильно готовить базовые напитки под контролем наставника.",
+    competencies: [
+      "помол, доза и трамбовка",
+      "экстракция и сенсорика",
+      "текстура молока",
+      "латте и капучино",
+      "работа в утреннем потоке"
+    ]
+  },
+  {
+    day: 14,
+    role: "barista",
+    goal: "Подтвердить базовую самостоятельность в кофейной смене.",
+    competencies: [
+      "повторяемость эспрессо",
+      "молочная графика базового уровня",
+      "скорость без потери качества",
+      "коммуникация с гостем",
+      "контроль чистоты оборудования"
     ]
   }
 ];
@@ -278,6 +310,86 @@ export const competencyTopics: CompetencyTopic[] = [
     id: "admin-reporting",
     title: "Отчётность",
     role: "admin",
+    importance: "medium",
+    skippable: "partial",
+    required: false
+  },
+  {
+    id: "barista-hygiene",
+    title: "Гигиена и безопасность стойки",
+    role: "barista",
+    importance: "high",
+    skippable: false,
+    required: true
+  },
+  {
+    id: "barista-beans-storage",
+    title: "Зерно и хранение",
+    role: "barista",
+    importance: "high",
+    skippable: "partial",
+    required: false
+  },
+  {
+    id: "barista-espresso-setup",
+    title: "Настройка эспрессо",
+    role: "barista",
+    importance: "high",
+    skippable: "partial",
+    required: false
+  },
+  {
+    id: "barista-grind-dose-tamp",
+    title: "Помол, доза и трамбовка",
+    role: "barista",
+    importance: "high",
+    skippable: "partial",
+    required: false
+  },
+  {
+    id: "barista-extraction-sensory",
+    title: "Экстракция и сенсорика",
+    role: "barista",
+    importance: "high",
+    skippable: "partial",
+    required: false
+  },
+  {
+    id: "barista-milk-texture",
+    title: "Молоко и текстура",
+    role: "barista",
+    importance: "high",
+    skippable: false,
+    required: true
+  },
+  {
+    id: "barista-drink-recipes",
+    title: "Рецептуры напитков",
+    role: "barista",
+    importance: "high",
+    skippable: "partial",
+    required: false
+  },
+  {
+    id: "barista-equipment-cleaning",
+    title: "Чистка оборудования",
+    role: "barista",
+    importance: "high",
+    skippable: false,
+    required: true
+  },
+  {
+    id: "barista-service-flow",
+    title: "Работа в потоке",
+    role: "barista",
+    importance: "medium",
+    skippable: "partial",
+    required: false
+  },
+  {
+    id: "barista-guest-communication",
+    title: "Коммуникация с гостем",
+    role: "barista",
     importance: "medium",
     skippable: "partial",
     required: false

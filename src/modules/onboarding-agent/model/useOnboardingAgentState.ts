@@ -4,6 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { buildPersonalLearningRoute } from "../lib/buildPersonalLearningRoute";
 import { calculateDiagnosticResult } from "../lib/calculateDiagnosticResult";
 import { getDiagnosticQuestions } from "../lib/getDiagnosticQuestions";
+import {
+  buildLiveManagerRecord,
+  saveLiveManagerRecord
+} from "../../manager-dashboard/model/managerDashboardData";
 import type { LearningTaskStatus } from "./learningRouteTypes";
 import { competencyTopics } from "./mockData";
 import type {
@@ -27,7 +31,7 @@ const initialState: OnboardingState = {
   currentQuestionIndex: 0
 };
 
-const STORAGE_KEY = "mayak:onboarding-state:v1";
+const STORAGE_KEY = "valle-sanchez:barista-onboarding-state:v1";
 
 const knownSteps = new Set<OnboardingStep>([
   "welcome",
@@ -229,34 +233,57 @@ export function useOnboardingAgentState() {
           if (!previous.employee || !previous.diagnosticResult) {
             return previous;
           }
+          const learningRoute = buildPersonalLearningRoute({
+            employee: previous.employee,
+            result: previous.diagnosticResult
+          });
+
+          if (previous.employee.role === "barista") {
+            saveLiveManagerRecord(
+              buildLiveManagerRecord({
+                employee: previous.employee,
+                result: previous.diagnosticResult,
+                route: learningRoute
+              })
+            );
+          }
 
           return {
             ...previous,
             currentStep: "learning_route",
-            learningRoute: buildPersonalLearningRoute({
-              employee: previous.employee,
-              result: previous.diagnosticResult
-            })
+            learningRoute
           };
         });
       },
       updateLearningTaskStatus(taskId: string, status: LearningTaskStatus) {
         setState((previous) => {
-          if (!previous.learningRoute) {
+          if (!previous.employee || !previous.diagnosticResult || !previous.learningRoute) {
             return previous;
+          }
+
+          const learningRoute = {
+            ...previous.learningRoute,
+            days: previous.learningRoute.days.map((day) => ({
+              ...day,
+              tasks: day.tasks.map((task) =>
+                task.id === taskId ? { ...task, status } : task
+              )
+            }))
+          };
+
+          if (previous.employee.role === "barista") {
+            saveLiveManagerRecord(
+              buildLiveManagerRecord({
+                employee: previous.employee,
+                result: previous.diagnosticResult,
+                route: learningRoute
+              })
+            );
           }
 
           return {
             ...previous,
-            learningRoute: {
-              ...previous.learningRoute,
-              days: previous.learningRoute.days.map((day) => ({
-                ...day,
-                tasks: day.tasks.map((task) =>
-                  task.id === taskId ? { ...task, status } : task
-                )
-              }))
-            }
+            learningRoute
           };
         });
       },
