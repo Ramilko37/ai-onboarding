@@ -16,6 +16,8 @@ export type KnowledgeNode = {
   id: string;
   label: string;
   mastery: KnowledgeMastery;
+  description?: string;
+  actionLabel?: string;
   /** position in % within the constellation canvas */
   x: number;
   y: number;
@@ -106,14 +108,14 @@ export const journeyStages: JourneyStage[] = [
 ];
 
 export const knowledgeNodes: KnowledgeNode[] = [
-  { id: "hygiene", label: "Гигиена", mastery: "strong", x: 20, y: 30, size: 58 },
-  { id: "beans", label: "Зерно", mastery: "strong", x: 41, y: 18, size: 46 },
-  { id: "espresso", label: "Эспрессо", mastery: "learning", x: 63, y: 26, size: 52 },
-  { id: "grind", label: "Помол", mastery: "learning", x: 80, y: 44, size: 44 },
-  { id: "milk", label: "Молоко", mastery: "new", x: 66, y: 66, size: 48 },
-  { id: "recipes", label: "Рецепты", mastery: "learning", x: 44, y: 72, size: 42 },
-  { id: "cleaning", label: "Чистка", mastery: "new", x: 23, y: 64, size: 46 },
-  { id: "flow", label: "Поток", mastery: "strong", x: 14, y: 47, size: 38 },
+  { id: "hygiene", label: "Гигиена", mastery: "strong", description: "Чистая и безопасная рабочая зона перед началом смены.", actionLabel: "Открыть материалы", x: 20, y: 30, size: 58 },
+  { id: "beans", label: "Зерно", mastery: "strong", description: "Хранение, свежесть и подготовка зерна к работе.", actionLabel: "Открыть материалы", x: 41, y: 18, size: 46 },
+  { id: "espresso", label: "Эспрессо", mastery: "learning", description: "Базовые параметры и контроль вкуса эспрессо.", actionLabel: "Открыть материалы", x: 63, y: 26, size: 52 },
+  { id: "grind", label: "Помол", mastery: "learning", description: "Настройка помола, дозы и распределения кофе.", actionLabel: "Открыть материалы", x: 80, y: 44, size: 44 },
+  { id: "milk", label: "Молоко", mastery: "new", description: "Текстура молока и температура для популярных напитков.", actionLabel: "Открыть материалы", x: 66, y: 66, size: 48 },
+  { id: "recipes", label: "Рецепты", mastery: "learning", description: "Последовательность приготовления и подачи напитков.", actionLabel: "Открыть материалы", x: 44, y: 72, size: 42 },
+  { id: "cleaning", label: "Чистка", mastery: "new", description: "Ежесменная чистка оборудования и стойки.", actionLabel: "Открыть материалы", x: 23, y: 64, size: 46 },
+  { id: "flow", label: "Поток", mastery: "strong", description: "Спокойная работа с заказами и гостями в часы пик.", actionLabel: "Открыть материалы", x: 14, y: 47, size: 38 },
 ];
 
 export const knowledgeLinks: KnowledgeLink[] = [

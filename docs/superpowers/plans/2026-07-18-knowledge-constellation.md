@@ -67,11 +67,11 @@ export function getNextConstellationIndex(
 
 - [ ] **Step 1: Write failing derivation tests**
 
-Create `getKnowledgeConstellationItems.test.ts` with a compact `LearningRoute` containing two `topicId` tasks: one `done` hygiene task and one `todo` milk task. Assert that the route result has the task-derived full title, maps `todo` to `В работе`, carries the `todo` task as its action target, and creates links between sequential displayed topic IDs. Assert that no-route result preserves `knowledgeNodes`/`knowledgeLinks` length and supplies readable fallback title/action text. Add keyboard assertions for wrapping, Home and End.
+Create `getKnowledgeConstellationItems.test.ts` with a compact `LearningRoute` containing two `topicId` tasks: one `done` hygiene task and one `todo` milk task. Assert that the route result has the task-derived full title, maps `todo` to `Впереди`, carries the `todo` task as its action target, and creates links between sequential displayed topic IDs. Assert that no-route result preserves `knowledgeNodes`/`knowledgeLinks` length and supplies readable fallback title/action text. Add keyboard assertions for wrapping, Home and End.
 
 ```ts
 assert.equal(routeMap.items[1]?.title, "Молоко и текстура");
-assert.equal(routeMap.items[1]?.statusLabel, "В работе");
+assert.equal(routeMap.items[1]?.statusLabel, "Впереди");
 assert.equal(routeMap.items[1]?.task?.id, "milk-task");
 assert.deepEqual(routeMap.links, [["hygiene", "milk"]]);
 assert.equal(getNextConstellationIndex(0, "ArrowLeft", 3), 2);
