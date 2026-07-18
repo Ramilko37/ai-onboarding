@@ -1,6 +1,6 @@
 # Current Project State
 
-Last updated: 2026-07-06
+Last updated: 2026-07-18
 
 ## Product Scope
 
@@ -40,6 +40,7 @@ Current employee flow:
 6. Topic-level diagnostic result.
 7. Automatically generated personal development route for day 1, day 7, and day 14.
 8. Final personal-space screen with route, today focus, knowledge map, source-backed mentor chat, task status controls, and a direct link to the manager dashboard.
+9. On desktop, the personal space opens in a focused `Today` workspace with separate `Route`, `Mentor`, and `Knowledge` tabs. On mobile and tablet, the existing complete vertical flow remains visible.
 
 Current manager flow:
 
@@ -154,18 +155,23 @@ npm run test:diagnostic
 npm run test:learning-route
 npm run test:knowledge-base
 npm run test:manager-dashboard
+npm run test:personal-space
 npm run build
 ```
 
-Latest completed verification on 2026-06-30:
+Latest completed verification on 2026-07-18:
 
 - `npm run test:diagnostic`
 - `npm run test:learning-route`
 - `npm run test:knowledge-base`
 - `npm run test:manager-dashboard`
+- `npm run test:personal-space`
 - `npm run build`
-- Browser smoke: completed barista diagnostic, generated route, marked a route task as needing mentor help, verified the saved barista appears in `/manager`, verified manager action feedback, checked desktop and mobile manager/onboarding screens, and confirmed no browser console errors after removing the blocked remote font request.
+- Browser smoke: completed barista diagnostic, generated route, marked a route task as needing mentor help, verified the saved barista appears in `/manager`, verified manager action feedback, checked desktop and mobile manager/onboarding screens, and confirmed no browser console errors.
 - 2026-06-30 follow-up: `npm run build` after enabling clickable stage navigation.
+- 2026-07-18: added the employee desktop `Today`-first workspace and `npm run test:personal-space` coverage for focus selection, route progress, status toggling, and tab navigation.
+- 2026-07-18 browser smoke: completed the full barista diagnostic, generated a route, changed a Today task status, and confirmed the same status in the full route. Verified 375 px and 768 px stacked layouts plus 1024 px, 1280 px, and 1440 px tabbed layouts with no horizontal overflow, correct keyboard navigation, and no browser console errors.
+- `npm run build` may need network access because `app/layout.tsx` currently loads Geist and Geist Mono through `next/font/google`.
 
 ## Explicitly Not Implemented
 
