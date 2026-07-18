@@ -56,6 +56,11 @@ export function PersonalSpaceWorkspace({
     return cn("contents", activeTab === tabId ? desktopDisplay : "lg:hidden");
   }
 
+  function handleOpenTask(taskId: string) {
+    setActiveTab("route");
+    requestAnimationFrame(() => document.getElementById(`route-task-${taskId}`)?.focus());
+  }
+
   return (
     <section className="min-w-0" aria-label="Пространство развития сотрудника">
       <div
@@ -114,7 +119,11 @@ export function PersonalSpaceWorkspace({
           role="tabpanel"
         >
           <div className="order-2 min-w-0 lg:order-none">
-            <KnowledgeConstellation roleLabel={profile?.roleLabel} route={route} />
+            <KnowledgeConstellation
+              onOpenTask={handleOpenTask}
+              roleLabel={profile?.roleLabel}
+              route={route}
+            />
           </div>
         </section>
 

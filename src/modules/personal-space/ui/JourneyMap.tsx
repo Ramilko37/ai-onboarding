@@ -184,10 +184,12 @@ function RouteDayTasks({
     <div className="rounded-2xl border border-border bg-secondary/30 p-3">
       <p className="text-xs font-semibold text-foreground">{day.title}</p>
       <div className="mt-2 grid gap-2">
-        {day.tasks.slice(0, 4).map((task) => (
+        {day.tasks.map((task) => (
           <article
             className="grid gap-2 rounded-xl border border-border bg-card px-3 py-2 sm:grid-cols-[1fr_auto] sm:items-center"
+            id={`route-task-${task.id}`}
             key={task.id}
+            tabIndex={-1}
           >
             <div className="min-w-0">
               <p className="text-xs font-semibold leading-snug text-foreground">

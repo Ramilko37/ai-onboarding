@@ -39,7 +39,7 @@ Current employee flow:
 5. Diagnostic question flow.
 6. Topic-level diagnostic result.
 7. Automatically generated personal development route for day 1, day 7, and day 14.
-8. Final personal-space screen with route, today focus, knowledge map, source-backed mentor chat, task status controls, and a direct link to the manager dashboard.
+8. Final personal-space screen with route, today focus, selectable high-contrast knowledge constellation with selected-topic details and a direct link to the matching route task, source-backed mentor chat, task status controls, and a direct link to the manager dashboard.
 9. On desktop, the personal space opens in a focused `Today` workspace with separate `Route`, `Mentor`, and `Knowledge` tabs. On mobile and tablet, the existing complete vertical flow remains visible.
 
 Current manager flow:
@@ -171,6 +171,7 @@ Latest completed verification on 2026-07-18:
 - 2026-06-30 follow-up: `npm run build` after enabling clickable stage navigation.
 - 2026-07-18: added the employee desktop `Today`-first workspace and `npm run test:personal-space` coverage for focus selection, route progress, status toggling, and tab navigation.
 - 2026-07-18 browser smoke: completed the full barista diagnostic, generated a route, changed a Today task status, and confirmed the same status in the full route. Verified 375 px and 768 px stacked layouts plus 1024 px, 1280 px, and 1440 px tabbed layouts with no horizontal overflow, correct keyboard navigation, and no browser console errors.
+- 2026-07-18 knowledge constellation: verified a generated route at 375 px and 1280 px; topic nodes are keyboard-selectable, full topic details remain outside nodes, and the task action focuses the matching route card with no horizontal overflow or browser console errors.
 - `npm run build` may need network access because `app/layout.tsx` currently loads Geist and Geist Mono through `next/font/google`.
 
 ## Explicitly Not Implemented
