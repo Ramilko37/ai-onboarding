@@ -2,6 +2,10 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { LearningRoute } from "../../onboarding-agent/model/learningRouteTypes";
 import { getEmployeeFocusSummary } from "./getEmployeeFocusSummary";
+import {
+  getNextWorkspaceTab,
+  getTodayTaskToggleStatus,
+} from "./workspaceNavigation";
 
 function makeRoute(): LearningRoute {
   return {
@@ -92,4 +96,19 @@ test("returns a safe empty summary without a route", () => {
   assert.deepEqual(summary.todayTasks, []);
   assert.equal(summary.nextTask, undefined);
   assert.equal(summary.routeProgressPercent, 0);
+});
+
+test("moves through desktop workspace tabs with wrapping keyboard navigation", () => {
+  assert.equal(getNextWorkspaceTab("today", "ArrowLeft"), "knowledge");
+  assert.equal(getNextWorkspaceTab("knowledge", "ArrowRight"), "today");
+  assert.equal(getNextWorkspaceTab("mentor", "Home"), "today");
+  assert.equal(getNextWorkspaceTab("route", "End"), "knowledge");
+  assert.equal(getNextWorkspaceTab("route", "Tab"), undefined);
+});
+
+test("toggles a generated Today task between done and todo", () => {
+  assert.equal(getTodayTaskToggleStatus("done"), "todo");
+  assert.equal(getTodayTaskToggleStatus("todo"), "done");
+  assert.equal(getTodayTaskToggleStatus("in_progress"), "done");
+  assert.equal(getTodayTaskToggleStatus("needs_mentor"), "done");
 });

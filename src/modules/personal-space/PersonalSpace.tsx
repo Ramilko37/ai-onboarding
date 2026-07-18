@@ -3,12 +3,8 @@ import type {
   LearningRoute,
   LearningTaskStatus
 } from "../onboarding-agent/model/learningRouteTypes";
-import { Assistant } from "./ui/Assistant";
 import { HeroGreeting } from "./ui/HeroGreeting";
-import { JourneyMap } from "./ui/JourneyMap";
-import { KnowledgeConstellation } from "./ui/KnowledgeConstellation";
-import { SupportPanel } from "./ui/SupportPanel";
-import { TodayFocus } from "./ui/TodayFocus";
+import { PersonalSpaceWorkspace } from "./ui/PersonalSpaceWorkspace";
 import { TopBar } from "./ui/TopBar";
 
 export type PersonalSpaceProfile = {
@@ -34,17 +30,11 @@ function PersonalSpaceContent({
       <HeroGreeting profile={profile} route={route} />
       {route && <ManagerSavedBlock onReset={onReset} />}
 
-      <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:items-start">
-        <div className="grid min-w-0 gap-3">
-          <JourneyMap route={route} onUpdateTaskStatus={onUpdateTaskStatus} />
-          <KnowledgeConstellation roleLabel={profile?.roleLabel} route={route} />
-        </div>
-        <div className="grid min-w-0 gap-3">
-          <Assistant profile={profile} route={route} />
-          <TodayFocus route={route} />
-          <SupportPanel />
-        </div>
-      </div>
+      <PersonalSpaceWorkspace
+        profile={profile}
+        route={route}
+        onUpdateTaskStatus={onUpdateTaskStatus}
+      />
 
       <footer className="shrink-0 text-center text-[11px] text-muted-foreground">
         Valle Sanchez ведёт развитие спокойно: один экран, один следующий шаг.
@@ -91,37 +81,31 @@ export function PersonalSpace({
 
 function ManagerSavedBlock({ onReset }: { onReset?: () => void }) {
   return (
-    <section className="grid gap-3 rounded-3xl border border-primary/25 bg-primary/5 p-4 sm:grid-cols-[1fr_auto] sm:items-center">
+    <section className="grid gap-3 rounded-2xl border border-border bg-card/60 p-3 sm:grid-cols-[1fr_auto] sm:items-center sm:px-4">
       <div>
         <p className="text-sm font-semibold tracking-tight text-foreground">
           Результат сохранён для руководителя
         </p>
-        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-          В дашборде видны итоговый балл, критичные темы, статус задач и план развития.
+        <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+          Статусы задач и план развития уже доступны в дашборде.
         </p>
       </div>
       <div className="flex flex-wrap gap-2 sm:justify-end">
         <a
-          className="inline-flex min-h-10 items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+          className="inline-flex min-h-11 items-center justify-center rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground transition hover:bg-secondary/80 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
           href="/manager"
         >
-          Открыть дашборд руководителя
+          Дашборд руководителя
         </a>
         {onReset && (
           <button
-            className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition hover:border-primary/40 hover:text-primary"
+            className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-muted-foreground transition hover:border-primary/40 hover:text-primary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
             onClick={onReset}
             type="button"
           >
-            Начать новое тестирование
+            Новое тестирование
           </button>
         )}
-        <a
-          className="inline-flex min-h-10 items-center justify-center rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground transition hover:bg-secondary/80"
-          href="#route-plan"
-        >
-          Вернуться к результату
-        </a>
       </div>
     </section>
   );

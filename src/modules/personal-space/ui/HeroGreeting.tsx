@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MayakProgressRing } from "@/shared/ui/mayak";
 import type { LearningRoute } from "../../onboarding-agent/model/learningRouteTypes";
 import { newcomer } from "../data";
+import { getEmployeeFocusSummary } from "../lib/getEmployeeFocusSummary";
 import type { PersonalSpaceProfile } from "../PersonalSpace";
 
 export function HeroGreeting({
@@ -17,9 +18,10 @@ export function HeroGreeting({
   const name = profile?.name.split(" ")[0] ?? newcomer.name;
   const role = profile?.roleLabel ?? newcomer.role;
   const location = profile?.location ?? newcomer.location;
-  const progress = route?.totalScorePercent ?? newcomer.progress;
-  const completedTasks = route?.days.flatMap((day) => day.tasks).filter((task) => task.status === "done").length ?? 2;
-  const todayTasks = route?.days[0]?.tasks.length ?? 1;
+  const focus = getEmployeeFocusSummary(route);
+  const progress = route ? focus.routeProgressPercent : newcomer.progress;
+  const completedTasks = route ? focus.routeCompletedCount : 2;
+  const todayTasks = route ? focus.totalTodayCount : 1;
   const upcomingDays = route ? Math.max(route.days.length - 1, 0) : 3;
 
   return (
@@ -31,10 +33,21 @@ export function HeroGreeting({
             Пространство адаптации
           </span>
           <h1 className="text-pretty text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            {partOfDay}, {name}. <span className="text-muted-foreground">Всё под рукой.</span>
+            {partOfDay}, {name}.{" "}
+            <span className="text-muted-foreground">На сегодня — только главное.</span>
           </h1>
           <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Путь, знания и подсказки собраны в одном спокойном месте: без хаоса, чатов и потерянных инструкций.
+            {!route ? (
+              "Путь, знания и подсказки собраны в одном спокойном месте."
+            ) : focus.nextTask ? (
+              <>
+                Сегодня главное —{" "}
+                <span className="font-medium text-foreground">{focus.nextTask.title}</span>.
+                Остальной маршрут можно открыть, когда понадобится.
+              </>
+            ) : (
+              "План на сегодня выполнен. Следующий контроль уже отмечен в маршруте."
+            )}
           </p>
         </div>
 
@@ -45,10 +58,10 @@ export function HeroGreeting({
             {location}
           </span>
           <Link
-            href="/onboarding-agent"
+            href="#today-focus"
             className="group inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
           >
-            Продолжить
+            К задачам
             <ArrowRight
               className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
               aria-hidden="true"
