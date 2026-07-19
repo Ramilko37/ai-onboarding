@@ -17,11 +17,13 @@ import {
 } from "lucide-react";
 import {
   MayakBadge,
+  MayakActionBar,
   MayakButton,
   MayakLinkButton,
   MayakPanel,
   MayakProgressBar,
   MayakSectionHeader,
+  MayakShell,
   MayakTopBar,
   cn
 } from "@/shared/ui/mayak";
@@ -94,8 +96,10 @@ export function ManagerDashboardPage() {
   const liveCount = records.filter((record) => !record.id.startsWith("demo-")).length;
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden text-foreground">
-      <MayakTopBar
+    <MayakShell
+      scrollable
+      contentClassName="grid gap-3 pb-6"
+      topBar={<MayakTopBar
         brand="Valle Sanchez"
         subtitle="дашборд руководителя"
         icon={<BarChart3 className="h-5 w-5" aria-hidden="true" />}
@@ -106,9 +110,8 @@ export function ManagerDashboardPage() {
           </>
         }
         userName="Руководитель"
-      />
-
-      <main className="mx-auto grid max-w-7xl gap-3 px-4 py-3 sm:px-6 sm:py-4">
+      />}
+    >
         <MayakPanel padding="lg" className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <MayakSectionHeader
             className="mb-0"
@@ -122,7 +125,7 @@ export function ManagerDashboardPage() {
             description="Руководитель видит готовность бариста, критичные темы и следующие управленческие действия на День 1, День 7 и День 14."
           />
 
-          <div className="flex flex-wrap justify-start gap-2 lg:justify-end">
+          <MayakActionBar className="mt-0 justify-start lg:justify-end">
             <MayakLinkButton href="/onboarding-agent" variant="secondary">
               Новое тестирование
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -134,7 +137,7 @@ export function ManagerDashboardPage() {
               <RefreshCw className="h-4 w-4" aria-hidden="true" />
               Обновить
             </MayakButton>
-          </div>
+          </MayakActionBar>
         </MayakPanel>
 
         <section className="grid gap-3 md:grid-cols-4">
@@ -172,7 +175,7 @@ export function ManagerDashboardPage() {
                     type="button"
                     onClick={() => setRiskFilter(filter)}
                     className={cn(
-                      "cursor-pointer rounded-full border px-3 py-1.5 text-xs font-medium transition",
+                      "min-h-11 cursor-pointer rounded-xl border px-3 py-1.5 text-sm font-medium transition",
                       riskFilter === filter
                         ? "border-primary bg-primary text-primary-foreground"
                         : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-primary"
@@ -234,8 +237,7 @@ export function ManagerDashboardPage() {
 
           {selectedRecord && <ManagerDetailPanel record={selectedRecord} />}
         </div>
-      </main>
-    </div>
+    </MayakShell>
   );
 }
 

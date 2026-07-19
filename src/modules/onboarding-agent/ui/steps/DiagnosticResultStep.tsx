@@ -17,6 +17,7 @@ import {
   MayakActionBar,
   MayakBadge,
   MayakInsightCard,
+  MayakLinkButton,
   MayakPanel,
   MayakProgressRing,
 } from "@/shared/ui/mayak";
@@ -90,7 +91,7 @@ export function DiagnosticResultStep({
                 <Sparkles className="mr-1.5 h-3 w-3" aria-hidden="true" />
                 результат диагностики
               </MayakBadge>
-              <h1 className="mt-2 text-pretty text-xl font-semibold leading-tight tracking-tight text-deep-foreground">
+              <h1 className="mt-2 font-brand text-pretty text-3xl font-normal leading-[1.08] tracking-tight text-deep-foreground sm:text-4xl">
                 {readiness.title}
               </h1>
               <p className="mt-1.5 text-sm leading-relaxed text-deep-muted">
@@ -145,12 +146,9 @@ export function DiagnosticResultStep({
         <MayakActionBar className="mt-auto justify-between border-t border-border pt-4">
           <SecondaryButton onClick={onBackToDiagnostic}>К вопросам</SecondaryButton>
           <div className="flex flex-wrap gap-2">
-            <a
-              className="inline-flex min-h-10 items-center justify-center rounded-full bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground transition hover:bg-secondary/80"
-              href="#result-details"
-            >
+            <MayakLinkButton href="#result-details" variant="secondary">
               Показать подробности
-            </a>
+            </MayakLinkButton>
             <PrimaryButton onClick={onBuildRoute}>
               Собрать план развития
               <ArrowRight className="h-4 w-4" aria-hidden="true" />

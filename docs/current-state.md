@@ -14,7 +14,7 @@ The prototype supports high-volume onboarding of new baristas: an employee enter
 
 The manager dashboard shows a demo cohort plus live diagnostic results saved in this browser. There is still no backend, external LLM, external embeddings service, or production vector database.
 
-The UX/UI layer has been prepared for customer demo: visible wording is product-facing, the role is fixed as the barista scenario, the employee route links directly to the manager dashboard, and the manager dashboard now includes next actions, attention items, topic analytics, route statuses, and mock action capture.
+The UX/UI layer follows the Mayak v1.0 system: warm editorial navigation, oxblood direction, paper surfaces, semantic status tokens, 44px controls and a responsive focus-first composition. Visible wording is product-facing, the role is fixed as the barista scenario, the employee route links directly to the manager dashboard, and the manager dashboard includes next actions, attention items, topic analytics, route statuses, and mock action capture.
 
 ## Implemented Routes
 
@@ -172,6 +172,7 @@ Latest completed verification on 2026-07-18:
 - 2026-07-18: added the employee desktop `Today`-first workspace and `npm run test:personal-space` coverage for focus selection, route progress, status toggling, and tab navigation.
 - 2026-07-18 browser smoke: completed the full barista diagnostic, generated a route, changed a Today task status, and confirmed the same status in the full route. Verified 375 px and 768 px stacked layouts plus 1024 px, 1280 px, and 1440 px tabbed layouts with no horizontal overflow, correct keyboard navigation, and no browser console errors.
 - 2026-07-18 knowledge constellation: verified a generated route at 375 px and 1280 px; topic nodes are keyboard-selectable, full topic details remain outside nodes, and the task action focuses the matching route card with no horizontal overflow or browser console errors.
+- 2026-07-19 Mayak migration: verified the redesigned employee entry screen at 390 px and the manager dashboard at 1440 px; both have no horizontal overflow or browser console errors. Shared tokens, controls, status treatments and primary actions follow the Mayak v1.0 specification.
 - `npm run build` may need network access because `app/layout.tsx` currently loads Geist and Geist Mono through `next/font/google`.
 
 ## Explicitly Not Implemented

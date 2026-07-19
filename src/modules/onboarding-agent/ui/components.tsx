@@ -145,7 +145,7 @@ export function StepProgress({
               onClick={() => onSelectStep?.(step.id)}
               aria-current={isActive ? "step" : undefined}
               className={cn(
-                "flex min-w-fit items-center gap-2 rounded-full border px-2.5 py-1.5 text-left transition disabled:cursor-not-allowed",
+                "flex min-h-11 min-w-fit items-center gap-2 rounded-xl border px-2.5 py-1.5 text-left transition disabled:cursor-not-allowed",
                 canNavigate && isAvailable && "cursor-pointer hover:border-primary/40 hover:bg-primary/5",
                 isActive && "border-primary/40 bg-primary/10 text-primary shadow-sm",
                 isDone && "border-border bg-card text-foreground",

@@ -75,41 +75,26 @@ export function DiagnosticStep({
         totalQuestions={questions.length}
       />
 
-      <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[0.66fr_1.34fr]">
-        <aside className="flex min-h-0 flex-col gap-3">
-          <MayakPanel padding="sm" className="shrink-0 shadow-none">
-            <div className="flex items-center gap-2.5">
-              <span
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-secondary-foreground"
-                aria-hidden="true"
-              >
-                {employee.name.trim().charAt(0).toUpperCase()}
-              </span>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-foreground">{employee.name}</p>
-                <p className="truncate text-xs text-muted-foreground">
-                  {getRoleLabel(employee.role)} · {getGradeLabel(employee.grade)}
-                </p>
-              </div>
+      <div className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-secondary/45 px-3 py-2">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span
+              className="flex h-11 w-11 items-center justify-center rounded-xl bg-card text-sm font-semibold text-secondary-foreground"
+              aria-hidden="true"
+            >
+              {employee.name.trim().charAt(0).toUpperCase()}
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-foreground">{employee.name}</p>
+              <p className="truncate text-xs text-muted-foreground">
+                {getRoleLabel(employee.role)} · {getGradeLabel(employee.grade)}
+              </p>
             </div>
-            <div className="mt-3 flex items-center justify-between border-t border-border pt-2.5">
-              <span className="text-xs text-muted-foreground">Вопрос</span>
-              <span className="font-mono text-sm font-semibold text-foreground">
-                {currentQuestionIndex + 1}/{questions.length}
-              </span>
-            </div>
-          </MayakPanel>
+          </div>
+          <MayakBadge tone="accent">Выберите ближайший к реальности вариант</MayakBadge>
+        </div>
 
-          <MayakPanel variant="deep" padding="sm" className="mt-auto shadow-none">
-            <MayakBadge tone="accent">подсказка</MayakBadge>
-            <p className="mt-2 text-xs leading-relaxed text-deep-muted">
-              Выбирайте вариант, ближайший к реальности. Правильность нужна только для настройки
-              маршрута — не для оценки.
-            </p>
-          </MayakPanel>
-        </aside>
-
-        <div className="flex min-h-0 flex-col">
+        <div className="flex min-h-0 flex-1 flex-col">
           <DiagnosticQuestionCard
             question={currentQuestion}
             selectedOptionId={currentAnswer?.selectedOptionId}

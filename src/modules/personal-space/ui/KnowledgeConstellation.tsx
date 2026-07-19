@@ -27,24 +27,24 @@ const navigationKeys = new Set([
 function Dot({ mastery }: { mastery: KnowledgeMastery }) {
   const color =
     mastery === "strong"
-      ? "bg-emerald-300"
+      ? "bg-success"
       : mastery === "learning"
-        ? "bg-amber-300"
-        : "bg-slate-300";
-  return <span className={`h-2.5 w-2.5 rounded-full ring-1 ring-white/60 ${color}`} />;
+        ? "bg-accent"
+        : "bg-secondary-foreground/55";
+  return <span className={`h-2.5 w-2.5 rounded-full ring-1 ring-card/70 ${color}`} />;
 }
 
 function nodeStyle(mastery: KnowledgeMastery, isSelected: boolean) {
   const base =
-    "absolute flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-2 text-sm font-bold shadow-lg transition duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/80 motion-reduce:transition-none";
+    "absolute flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-2 text-sm font-bold shadow-lg transition duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-card/80 motion-reduce:transition-none";
   const state =
     mastery === "strong"
-      ? "border-emerald-100 bg-emerald-500 text-slate-950"
+      ? "border-card bg-success text-card"
       : mastery === "learning"
-        ? "border-amber-100 bg-amber-400 text-slate-950"
-        : "border-slate-100 bg-slate-700 text-white";
+        ? "border-card bg-accent text-accent-foreground"
+        : "border-card bg-primary text-primary-foreground";
 
-  return `${base} ${state} ${isSelected ? "z-20 scale-125 ring-4 ring-white/35" : "z-10 hover:scale-110"}`;
+  return `${base} ${state} ${isSelected ? "z-20 scale-125 ring-4 ring-card/35" : "z-10 hover:scale-110"}`;
 }
 
 function NodeSymbol({ mastery, label }: { mastery: KnowledgeMastery; label: string }) {
@@ -132,7 +132,7 @@ export function KnowledgeConstellation({
       </div>
 
       <div
-        className="relative min-h-[260px] overflow-hidden rounded-2xl border border-primary/25 bg-[radial-gradient(circle_at_18%_24%,rgba(255,255,255,0.22)_0_1px,transparent_1.5px),radial-gradient(circle_at_78%_19%,rgba(255,255,255,0.25)_0_1px,transparent_1.5px),radial-gradient(circle_at_72%_79%,rgba(255,255,255,0.18)_0_1px,transparent_1.5px),linear-gradient(145deg,#311c2d_0%,#6e2537_54%,#9f4a42_130%)] sm:min-h-[300px]"
+        className="bg-deep-surface relative min-h-[260px] overflow-hidden rounded-2xl border border-deep-border sm:min-h-[300px]"
         aria-label="Интерактивная карта навыков"
       >
         <svg
@@ -152,7 +152,7 @@ export function KnowledgeConstellation({
                 y1={a.y}
                 x2={b.x}
                 y2={b.y}
-                stroke="rgba(255, 248, 224, 0.58)"
+                stroke="color-mix(in oklch, var(--deep-foreground) 58%, transparent)"
                 strokeWidth="0.55"
               />
             );
@@ -180,7 +180,7 @@ export function KnowledgeConstellation({
           );
         })}
 
-        <p className="absolute right-4 bottom-3 left-4 text-center text-[11px] font-medium text-white/80">
+        <p className="absolute right-4 bottom-3 left-4 text-center text-[11px] font-medium text-deep-muted">
           Выберите точку, чтобы увидеть следующий шаг
         </p>
       </div>
