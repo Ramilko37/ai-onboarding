@@ -30,10 +30,10 @@ export const mayakStyleguide = {
       items: [
         { name: "background", value: "тёплая бумага", usage: "общий фон приложения" },
         { name: "card", value: "полупрозрачная карточка", usage: "основные панели и виджеты" },
-        { name: "primary", value: "спокойный teal", usage: "главный CTA, активное состояние, прогресс" },
-        { name: "secondary", value: "мягкий голубой", usage: "плашки, входящие сообщения, спокойные блоки" },
+        { name: "primary", value: "oxblood", usage: "главный CTA, активное состояние, прогресс" },
+        { name: "secondary", value: "тёплая бумага", usage: "плашки, входящие сообщения, спокойные блоки" },
         { name: "accent", value: "тёплый sand", usage: "мягкое внимание, обучение в процессе" },
-        { name: "deep", value: "глубокая teal-поверхность", usage: "ключевые summary/hero-блоки" },
+        { name: "deep", value: "глубокая oxblood-поверхность", usage: "ключевые summary/hero-блоки" },
       ],
     },
     {

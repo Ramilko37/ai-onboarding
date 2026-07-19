@@ -32,7 +32,7 @@ export const mayakTypography = {
 } as const;
 
 export const mayakInputClassName =
-  "min-h-10 w-full rounded-2xl border border-border bg-card px-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground hover:border-primary/40 focus:border-primary/50";
+  "min-h-11 w-full rounded-xl border border-border bg-card px-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground hover:border-primary/40 focus:border-primary/50 focus-visible:ring-2 focus-visible:ring-ring/30";
 
 const badgeTone: Record<MayakTone, string> = {
   primary: "bg-primary/15 text-primary",
@@ -375,7 +375,7 @@ export function MayakLinkButton({
 
 function buttonClassName(variant: MayakButtonVariant) {
   const base =
-    "inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:cursor-not-allowed disabled:opacity-40";
+    "inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:cursor-not-allowed disabled:opacity-40";
 
   if (variant === "secondary") {
     return cn(base, "bg-secondary text-secondary-foreground hover:bg-secondary/80");
@@ -390,6 +390,41 @@ function buttonClassName(variant: MayakButtonVariant) {
 
 export function MayakActionBar({ children, className }: { children: ReactNode; className?: string }) {
   return <div className={cn("mt-4 flex flex-wrap items-center gap-3", className)}>{children}</div>;
+}
+
+export function MayakTaskRow({
+  title,
+  description,
+  meta,
+  status,
+  action,
+  className,
+}: {
+  title: ReactNode;
+  description?: ReactNode;
+  meta?: ReactNode;
+  status?: ReactNode;
+  action?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <article
+      className={cn(
+        "grid gap-3 rounded-2xl border border-border bg-card p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center",
+        className,
+      )}
+    >
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="text-sm font-semibold leading-snug text-foreground">{title}</h3>
+          {status}
+        </div>
+        {description && <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground">{description}</p>}
+        {meta && <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">{meta}</p>}
+      </div>
+      {action && <div className="flex shrink-0 flex-wrap items-center gap-2">{action}</div>}
+    </article>
+  );
 }
 
 type MayakFieldProps = {
@@ -556,9 +591,8 @@ const supportLevelStyle: Record<
   },
   confident: {
     label: "Уверенно",
-    className:
-      "bg-[color-mix(in_oklch,oklch(0.7_0.12_160)_22%,transparent)] text-[oklch(0.45_0.1_160)]",
-    dot: "bg-[oklch(0.55_0.12_160)]",
+    className: "bg-[color-mix(in_oklch,var(--success)_14%,transparent)] text-success",
+    dot: "bg-success",
   },
 };
 
