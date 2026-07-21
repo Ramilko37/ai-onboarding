@@ -146,7 +146,7 @@ export function DiagnosticOption({
     <button
       aria-pressed={selected}
       className={cn(
-        "grid min-h-14 cursor-pointer grid-cols-[36px_1fr] items-center gap-3 rounded-2xl border p-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 sm:grid-cols-[36px_1fr_auto]",
+        "grid min-h-16 cursor-pointer grid-cols-[36px_1fr] items-center gap-3 rounded-2xl border p-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 sm:grid-cols-[36px_1fr_auto] sm:p-4",
         selected
           ? "border-primary bg-primary/8 ring-1 ring-primary/40"
           : "border-border bg-card hover:border-primary/40 hover:bg-primary/5",
@@ -164,7 +164,7 @@ export function DiagnosticOption({
       </span>
       <span
         className={cn(
-          "text-sm leading-relaxed transition",
+          "text-base leading-relaxed transition sm:text-lg",
           selected ? "font-medium text-foreground" : "text-foreground",
         )}
       >
