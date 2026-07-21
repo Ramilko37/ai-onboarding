@@ -28,10 +28,19 @@ export function OnboardingAgentPage() {
           brand="Valle Sanchez"
           subtitle="входное тестирование бариста"
           icon={<Coffee className="h-5 w-5" aria-hidden="true" />}
+          meta={
+            showDevReset ? (
+              <button
+                className="font-mono text-[10px] font-semibold uppercase tracking-wider text-primary transition hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+                onClick={actions.reset}
+                type="button"
+              >
+                Reset
+              </button>
+            ) : undefined
+          }
           userControl={
             <ProfileMenu
-              canReset={showDevReset}
-              onReset={actions.reset}
               userName={state.employee?.name ?? "Новый бариста"}
             />
           }
@@ -88,12 +97,8 @@ export function OnboardingAgentPage() {
 }
 
 function ProfileMenu({
-  canReset,
-  onReset,
   userName,
 }: {
-  canReset: boolean;
-  onReset: () => void;
   userName: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -133,19 +138,6 @@ function ProfileMenu({
             <p className="font-medium text-foreground">{userName}</p>
             <p className="mt-0.5 text-xs text-muted-foreground">Бариста · входное тестирование</p>
           </div>
-          {canReset && (
-            <button
-              className="mt-1 flex min-h-10 w-full cursor-pointer items-center rounded-xl px-3 text-left font-mono text-[10px] font-semibold uppercase tracking-wider text-primary transition hover:bg-primary/5 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
-              onClick={() => {
-                setIsOpen(false);
-                onReset();
-              }}
-              role="menuitem"
-              type="button"
-            >
-              Reset progress
-            </button>
-          )}
         </div>
       )}
     </div>
