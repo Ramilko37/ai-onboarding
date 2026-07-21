@@ -373,7 +373,7 @@ function TaskDetail({
 
   return (
     <article
-      className="mx-auto w-full max-w-[760px] rounded-3xl border border-border bg-card/90 p-5 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8 lg:p-10"
+      className="mx-auto w-full max-w-[760px] rounded-3xl border border-border bg-card/90 p-4 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8 lg:p-10"
       id="task-detail"
       tabIndex={-1}
     >
@@ -386,17 +386,17 @@ function TaskDetail({
         К задачам
       </button>
 
-      <div className="py-5 sm:py-7">
-        <span className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+      <div className="py-3 sm:py-7">
+        <span className="mb-5 hidden h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary sm:flex">
           <BookOpen className="h-5 w-5" aria-hidden="true" />
         </span>
         <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
           {getTaskTypeLabel(task.type)} · {task.estimatedMinutes} минут
         </p>
-        <h1 className="mt-2 max-w-2xl font-brand text-[clamp(1.875rem,8vw,2rem)] leading-[1.1] tracking-tight text-foreground sm:text-5xl sm:leading-[1.05]">
+        <h1 className="mt-1 max-w-2xl font-brand text-[clamp(1.875rem,8vw,2rem)] leading-[1.08] tracking-tight text-foreground sm:mt-2 sm:text-5xl sm:leading-[1.05]">
           {task.title}
         </h1>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-sm">
+        <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-4 sm:text-sm">
           {task.description}
         </p>
       </div>
