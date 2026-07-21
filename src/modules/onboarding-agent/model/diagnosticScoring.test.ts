@@ -10,7 +10,7 @@ import type {
 } from "./types";
 import { calculateDiagnosticResult } from "../lib/calculateDiagnosticResult";
 import { getDiagnosticQuestions } from "../lib/getDiagnosticQuestions";
-import { restoreOnboardingState } from "./useOnboardingAgentState";
+import { resetOnboardingProgress, restoreOnboardingState } from "./useOnboardingAgentState";
 
 const roles: EmployeeRole[] = ["cook", "admin", "barista"];
 const grades: EmployeeGrade[] = [
@@ -164,6 +164,70 @@ test("restoreOnboardingState skips diagnostic result screen when a route can be 
   assert.equal(restoredState.currentStep, "learning_route");
   assert.equal(restoredState.learningRoute?.employeeId, employee.id);
   assert.equal(restoredState.learningRoute?.days.length, 3);
+});
+
+test("resetOnboardingProgress clears diagnostic answers, route and task progress", () => {
+  const employee: EmployeeProfile = {
+    id: "barista-reset-1",
+    name: "София Кузнецова",
+    role: "barista",
+    grade: "horeca_experience",
+    location: "Valle Sanchez · Арбат",
+    startDate: "2026-07-21",
+  };
+  const questions = getDiagnosticQuestions({
+    role: employee.role,
+    grade: employee.grade,
+  });
+  const firstQuestion = questions[0];
+  const selectedOption = firstQuestion.options[0];
+  const diagnosticResult = calculateDiagnosticResult({
+    employee,
+    questions,
+    answers: [{
+      questionId: firstQuestion.id,
+      selectedOptionId: selectedOption.id,
+      isCorrect: selectedOption.isCorrect,
+      topicId: firstQuestion.topicId,
+      weight: firstQuestion.weight,
+    }],
+    topics: competencyTopics,
+  });
+  const state = restoreOnboardingState({
+    employee,
+    selectedRole: employee.role,
+    selectedGrade: employee.grade,
+    currentStep: "learning_route",
+    diagnosticQuestions: questions,
+    diagnosticAnswers: [{
+      questionId: firstQuestion.id,
+      selectedOptionId: selectedOption.id,
+      isCorrect: selectedOption.isCorrect,
+      topicId: firstQuestion.topicId,
+      weight: firstQuestion.weight,
+    }],
+    diagnosticResult,
+    learningRoute: null,
+    currentQuestionIndex: 4,
+    escalations: [{
+      id: "esc-1",
+      employeeId: employee.id,
+      question: "Нужна помощь",
+      status: "open",
+      createdAt: "2026-07-21T10:00:00.000Z",
+    }],
+  });
+
+  const resetState = resetOnboardingProgress(state);
+
+  assert.equal(resetState.currentStep, "welcome");
+  assert.equal(resetState.employee?.id, "demo-sofia-kuznetsova");
+  assert.equal(resetState.diagnosticQuestions.length, 0);
+  assert.equal(resetState.diagnosticAnswers.length, 0);
+  assert.equal(resetState.diagnosticResult, null);
+  assert.equal(resetState.learningRoute, null);
+  assert.equal(resetState.currentQuestionIndex, 0);
+  assert.deepEqual(resetState.escalations, []);
 });
 
 test("calculateDiagnosticResult scores topics and keeps required topics mandatory", () => {

@@ -167,6 +167,13 @@ function persistState(state: OnboardingState) {
   }
 }
 
+export function resetOnboardingProgress(_: OnboardingState): OnboardingState {
+  return {
+    ...initialState,
+    employee: initialState.employee ? { ...initialState.employee } : null,
+  };
+}
+
 export function useOnboardingAgentState() {
   const [state, setState] = useState<OnboardingState>(initialState);
   const [isRestored, setIsRestored] = useState(false);
@@ -390,7 +397,7 @@ export function useOnboardingAgentState() {
         }));
       },
       reset() {
-        setState({ ...initialState, employee: initialState.employee ? { ...initialState.employee } : null });
+        setState((previous) => resetOnboardingProgress(previous));
       },
       createEscalation(question: string) {
         setState((previous) => {

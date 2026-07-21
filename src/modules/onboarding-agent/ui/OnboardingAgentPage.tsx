@@ -10,6 +10,7 @@ import { WelcomeStep } from "./steps/WelcomeStep";
 export function OnboardingAgentPage() {
   const { state, actions } = useOnboardingAgentState();
   const isLearningRouteStep = state.currentStep === "learning_route";
+  const showDevReset = process.env.NODE_ENV === "development";
 
   return (
     <MayakShell
@@ -20,6 +21,17 @@ export function OnboardingAgentPage() {
           brand="Valle Sanchez"
           subtitle="входное тестирование бариста"
           icon={<Coffee className="h-5 w-5" aria-hidden="true" />}
+          meta={
+            showDevReset ? (
+              <button
+                className="font-mono text-[10px] font-semibold uppercase tracking-wider text-primary transition hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+                onClick={actions.reset}
+                type="button"
+              >
+                Reset
+              </button>
+            ) : undefined
+          }
           userName={state.employee?.name ?? "Новый бариста"}
         />
       }
