@@ -5,14 +5,10 @@ import type {
 } from "../../model/types";
 import {
   MayakActionBar,
-  MayakBadge,
   MayakPanel,
-  MayakProgressBar,
   MayakSectionHeader,
   cn,
 } from "@/shared/ui/mayak";
-import { getGradeLabel } from "../../lib/getGradeLabel";
-import { getRoleLabel } from "../../lib/getRoleLabel";
 import { SecondaryButton } from "../components";
 
 export function DiagnosticStep({
@@ -66,23 +62,6 @@ export function DiagnosticStep({
       />
 
       <div className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col gap-3">
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-secondary/45 px-3 py-2">
-          <div className="flex min-w-0 items-center gap-2.5">
-            <span
-              className="flex h-11 w-11 items-center justify-center rounded-xl bg-card text-sm font-semibold text-secondary-foreground"
-              aria-hidden="true"
-            >
-              {employee.name.trim().charAt(0).toUpperCase()}
-            </span>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-foreground">{employee.name}</p>
-              <p className="truncate text-xs text-muted-foreground">
-                {getRoleLabel(employee.role)} · {getGradeLabel(employee.grade)}
-              </p>
-            </div>
-          </div>
-        </div>
-
         <div className="flex min-h-0 flex-1 flex-col">
           <DiagnosticQuestionCard
             question={currentQuestion}
@@ -111,23 +90,14 @@ export function DiagnosticProgress({
   totalQuestions: number;
 }) {
   const currentNumber = currentQuestionIndex + 1;
-  const progressPercent = Math.round((currentNumber / totalQuestions) * 100);
 
   return (
-    <header className="grid shrink-0 gap-3 lg:grid-cols-[1fr_240px] lg:items-end">
+    <header className="shrink-0">
       <MayakSectionHeader
         className="mb-0"
         kicker="Диагностика знаний"
         title={`Вопрос ${currentNumber} из ${totalQuestions}`}
-        description="Это не экзамен. Ответы нужны только для того, чтобы сфокусировать маршрут."
       />
-      <div className="rounded-2xl border border-border bg-card p-3">
-        <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-          <span>Прогресс</span>
-          <span>{progressPercent}%</span>
-        </div>
-        <MayakProgressBar value={progressPercent} />
-      </div>
     </header>
   );
 }
@@ -143,14 +113,6 @@ export function DiagnosticQuestionCard({
 }) {
   return (
     <MayakPanel padding="md" className="flex min-h-0 flex-1 flex-col shadow-none">
-      <div className="mb-3 flex shrink-0 flex-wrap gap-2">
-        <MayakBadge tone="primary">{getDifficultyLabel(question.difficulty)}</MayakBadge>
-        {question.source && (
-          <span className="inline-flex min-h-6 items-center rounded-full bg-secondary px-2.5 text-[11px] font-medium text-secondary-foreground">
-            Источник: {formatQuestionSource(question.source)}
-          </span>
-        )}
-      </div>
       <h2 className="shrink-0 text-xl font-semibold leading-snug tracking-tight text-foreground sm:text-2xl">
         {question.question}
       </h2>
@@ -252,24 +214,4 @@ export function DiagnosticNavigation({
       </button>
     </MayakActionBar>
   );
-}
-
-function getDifficultyLabel(difficulty: DiagnosticQuestion["difficulty"]) {
-  if (difficulty === "basic") {
-    return "Базовый вопрос";
-  }
-
-  if (difficulty === "intermediate") {
-    return "Ситуационный вопрос";
-  }
-
-  return "Сетевой стандарт";
-}
-
-function formatQuestionSource(source: string) {
-  return source
-    .replace(/^Demo KB\s*·\s*/i, "")
-    .replace(/^Стандарт\s+/i, "стандарт ")
-    .replace(/^Чек-лист\s+/i, "чек-лист ")
-    .replace(/^Карта\s+/i, "карта ");
 }
