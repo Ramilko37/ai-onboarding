@@ -1,12 +1,11 @@
 import type { LearningTaskStatus } from "../../onboarding-agent/model/learningRouteTypes";
 
-export type WorkspaceTabId = "today" | "route" | "mentor" | "knowledge";
+export type WorkspaceTabId = "today" | "route" | "mentor";
 
 export const workspaceTabs: Array<{ id: WorkspaceTabId; label: string }> = [
   { id: "today", label: "Сегодня" },
-  { id: "route", label: "Маршрут" },
+  { id: "route", label: "Мой план" },
   { id: "mentor", label: "Наставник" },
-  { id: "knowledge", label: "Знания" },
 ];
 
 export function getNextWorkspaceTab(

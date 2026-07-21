@@ -1,221 +1,299 @@
-import { Check, HelpCircle, MapPin, Play } from "lucide-react";
+import { ArrowRight, ChevronRight, HelpCircle, Play } from "lucide-react";
 import type {
   LearningRoute,
   LearningRouteDay,
-  LearningTaskStatus
+  LearningTask,
+  LearningTaskStatus,
 } from "../../onboarding-agent/model/learningRouteTypes";
-import { journeyStages, type JourneyStage } from "../data";
-
-function StageNode({ status }: { status: JourneyStage["status"] }) {
-  if (status === "done") {
-    return (
-      <span className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
-        <Check className="h-3.5 w-3.5" aria-hidden="true" />
-      </span>
-    );
-  }
-
-  if (status === "active") {
-    return (
-      <span className="animate-pulse-ring relative z-10 flex h-7 w-7 items-center justify-center rounded-full border-2 border-primary bg-card">
-        <span className="h-2.5 w-2.5 rounded-full bg-primary" />
-      </span>
-    );
-  }
-
-  return (
-    <span className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-card">
-      <span className="h-2 w-2 rounded-full bg-muted-foreground/40" />
-    </span>
-  );
-}
 
 export function JourneyMap({
   route,
+  onOpenTask,
   onUpdateTaskStatus,
 }: {
   route?: LearningRoute;
+  onOpenTask: (taskId: string) => void;
   onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
 }) {
-  const stages = route ? getRouteStages(route) : journeyStages;
+  const tasks = route?.days.flatMap((day) => day.tasks) ?? [];
+  const doneCount = tasks.filter((task) => task.status === "done").length;
+  const progress = tasks.length > 0 ? Math.max(4, Math.round((doneCount / tasks.length) * 100)) : 0;
 
   return (
     <section
-      className="flex w-full min-w-0 flex-col rounded-3xl border border-border bg-card/80 p-4 backdrop-blur-sm"
+      className="mx-auto flex w-full max-w-[900px] min-w-0 flex-col rounded-3xl border border-border bg-card/90 p-5 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8 lg:p-12"
       id="route-plan"
     >
-      <div className="mb-3 flex shrink-0 items-center gap-2.5">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
-          <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
-        </span>
-        <div>
-          <h2 className="text-sm font-semibold tracking-tight text-foreground">Карта пути</h2>
-          <p className="text-xs text-muted-foreground">Где вы сейчас и что ждёт впереди</p>
-        </div>
-      </div>
-
-      <ol>
-        {stages.map((stage, index) => {
-          const isLast = index === stages.length - 1;
-          return (
-            <li key={stage.id} className="relative flex gap-3 pb-3 last:pb-0">
-              {!isLast && (
-                <span
-                  className={`absolute top-7 left-[13px] h-[calc(100%-0.5rem)] w-px ${
-                    stage.status === "done" ? "bg-primary/40" : "bg-border"
-                  }`}
-                  aria-hidden="true"
-                />
-              )}
-              <StageNode status={stage.status} />
-              <div
-                className={`min-w-0 flex-1 rounded-2xl border p-3 transition ${
-                  stage.status === "active"
-                    ? "border-primary/40 bg-primary/5"
-                    : "border-transparent"
-                }`}
-              >
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                    {stage.day}
-                  </p>
-                  {stage.status === "active" && (
-                    <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-medium text-primary">
-                      сейчас
-                    </span>
-                  )}
-                  {stage.status === "done" && (
-                    <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium text-secondary-foreground">
-                      готово
-                    </span>
-                  )}
-                </div>
-                <h3
-                  className={`mt-1 text-sm font-semibold ${
-                    stage.status === "upcoming" ? "text-muted-foreground" : "text-foreground"
-                  }`}
-                >
-                  {stage.title}
-                </h3>
-                <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-                  {stage.caption}
-                </p>
-              </div>
-            </li>
-          );
-        })}
-      </ol>
+      <header className="mb-6">
+        <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
+          Персональный маршрут
+        </p>
+        <h1 className="mt-2 font-brand text-4xl leading-none tracking-tight text-foreground sm:text-5xl">
+          Мой план
+        </h1>
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+          Весь путь — по этапам. Открывайте детали только тогда, когда они нужны.
+        </p>
+      </header>
 
       {route && (
-        <div className="mt-4 border-t border-border pt-4">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h3 className="text-sm font-semibold tracking-tight text-foreground">
-                Задачи маршрута
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                Статусы видны руководителю в дашборде
-              </p>
-            </div>
-            <RouteStatusPill route={route} />
+        <div className="mb-4 rounded-2xl bg-secondary/75 px-5 py-4">
+          <div className="mb-3 flex items-center justify-between gap-4 text-xs text-muted-foreground">
+            <span>Учебный прогресс</span>
+            <strong className="text-foreground">
+              {doneCount} из {tasks.length}
+            </strong>
           </div>
-          <div className="grid gap-3">
-            {route.days.map((day, index) => (
-              <RouteDayTasks
-                day={day}
-                key={day.id}
-                onUpdateTaskStatus={onUpdateTaskStatus}
-                open={index === 0}
-              />
-            ))}
+          <div
+            aria-label={`Выполнено ${progress}% маршрута`}
+            aria-valuemax={100}
+            aria-valuemin={0}
+            aria-valuenow={progress}
+            className="h-1.5 overflow-hidden rounded-full bg-card"
+            role="progressbar"
+          >
+            <span
+              className="block h-full rounded-full bg-primary transition-[width]"
+              style={{ width: `${progress}%` }}
+            />
           </div>
+        </div>
+      )}
+
+      {route ? (
+        <div className="grid gap-2">
+          {route.days.map((day, index) => (
+            <RouteDayTasks
+              day={day}
+              index={index}
+              key={day.id}
+              onOpenTask={onOpenTask}
+              onUpdateTaskStatus={onUpdateTaskStatus}
+              open={index === 0}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-border bg-secondary/50 p-5">
+          <p className="text-sm font-semibold text-foreground">Маршрут появится после диагностики</p>
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+            Сначала система соберёт ответы и только потом покажет персональные задачи.
+          </p>
         </div>
       )}
     </section>
   );
 }
 
-function getRouteStages(route: LearningRoute): JourneyStage[] {
-  return [
-    {
-      id: "diagnostic",
-      title: "Диагностика знаний",
-      caption: route.summary,
-      status: "done",
-      day: "Сегодня",
-    },
-    ...route.days.map<JourneyStage>((day, index) => ({
-      id: day.id,
-      title: day.title,
-      caption: day.goal,
-      status: index === 0 ? "active" : "upcoming",
-      day: day.title,
-    })),
-  ];
-}
-
 function RouteDayTasks({
   day,
+  index,
+  onOpenTask,
   onUpdateTaskStatus,
   open,
 }: {
   day: LearningRouteDay;
+  index: number;
+  onOpenTask: (taskId: string) => void;
   onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
   open: boolean;
 }) {
+  const doneCount = day.tasks.filter((task) => task.status === "done").length;
+
   return (
-    <details className="rounded-2xl border border-border bg-secondary/30 p-3" open={open}>
-      <summary className="cursor-pointer text-xs font-semibold text-foreground">{day.title}</summary>
-      <div className="mt-2 grid gap-2">
-        {day.tasks.map((task) => (
-          <article
-            className="grid gap-2 rounded-xl border border-border bg-card px-3 py-2 sm:grid-cols-[1fr_auto] sm:items-center"
-            id={`route-task-${task.id}`}
+    <details className="group overflow-hidden rounded-2xl border border-border bg-card" open={open}>
+      <summary className="grid min-h-[76px] cursor-pointer grid-cols-[44px_1fr_auto_24px] items-center gap-3 px-4 text-left sm:px-5">
+        <span className="font-brand text-xl font-medium text-primary">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        <span className="min-w-0">
+          <strong className="block text-sm font-semibold text-foreground">{day.title}</strong>
+          <small className="mt-0.5 line-clamp-1 block text-[10px] text-muted-foreground">
+            {day.goal}
+          </small>
+        </span>
+        <span className="text-[10px] text-muted-foreground">
+          {doneCount} / {day.tasks.length}
+        </span>
+        <ChevronRight
+          className="h-4 w-4 text-muted-foreground transition group-open:rotate-90"
+          aria-hidden="true"
+        />
+      </summary>
+      <div className="border-t border-border px-4 sm:px-5">
+        {day.tasks.map((task, taskIndex) => (
+          <RouteTask
+            isCurrent={index === 0 && taskIndex === 0 && task.status !== "done"}
             key={task.id}
-            tabIndex={-1}
-          >
-            <div className="min-w-0">
-              <p className="text-xs font-semibold leading-snug text-foreground">
-                {task.title}
-              </p>
-              <p className="mt-0.5 line-clamp-2 text-[11px] leading-relaxed text-muted-foreground">
-                {task.reason}
-              </p>
-            </div>
-            <TaskStatusAction taskId={task.id} status={task.status} onUpdateTaskStatus={onUpdateTaskStatus} />
-          </article>
+            onOpenTask={onOpenTask}
+            onUpdateTaskStatus={onUpdateTaskStatus}
+            task={task}
+          />
         ))}
       </div>
     </details>
   );
 }
 
-function TaskStatusAction({ taskId, status, onUpdateTaskStatus }: { taskId: string; status: LearningTaskStatus; onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void }) {
-  if (status === "done") return <span className="text-xs text-muted-foreground">Выполнено</span>;
-  if (status === "blocked") return <button className="min-h-11 text-xs font-semibold text-primary" onClick={() => onUpdateTaskStatus?.(taskId, "in_progress")} type="button">Попросить помощь</button>;
-  if (status === "in_progress") return <span className="grid gap-1 text-right"><button className="min-h-7 text-xs font-semibold text-primary" onClick={() => onUpdateTaskStatus?.(taskId, "done")} type="button">Завершить</button><button className="text-[11px] text-muted-foreground" onClick={() => onUpdateTaskStatus?.(taskId, "blocked")} type="button">Есть проблема</button></span>;
-  return <span className="grid gap-1 text-right"><button className="inline-flex min-h-7 items-center gap-1 text-xs font-semibold text-primary" onClick={() => onUpdateTaskStatus?.(taskId, "in_progress")} type="button"><Play className="h-3.5 w-3.5" />Начать</button><button className="text-[11px] text-muted-foreground" onClick={() => onUpdateTaskStatus?.(taskId, "blocked")} type="button">Есть проблема</button></span>;
+function RouteTask({
+  task,
+  isCurrent,
+  onOpenTask,
+  onUpdateTaskStatus,
+}: {
+  task: LearningTask;
+  isCurrent: boolean;
+  onOpenTask: (taskId: string) => void;
+  onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
+}) {
+  return (
+    <article
+      className="grid min-h-[72px] grid-cols-[24px_1fr_20px] items-center gap-3 border-b border-border py-3 last:border-b-0 sm:grid-cols-[24px_1fr_auto_auto_20px]"
+      id={`route-task-${task.id}`}
+      tabIndex={-1}
+    >
+      <span
+        className={
+          task.status === "done"
+            ? "h-2.5 w-2.5 rounded-full bg-success shadow-[0_0_0_4px_var(--card)]"
+            : isCurrent || task.status === "in_progress"
+              ? "h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_0_4px_var(--card)]"
+              : "h-2.5 w-2.5 rounded-full bg-muted-foreground/35 shadow-[0_0_0_4px_var(--card)]"
+        }
+        aria-hidden="true"
+      />
+      <button
+        className="min-w-0 cursor-pointer text-left focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+        onClick={() => onOpenTask(task.id)}
+        type="button"
+      >
+        <small className="font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-primary">
+          {task.status === "in_progress" ? "Следующая" : getTaskTypeLabel(task.type)}
+        </small>
+        <strong className="mt-0.5 block text-sm leading-snug text-foreground">{task.title}</strong>
+        <span className="mt-0.5 block text-[10px] text-muted-foreground">
+          {task.estimatedMinutes} мин
+        </span>
+      </button>
+      <RouteStatusPill status={task.status} />
+      <div className="hidden sm:block">
+        <TaskStatusAction
+          onUpdateTaskStatus={onUpdateTaskStatus}
+          status={task.status}
+          taskId={task.id}
+        />
+      </div>
+      <button
+        aria-label={`Открыть задачу ${task.title}`}
+        className="cursor-pointer text-muted-foreground transition hover:text-primary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+        onClick={() => onOpenTask(task.id)}
+        type="button"
+      >
+        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+      </button>
+      <div className="col-span-3 flex justify-end gap-3 sm:hidden">
+        <TaskStatusAction
+          onUpdateTaskStatus={onUpdateTaskStatus}
+          status={task.status}
+          taskId={task.id}
+        />
+      </div>
+    </article>
+  );
 }
 
-function RouteStatusPill({ route }: { route: LearningRoute }) {
-  const tasks = route.days.flatMap((day) => day.tasks);
-  const needsMentor = tasks.filter((task) => task.status === "blocked").length;
-  const done = tasks.filter((task) => task.status === "done").length;
-  const inProgress = tasks.filter((task) => task.status === "in_progress").length;
-  const total = tasks.length;
-  const label =
-    needsMentor > 0
-      ? "есть блокеры"
-      : total > 0 && done === total
-        ? "завершён"
-        : done > 0 || inProgress > 0
-          ? "в работе"
-          : "не начат";
+function RouteStatusPill({ status }: { status: LearningTaskStatus }) {
+  const label: Record<LearningTaskStatus, string> = {
+    blocked: "Нужна помощь",
+    done: "Готово",
+    in_progress: "В процессе",
+    todo: "Не начато",
+  };
 
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-secondary-foreground">
-      {needsMentor > 0 && <HelpCircle className="h-3 w-3 text-primary" aria-hidden="true" />}
-      {label}
+    <span className="hidden items-center gap-1.5 text-[10px] text-muted-foreground sm:inline-flex">
+      {status === "blocked" && <HelpCircle className="h-3 w-3 text-primary" aria-hidden="true" />}
+      {label[status]}
     </span>
   );
+}
+
+function TaskStatusAction({
+  taskId,
+  status,
+  onUpdateTaskStatus,
+}: {
+  taskId: string;
+  status: LearningTaskStatus;
+  onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
+}) {
+  if (status === "done") {
+    return <span className="text-xs text-muted-foreground">Выполнено</span>;
+  }
+
+  if (status === "blocked") {
+    return (
+      <button
+        className="min-h-8 cursor-pointer text-xs font-semibold text-primary"
+        onClick={() => onUpdateTaskStatus?.(taskId, "in_progress")}
+        type="button"
+      >
+        Вернуться
+      </button>
+    );
+  }
+
+  if (status === "in_progress") {
+    return (
+      <span className="grid gap-1 text-right">
+        <button
+          className="min-h-8 cursor-pointer text-xs font-semibold text-primary"
+          onClick={() => onUpdateTaskStatus?.(taskId, "done")}
+          type="button"
+        >
+          Завершить
+        </button>
+        <button
+          className="cursor-pointer text-[11px] text-muted-foreground"
+          onClick={() => onUpdateTaskStatus?.(taskId, "blocked")}
+          type="button"
+        >
+          Есть проблема
+        </button>
+      </span>
+    );
+  }
+
+  return (
+    <span className="grid gap-1 text-right">
+      <button
+        className="inline-flex min-h-8 cursor-pointer items-center gap-1 text-xs font-semibold text-primary"
+        onClick={() => onUpdateTaskStatus?.(taskId, "in_progress")}
+        type="button"
+      >
+        <Play className="h-3.5 w-3.5" />
+        Начать
+      </button>
+      <button
+        className="cursor-pointer text-[11px] text-muted-foreground"
+        onClick={() => onUpdateTaskStatus?.(taskId, "blocked")}
+        type="button"
+      >
+        Есть проблема
+      </button>
+    </span>
+  );
+}
+
+function getTaskTypeLabel(type: LearningTask["type"]) {
+  const labels: Record<LearningTask["type"], string> = {
+    check: "Чек-лист",
+    intro: "Вводный шаг",
+    practice: "Практика",
+    quiz: "Проверка",
+    read: "Материал",
+    summary: "Итог",
+  };
+
+  return labels[type];
 }

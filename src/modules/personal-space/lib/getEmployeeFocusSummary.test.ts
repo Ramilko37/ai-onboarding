@@ -99,10 +99,10 @@ test("returns a safe empty summary without a route", () => {
 });
 
 test("moves through desktop workspace tabs with wrapping keyboard navigation", () => {
-  assert.equal(getNextWorkspaceTab("today", "ArrowLeft"), "knowledge");
-  assert.equal(getNextWorkspaceTab("knowledge", "ArrowRight"), "today");
+  assert.equal(getNextWorkspaceTab("today", "ArrowLeft"), "mentor");
+  assert.equal(getNextWorkspaceTab("mentor", "ArrowRight"), "today");
   assert.equal(getNextWorkspaceTab("mentor", "Home"), "today");
-  assert.equal(getNextWorkspaceTab("route", "End"), "knowledge");
+  assert.equal(getNextWorkspaceTab("route", "End"), "mentor");
   assert.equal(getNextWorkspaceTab("route", "Tab"), undefined);
 });
 

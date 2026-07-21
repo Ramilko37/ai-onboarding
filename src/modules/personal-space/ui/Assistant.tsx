@@ -1,6 +1,6 @@
 "use client";
 
-import { Compass, Send } from "lucide-react";
+import { BookOpen, Compass, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { MentorSource } from "../../knowledge-base";
 import type { LearningRoute } from "../../onboarding-agent/model/learningRouteTypes";
@@ -105,44 +105,42 @@ export function Assistant({
   }
 
   return (
-    <section className="flex min-h-[430px] w-full min-w-0 flex-col overflow-hidden rounded-3xl border border-primary/30 bg-card/80 shadow-[var(--shadow-card)] backdrop-blur-sm ring-1 ring-primary/15">
-      <div className="flex shrink-0 items-center gap-3 border-b border-primary/15 bg-primary/8 px-4 py-3">
-        <span className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+    <section className="mx-auto flex min-h-[640px] w-full max-w-[860px] min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-card/90 p-5 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8 lg:min-h-[724px] lg:p-10">
+      <header className="flex shrink-0 items-center gap-3 border-b border-border pb-5">
+        <span className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
           <Compass className="h-4 w-4" aria-hidden="true" />
-          <span className="animate-pulse-ring absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-card bg-aurora-2" />
         </span>
         <div className="min-w-0 flex-1">
-          <div className="flex min-w-0 items-center gap-2">
-            <h2 className="truncate text-sm font-semibold tracking-tight text-foreground">
-              Valle Sanchez · AI-наставник
-            </h2>
-            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-medium text-primary">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
-              на связи
-            </span>
-          </div>
-          <p className="truncate text-xs text-muted-foreground">
-            Отвечает по базе кофейных стандартов
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
+            Всегда на связи
           </p>
+          <h1 className="mt-1 font-brand text-3xl leading-tight tracking-tight text-foreground">
+            AI-наставник
+          </h1>
         </div>
-      </div>
+        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/12 px-3 py-1.5 text-[10px] font-medium text-success">
+          <span className="h-1.5 w-1.5 rounded-full bg-success" aria-hidden="true" />
+          В сети
+        </span>
+      </header>
 
-      <div ref={scrollRef} className="flex max-h-[560px] min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-4 py-3">
+      <div ref={scrollRef} className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto py-5">
+        <div className="self-center font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
+          Сегодня
+        </div>
         {messages.map((message) =>
           message.author === "guide" ? (
             <div key={message.id} className="flex items-end gap-2">
-              <span
-                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-secondary text-secondary-foreground"
-                aria-hidden="true"
-              >
-                <Compass className="h-3.5 w-3.5 text-primary" />
-              </span>
-              <div className="max-w-[88%] rounded-2xl rounded-bl-md bg-secondary px-3 py-2 text-xs leading-relaxed text-secondary-foreground">
+              <div className="max-w-[88%] rounded-2xl rounded-bl-md bg-secondary px-4 py-3 text-xs leading-relaxed text-secondary-foreground sm:max-w-[72%]">
                 <p className="whitespace-pre-line">{message.text}</p>
                 {message.sources && message.sources.length > 0 && (
-                  <ul className="mt-2 grid gap-1 border-t border-border/70 pt-2 text-[11px] text-muted-foreground">
+                  <ul className="mt-3 grid gap-1 text-[10px] text-primary">
                     {message.sources.slice(0, 2).map((source) => (
-                      <li key={`${message.id}-${source.documentId}-${source.sectionTitle}`}>
+                      <li
+                        className="flex items-center gap-1.5 rounded-lg bg-card px-2 py-1.5"
+                        key={`${message.id}-${source.documentId}-${source.sectionTitle}`}
+                      >
+                        <BookOpen className="h-3 w-3 shrink-0" aria-hidden="true" />
                         {source.title} · {source.sectionTitle}
                       </li>
                     ))}
@@ -153,7 +151,7 @@ export function Assistant({
           ) : (
             <p
               key={message.id}
-              className="ml-auto max-w-[88%] rounded-2xl rounded-br-md bg-primary px-3 py-2 text-xs leading-relaxed text-primary-foreground"
+              className="ml-auto max-w-[88%] rounded-2xl rounded-br-md bg-primary px-4 py-3 text-xs leading-relaxed text-primary-foreground sm:max-w-[72%]"
             >
               {message.text}
             </p>
@@ -162,9 +160,6 @@ export function Assistant({
 
         {isTyping && (
           <div className="flex items-center gap-2">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-secondary" aria-hidden="true">
-              <Compass className="h-3.5 w-3.5 text-primary" />
-            </span>
             <span className="flex gap-1 rounded-2xl rounded-bl-md bg-secondary px-3 py-2.5">
               <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/60 [animation-delay:-0.3s]" />
               <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/60 [animation-delay:-0.15s]" />
@@ -183,14 +178,14 @@ export function Assistant({
         )}
       </div>
 
-      <div className="shrink-0 border-t border-border/60 px-4 py-3">
+      <div className="shrink-0 border-t border-border pt-3">
         <div className="mb-2 flex gap-1.5 overflow-x-auto pb-0.5">
           {assistantSuggestions.map((suggestion) => (
             <button
               key={suggestion}
               type="button"
               onClick={() => send(suggestion)}
-              className="min-w-fit cursor-pointer rounded-full border border-border bg-card px-2.5 py-1 text-[11px] text-muted-foreground transition hover:border-primary/40 hover:text-primary"
+              className="min-h-9 min-w-fit cursor-pointer rounded-full border border-border bg-card px-3 text-[11px] text-muted-foreground transition hover:border-primary/40 hover:text-primary"
             >
               {suggestion}
             </button>
@@ -201,7 +196,7 @@ export function Assistant({
             event.preventDefault();
             send(input);
           }}
-          className="flex items-center gap-2 rounded-full border border-border bg-card py-1 pr-1 pl-3 transition focus-within:border-primary/50"
+          className="flex min-h-[55px] items-center gap-2 rounded-2xl border border-border bg-card py-1.5 pr-1.5 pl-4 transition focus-within:border-primary/50"
         >
           <input
             value={input}
@@ -214,7 +209,7 @@ export function Assistant({
             type="submit"
             disabled={!input.trim() || isTyping}
             aria-label="Отправить"
-            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-primary text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
           >
             <Send className="h-4 w-4" aria-hidden="true" />
           </button>
