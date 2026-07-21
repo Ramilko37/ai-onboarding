@@ -32,8 +32,8 @@ The UX/UI layer follows the Mayak v1.0 system: warm editorial navigation, oxbloo
 
 Current employee flow:
 
-1. Prefilled welcome for Sofia, her role, location and start date.
-2. One click to the first of eight diagnostic questions.
+1. Compact prefilled welcome for Sofia, her role, location and start date.
+2. One primary action starts the first of eight diagnostic questions, or resumes an unfinished diagnostic at the saved question number.
 3. Completing the last diagnostic question immediately builds the personal route.
 4. `Сегодня` workspace with a next action and at most three Day 1 tasks.
 5. Collapsible full route by period, source-backed mentor panel, and secondary knowledge constellation.
@@ -173,6 +173,7 @@ Latest completed verification on 2026-07-18:
 - 2026-07-21 UX simplification: baseline tests and production build passed after replacing employee score/risk output with topic focus, unifying task status projections and simplifying the manager view to learning progress and help signals.
 - 2026-07-21 diagnostic completion: the intermediate focus/result screen was removed; finishing the last diagnostic question now opens the `Сегодня` task workspace directly. Verified with `npm run test:diagnostic`, `npx tsc --noEmit --ignoreDeprecations 6.0`, browser flow on `localhost:3000`, and `npm run build`.
 - 2026-07-21 diagnostic question redesign: the diagnostic run was shortened to 8 questions, the question screen was constrained to a 960 px outer / 880 px content width, the duplicate inner frame and old explanatory blocks were removed, answer cards were normalized to 72-88 px with left radio indicators and clear selected state, and the first-screen back action became `Выйти из диагностики` with confirmation.
+- 2026-07-21 welcome simplification: the separate right-hand presentation column was removed, the welcome card was constrained to 800 px without a fixed desktop height, the entry action was reduced to a single CTA (`Начать — около 4 минут` or `Продолжить с вопроса N из 8`), and the development-only reset action moved into the profile menu.
 - `npm run build` may need network access because `app/layout.tsx` currently loads Geist and Geist Mono through `next/font/google`.
 
 ## Explicitly Not Implemented

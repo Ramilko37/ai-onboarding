@@ -10,6 +10,7 @@ import type {
 } from "./types";
 import { calculateDiagnosticResult } from "../lib/calculateDiagnosticResult";
 import { getDiagnosticQuestions } from "../lib/getDiagnosticQuestions";
+import { getWelcomeDiagnosticAction } from "../lib/getWelcomeDiagnosticAction";
 import { resetOnboardingProgress, restoreOnboardingState } from "./useOnboardingAgentState";
 
 const roles: EmployeeRole[] = ["cook", "admin", "barista"];
@@ -228,6 +229,31 @@ test("resetOnboardingProgress clears diagnostic answers, route and task progress
   assert.equal(resetState.learningRoute, null);
   assert.equal(resetState.currentQuestionIndex, 0);
   assert.deepEqual(resetState.escalations, []);
+});
+
+test("getWelcomeDiagnosticAction keeps one clear welcome CTA", () => {
+  assert.deepEqual(
+    getWelcomeDiagnosticAction({
+      currentQuestionIndex: 0,
+      hasDiagnosticResult: false,
+      questionsCount: 0,
+    }),
+    {
+      label: "Начать — около 4 минут",
+      mode: "start",
+    },
+  );
+  assert.deepEqual(
+    getWelcomeDiagnosticAction({
+      currentQuestionIndex: 3,
+      hasDiagnosticResult: false,
+      questionsCount: 8,
+    }),
+    {
+      label: "Продолжить с вопроса 4 из 8",
+      mode: "continue",
+    },
+  );
 });
 
 test("calculateDiagnosticResult scores topics and keeps required topics mandatory", () => {

@@ -125,6 +125,7 @@ type MayakTopBarProps = {
   brand?: string;
   subtitle?: string;
   meta?: ReactNode;
+  userControl?: ReactNode;
   userName?: string;
   icon?: ReactNode;
   className?: string;
@@ -134,6 +135,7 @@ export function MayakTopBar({
   brand = "Маяк",
   subtitle,
   meta,
+  userControl,
   userName,
   icon,
   className,
@@ -170,7 +172,8 @@ export function MayakTopBar({
               {meta}
             </span>
           )}
-          {userName && (
+          {userControl}
+          {!userControl && userName && (
             <div className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card/80 p-1 sm:h-auto sm:w-auto sm:justify-start sm:gap-2.5 sm:py-1 sm:pr-3 sm:pl-1">
               <span
                 className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-secondary-foreground"
