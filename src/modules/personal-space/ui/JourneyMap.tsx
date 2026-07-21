@@ -29,7 +29,7 @@ export function JourneyMap({
         <h1 className="mt-2 font-brand text-4xl leading-none tracking-tight text-foreground sm:text-5xl">
           Мой план
         </h1>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-3 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-sm">
           Весь путь — по этапам. Открывайте детали только тогда, когда они нужны.
         </p>
       </header>
@@ -107,11 +107,11 @@ function RouteDayTasks({
         </span>
         <span className="min-w-0">
           <strong className="block text-sm font-semibold text-foreground">{day.title}</strong>
-          <small className="mt-0.5 line-clamp-1 block text-[10px] text-muted-foreground">
+          <small className="mt-0.5 line-clamp-1 block text-xs text-muted-foreground sm:text-[10px]">
             {day.goal}
           </small>
         </span>
-        <span className="text-[10px] text-muted-foreground">
+        <span className="text-xs text-muted-foreground sm:text-[10px]">
           {doneCount} / {day.tasks.length}
         </span>
         <ChevronRight
@@ -161,11 +161,11 @@ function RouteTask({
         aria-hidden="true"
       />
       <span className="min-w-0">
-        <small className="font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-primary">
+        <small className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-primary">
           {isCurrent ? "Следующая" : task.status === "in_progress" ? "В процессе" : getTaskTypeLabel(task.type)}
         </small>
         <strong className="mt-0.5 block text-sm leading-snug text-foreground">{task.title}</strong>
-        <span className="mt-0.5 block text-[10px] text-muted-foreground">
+        <span className="mt-0.5 block text-xs text-muted-foreground sm:text-[10px]">
           {getTaskTypeLabel(task.type)} · {task.estimatedMinutes} мин
         </span>
       </span>
@@ -184,7 +184,7 @@ function RouteStatusPill({ status }: { status: LearningTaskStatus }) {
   };
 
   return (
-    <span className="hidden items-center gap-1.5 text-[10px] text-muted-foreground sm:inline-flex">
+    <span className="hidden items-center gap-1.5 text-xs text-muted-foreground sm:inline-flex sm:text-[10px]">
       {status === "blocked" && <HelpCircle className="h-3 w-3 text-primary" aria-hidden="true" />}
       {label[status]}
     </span>

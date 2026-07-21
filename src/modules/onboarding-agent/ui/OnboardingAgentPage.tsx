@@ -46,9 +46,9 @@ export function OnboardingAgentPage() {
           subtitle={isLearningRouteStep ? "персональная адаптация" : "входное тестирование бариста"}
           icon={<Coffee className="h-5 w-5" aria-hidden="true" />}
           meta={
-            showDevReset && !isLearningRouteStep ? (
+            showDevReset ? (
               <button
-                className="font-mono text-[10px] font-semibold uppercase tracking-wider text-primary transition hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+                className="inline-flex min-h-11 cursor-pointer items-center rounded-full px-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-primary transition hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
                 onClick={actions.reset}
                 type="button"
               >
@@ -171,7 +171,7 @@ function ProfileMenu({
         aria-haspopup="menu"
         className={cn(
           "flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-border bg-card/80 p-1 transition hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
-          "sm:h-auto sm:w-auto sm:justify-start sm:gap-2.5 sm:py-1 sm:pr-3 sm:pl-1",
+          "sm:min-h-11 sm:w-auto sm:justify-start sm:gap-2.5 sm:py-1.5 sm:pr-3 sm:pl-1",
         )}
         onClick={() => setIsOpen((value) => !value)}
         type="button"

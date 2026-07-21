@@ -59,7 +59,8 @@ export function PersonalSpaceWorkspace({
   const sourceTab = getWorkspaceTabFromParam(searchParams.get("from"));
   const selectedTaskId = getTaskIdFromPathname(pathname);
   const [isReasonOpen, setIsReasonOpen] = useState(false);
-  const reasonTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const mobileReasonTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const desktopReasonTriggerRef = useRef<HTMLButtonElement | null>(null);
   const reasonDialogRef = useRef<HTMLElement | null>(null);
   const focus = getEmployeeFocusSummary(route);
   const selectedTask = activeTab === "task" ? getSelectedTask(route, selectedTaskId) : undefined;
@@ -75,6 +76,31 @@ export function PersonalSpaceWorkspace({
     function handleKeyDown(event: globalThis.KeyboardEvent) {
       if (event.key === "Escape") {
         closeReasonDialog();
+        return;
+      }
+
+      if (event.key !== "Tab" || !reasonDialogRef.current) {
+        return;
+      }
+
+      const focusableElements = Array.from(
+        reasonDialogRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (!firstElement || !lastElement) {
+        return;
+      }
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
       }
     }
 
@@ -104,11 +130,22 @@ export function PersonalSpaceWorkspace({
 
   function closeReasonDialog() {
     setIsReasonOpen(false);
-    requestAnimationFrame(() => reasonTriggerRef.current?.focus());
+    requestAnimationFrame(() => {
+      const visibleTrigger = [mobileReasonTriggerRef.current, desktopReasonTriggerRef.current].find(
+        (node) => node && node.getClientRects().length > 0,
+      );
+      visibleTrigger?.focus();
+    });
   }
 
   return (
-    <section className="relative mx-auto w-full max-w-[1224px] min-w-0" aria-label="Пространство развития сотрудника">
+    <section
+      className={cn(
+        "relative mx-auto w-full max-w-[1224px] min-w-0",
+        activeTab !== "mentor" && activeTab !== "task" && "pb-[calc(var(--mobile-bottom-offset)+1rem)] lg:pb-0",
+      )}
+      aria-label="Пространство развития сотрудника"
+    >
       <div className="grid min-w-0 gap-3">
         {activeTab === "task" && selectedTask && (
           <section aria-label="Задача маршрута" className="contents">
@@ -175,6 +212,17 @@ export function PersonalSpaceWorkspace({
             />
           </div>
 
+          <button
+            ref={mobileReasonTriggerRef}
+            className="order-5 flex min-h-11 w-full cursor-pointer items-center gap-2 rounded-2xl border border-border bg-card/90 px-4 text-left text-sm font-medium text-primary shadow-sm transition hover:bg-primary/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 lg:hidden"
+            onClick={() => setIsReasonOpen(true)}
+            type="button"
+          >
+            <Sparkles className="h-4 w-4" aria-hidden="true" />
+            Почему такой план?
+            <ArrowRight className="ml-auto h-4 w-4" aria-hidden="true" />
+          </button>
+
           <aside className="hidden grid-cols-1 gap-3 lg:grid">
             <article className="rounded-2xl bg-deep-surface p-6 text-deep-foreground shadow-[var(--shadow-card)]">
               <span className="mb-7 flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-secondary">
@@ -200,7 +248,7 @@ export function PersonalSpaceWorkspace({
             </article>
 
             <button
-              ref={reasonTriggerRef}
+              ref={desktopReasonTriggerRef}
               className="flex min-h-13 w-full cursor-pointer items-center gap-2 rounded-xl px-3 text-left text-sm font-medium text-primary transition hover:bg-primary/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
               onClick={() => setIsReasonOpen(true)}
               type="button"
@@ -216,7 +264,7 @@ export function PersonalSpaceWorkspace({
       {activeTab !== "task" && (
         <nav
           aria-label="Основные разделы"
-          className="fixed inset-x-0 bottom-0 z-30 grid h-[68px] grid-cols-3 border-t border-border bg-card/95 px-4 pb-[env(safe-area-inset-bottom)] shadow-[0_-14px_30px_color-mix(in_oklch,var(--accent-foreground)_10%,transparent)] backdrop-blur-xl lg:hidden"
+          className="fixed inset-x-0 bottom-0 z-30 grid h-[calc(var(--mobile-nav-height)+var(--mobile-safe-bottom))] grid-cols-3 border-t border-border bg-card/95 px-4 pb-[var(--mobile-safe-bottom)] shadow-[0_-10px_24px_color-mix(in_oklch,var(--accent-foreground)_8%,transparent)] backdrop-blur-xl lg:hidden"
         >
           {workspaceTabs.map((tab) => {
             const Icon = tabIcons[tab.id];
@@ -226,7 +274,7 @@ export function PersonalSpaceWorkspace({
               <button
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1 text-[10px] font-medium transition focus-visible:outline-3 focus-visible:outline-offset-[-3px] focus-visible:outline-ring/45",
+                  "flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1 text-xs font-medium leading-none transition focus-visible:outline-3 focus-visible:outline-offset-[-3px] focus-visible:outline-ring/45",
                   isActive ? "text-primary" : "text-muted-foreground",
                 )}
                 key={tab.id}
@@ -254,14 +302,14 @@ export function PersonalSpaceWorkspace({
           <section
             aria-modal="true"
             aria-labelledby="route-reason-title"
-            className="relative w-full max-w-[680px] rounded-t-3xl border border-border bg-card p-6 shadow-[0_-24px_70px_color-mix(in_oklch,var(--accent-foreground)_18%,transparent)] outline-none sm:rounded-3xl"
+            className="relative max-h-[calc(100dvh-1rem)] w-full max-w-[680px] overflow-y-auto overscroll-contain rounded-t-3xl border border-border bg-card p-6 pb-[calc(1.5rem+var(--mobile-safe-bottom))] shadow-[0_-24px_70px_color-mix(in_oklch,var(--accent-foreground)_18%,transparent)] outline-none [-webkit-overflow-scrolling:touch] sm:rounded-3xl lg:max-h-[min(720px,calc(100dvh-2rem))] lg:pb-6"
             ref={reasonDialogRef}
             role="dialog"
             tabIndex={-1}
           >
             <button
               aria-label="Закрыть"
-              className="absolute right-4 top-4 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition hover:bg-secondary hover:text-foreground focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+              className="absolute right-4 top-4 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition hover:bg-secondary hover:text-foreground focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
               onClick={closeReasonDialog}
               type="button"
             >
@@ -330,7 +378,7 @@ function TaskDetail({
       tabIndex={-1}
     >
       <button
-        className="inline-flex min-h-10 cursor-pointer items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-primary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+        className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-primary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
         onClick={onBack}
         type="button"
       >
@@ -345,10 +393,10 @@ function TaskDetail({
         <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
           {getTaskTypeLabel(task.type)} · {task.estimatedMinutes} минут
         </p>
-        <h1 className="mt-2 max-w-2xl font-brand text-4xl leading-[1.05] tracking-tight text-foreground sm:text-5xl">
+        <h1 className="mt-2 max-w-2xl font-brand text-[clamp(1.875rem,8vw,2rem)] leading-[1.1] tracking-tight text-foreground sm:text-5xl sm:leading-[1.05]">
           {task.title}
         </h1>
-        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-sm">
           {task.description}
         </p>
       </div>
@@ -368,7 +416,7 @@ function TaskDetail({
               </span>
               <div>
                 <strong className="text-sm text-foreground">{item.title}</strong>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{item.text}</p>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground sm:text-xs">{item.text}</p>
               </div>
             </li>
           ))}
@@ -381,13 +429,13 @@ function TaskDetail({
           <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
             Источник
           </p>
-          <p className="truncate text-xs font-semibold text-primary">
+          <p className="truncate text-sm font-semibold text-primary sm:text-xs">
             {task.source ?? "База знаний Valle Sanchez"}
           </p>
         </div>
       </div>
 
-      <div className="sticky bottom-0 -mx-5 mt-5 flex gap-2 bg-card/95 px-5 pt-3 pb-1 backdrop-blur sm:static sm:mx-0 sm:bg-transparent sm:p-0">
+      <div className="-mx-5 mt-5 flex gap-2 bg-card/95 px-5 pt-3 pb-[var(--mobile-safe-bottom)] backdrop-blur sm:static sm:mx-0 sm:bg-transparent sm:p-0">
         <button
           className="inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:cursor-default disabled:opacity-60"
           disabled={isDone}
@@ -423,7 +471,7 @@ function TaskNotFound({ onBack }: { onBack: () => void }) {
   return (
     <article className="mx-auto w-full max-w-[760px] rounded-3xl border border-border bg-card/90 p-6 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8 lg:p-10">
       <button
-        className="inline-flex min-h-10 cursor-pointer items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-primary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+        className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-primary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
         onClick={onBack}
         type="button"
       >
@@ -434,10 +482,10 @@ function TaskNotFound({ onBack }: { onBack: () => void }) {
         <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
           Маршрут
         </p>
-        <h1 className="mt-2 font-brand text-4xl leading-tight tracking-tight text-foreground">
+        <h1 className="mt-2 font-brand text-[clamp(1.875rem,8vw,2rem)] leading-tight tracking-tight text-foreground sm:text-4xl">
           Задача не найдена
         </h1>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-3 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-sm">
           Возможно, ссылка устарела или маршрут был пересобран. Вернитесь к сегодняшним задачам.
         </p>
         <button

@@ -12,9 +12,9 @@ export function cn(...classes: ClassValue[]) {
 }
 
 export const mayakSurface = {
-  page: "relative min-h-screen overflow-x-hidden text-foreground lg:h-screen lg:overflow-hidden",
+  page: "relative min-h-[100dvh] overflow-x-hidden text-foreground lg:h-screen lg:overflow-hidden",
   shell:
-    "mx-auto flex min-h-[calc(100dvh-4rem)] max-w-6xl flex-col px-4 py-3 sm:px-6 sm:py-4 lg:h-[calc(100dvh-4rem)] lg:min-h-0 lg:overflow-hidden",
+    "mx-auto flex min-h-[calc(100dvh-var(--mobile-header-height))] max-w-6xl flex-col px-4 py-3 sm:px-6 sm:py-4 lg:h-[calc(100dvh-var(--mobile-header-height))] lg:min-h-0 lg:overflow-hidden",
   panel:
     "overflow-hidden rounded-3xl border border-border bg-card/80 backdrop-blur-sm shadow-[var(--shadow-card)]",
   interactive:
@@ -99,8 +99,8 @@ type MayakShellProps = {
 };
 
 const mayakScrollableSurface = {
-  page: "relative min-h-screen overflow-x-hidden text-foreground",
-  shell: "mx-auto flex min-h-[calc(100dvh-4rem)] max-w-6xl flex-col px-4 py-3 sm:px-6 sm:py-4",
+  page: "relative min-h-[100dvh] overflow-x-hidden text-foreground",
+  shell: "mx-auto flex min-h-[calc(100dvh-var(--mobile-header-height))] max-w-6xl flex-col px-4 py-3 sm:px-6 sm:py-4",
 } as const;
 
 export function MayakShell({
