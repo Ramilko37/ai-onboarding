@@ -210,12 +210,18 @@ export function MayakPanel({
   variant = "card",
   ariaLabel,
 }: MayakPanelProps) {
+  const surfaceClassName =
+    variant === "deep"
+      ? mayakSurface.deep
+      : variant === "soft"
+        ? "overflow-hidden rounded-3xl border border-border bg-card/80 backdrop-blur-sm"
+        : mayakSurface.panel;
+
   return (
     <section
       aria-label={ariaLabel}
       className={cn(
-        variant === "deep" ? mayakSurface.deep : mayakSurface.panel,
-        variant === "soft" && "shadow-none",
+        surfaceClassName,
         panelPadding[padding],
         className,
       )}

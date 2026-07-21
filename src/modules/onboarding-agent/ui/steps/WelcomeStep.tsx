@@ -11,7 +11,11 @@ export function WelcomeStep({ employee, onStart, onContinue }: {
   const firstName = employee?.name.split(" ")[0] ?? "София";
   return (
     <section className="mx-auto grid w-full max-w-6xl min-h-0 gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:items-stretch">
-      <MayakPanel padding="lg" className="flex min-h-[440px] flex-col justify-between gap-8 lg:min-h-[520px] lg:p-9">
+      <MayakPanel
+        variant="soft"
+        padding="lg"
+        className="flex min-h-[440px] flex-col justify-between gap-8 lg:min-h-[520px] lg:p-9"
+      >
         <div className="grid gap-6">
           <MayakSectionHeader
             className="mb-0 max-w-3xl"
@@ -37,7 +41,7 @@ export function WelcomeStep({ employee, onStart, onContinue }: {
         </div>
       </MayakPanel>
 
-      <MayakPanel padding="md" className="grid content-start gap-3 lg:p-6">
+      <MayakPanel variant="soft" padding="md" className="grid content-start gap-3 lg:p-6">
         <div>
           <p className="font-mono text-[10px] font-semibold uppercase tracking-wider text-primary">Как это работает</p>
           <h2 className="mt-2 text-xl font-semibold tracking-tight text-foreground">Три коротких шага</h2>
@@ -45,7 +49,7 @@ export function WelcomeStep({ employee, onStart, onContinue }: {
         </div>
         <div className="grid gap-2">
           {[
-            ["1", "Ответьте на вопросы", "8 коротких ситуаций"],
+            ["1", "Ответьте на вопросы", "14 коротких ситуаций"],
             ["2", "Получите фокус", "что уже знакомо"],
             ["3", "Начните маршрут", "первые задачи на сегодня"],
           ].map(([number, title, caption]) => (
