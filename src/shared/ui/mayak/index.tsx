@@ -171,7 +171,7 @@ export function MayakTopBar({
             </span>
           )}
           {userName && (
-            <div className="flex items-center gap-2.5 rounded-full border border-border bg-card/80 py-1 pr-3 pl-1">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card/80 p-1 sm:h-auto sm:w-auto sm:justify-start sm:gap-2.5 sm:py-1 sm:pr-3 sm:pl-1">
               <span
                 className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-secondary-foreground"
                 aria-hidden="true"

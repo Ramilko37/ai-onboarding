@@ -1,4 +1,3 @@
-import { Check } from "lucide-react";
 import type {
   DiagnosticAnswer,
   DiagnosticQuestion,
@@ -82,7 +81,6 @@ export function DiagnosticStep({
               </p>
             </div>
           </div>
-          <MayakBadge tone="accent">Выберите ближайший к реальности вариант</MayakBadge>
         </div>
 
         <div className="flex min-h-0 flex-1 flex-col">
@@ -186,9 +184,9 @@ export function DiagnosticOption({
     <button
       aria-pressed={selected}
       className={cn(
-        "grid min-h-14 cursor-pointer grid-cols-[36px_1fr_auto] items-center gap-3 rounded-2xl border p-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
+        "grid min-h-14 cursor-pointer grid-cols-[36px_1fr] items-center gap-3 rounded-2xl border p-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 sm:grid-cols-[36px_1fr_auto]",
         selected
-          ? "border-primary bg-primary/8 ring-1 ring-primary/40 shadow-[var(--shadow-card)]"
+          ? "border-primary bg-primary/8 ring-1 ring-primary/40"
           : "border-border bg-card hover:border-primary/40 hover:bg-primary/5",
       )}
       onClick={onSelect}
@@ -205,19 +203,19 @@ export function DiagnosticOption({
       <span
         className={cn(
           "text-sm leading-relaxed transition",
-          selected ? "font-medium text-foreground" : "text-foreground/85",
+          selected ? "font-medium text-foreground" : "text-foreground",
         )}
       >
         {text}
       </span>
       <span
         className={cn(
-          "flex h-5 w-5 items-center justify-center rounded-full transition",
+          "hidden h-5 w-5 items-center justify-center rounded-full transition sm:flex",
           selected ? "bg-primary text-primary-foreground" : "border border-border bg-card",
         )}
         aria-hidden="true"
       >
-        {selected && <Check className="h-3 w-3" />}
+        {selected && <span className="h-2 w-2 rounded-full bg-current" />}
       </span>
       {selected && (
         <span className="sr-only">Выбранный ответ</span>
