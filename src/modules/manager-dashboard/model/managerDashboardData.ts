@@ -39,6 +39,7 @@ export type ManagerDashboardRecord = {
   retestDate: string;
   nextAction: string;
   blockedTaskTitles: string[];
+  openEscalations: string[];
 };
 
 export type ManagerAttentionSummary = {
@@ -74,12 +75,13 @@ export const demoManagerRecords: ManagerDashboardRecord[] = [
       "Маршрут сфокусирован на повторяемости эспрессо и коротком контроле обязательных стандартов.",
     routeHighlights: ["День 1: контроль чистки", "День 7: эспрессо в потоке", "День 14: повторная проверка"],
     routeStatus: "in_progress",
-    taskStatusSummary: { todo: 2, in_progress: 1, done: 3, needs_mentor: 0 },
+    taskStatusSummary: { todo: 2, in_progress: 1, done: 3, blocked: 0 },
     mentorName: "Екатерина, старший бариста",
     manualCheck: "Контрольные шоты эспрессо и чистка группы в конце смены",
     retestDate: "2026-07-01",
     nextAction: "Подтвердить готовность",
     blockedTaskTitles: []
+    ,openEscalations: []
   },
   {
     id: "demo-barista-2",
@@ -102,12 +104,13 @@ export const demoManagerRecords: ManagerDashboardRecord[] = [
       "Маршрут усиливает обязательные блоки и переносит напитки в поток только после практики с наставником.",
     routeHighlights: ["День 1: полный модуль", "День 7: практика под контролем", "День 14: повторная проверка"],
     routeStatus: "has_blockers",
-    taskStatusSummary: { todo: 4, in_progress: 1, done: 0, needs_mentor: 2 },
+    taskStatusSummary: { todo: 4, in_progress: 1, done: 0, blocked: 2 },
     mentorName: "Илья, наставник кофейни",
     manualCheck: "Первые молочные напитки и обратная промывка группы только под наблюдением",
     retestDate: "2026-07-02",
     nextAction: "Назначить наставника",
     blockedTaskTitles: ["Настройка эспрессо перед потоком", "Молоко и текстура"]
+    ,openEscalations: []
   },
   {
     id: "demo-barista-3",
@@ -130,12 +133,13 @@ export const demoManagerRecords: ManagerDashboardRecord[] = [
       "Маршрут короткий по знакомым темам, но сохраняет повторную проверку молока.",
     routeHighlights: ["День 1: контроль молока", "День 7: поток", "День 14: чек рецептур"],
     routeStatus: "in_progress",
-    taskStatusSummary: { todo: 3, in_progress: 2, done: 1, needs_mentor: 1 },
+    taskStatusSummary: { todo: 3, in_progress: 2, done: 1, blocked: 1 },
     mentorName: "Анна, старший бариста",
     manualCheck: "Текстура молока на капучино и сверка рецептур молочных напитков",
     retestDate: "2026-07-03",
     nextAction: "Допустить с точечным контролем",
     blockedTaskTitles: ["Молоко и текстура"]
+    ,openEscalations: []
   }
 ];
 
@@ -143,6 +147,7 @@ export function buildLiveManagerRecord(params: {
   employee: EmployeeProfile;
   result: DiagnosticResult;
   route: LearningRoute;
+  escalations?: Array<{ question: string; status: "open" | "resolved" }>;
 }): ManagerDashboardRecord {
   const riskLevel = getRiskLevel(params.result);
   const criticalTopicTitles = params.result.criticalTopics.map((topic) => topic.topicTitle);
@@ -181,8 +186,9 @@ export function buildLiveManagerRecord(params: {
     nextAction: getDefaultNextAction(riskLevel),
     blockedTaskTitles: params.route.days
       .flatMap((day) => day.tasks)
-      .filter((task) => task.status === "needs_mentor")
-      .map((task) => task.title)
+      .filter((task) => task.status === "blocked")
+      .map((task) => task.title),
+    openEscalations: (params.escalations ?? []).filter((item) => item.status === "open").map((item) => item.question),
   };
 }
 
@@ -264,13 +270,14 @@ function normalizeManagerRecord(record: ManagerDashboardRecord): ManagerDashboar
       todo: 0,
       in_progress: 0,
       done: 0,
-      needs_mentor: 0
+      blocked: 0
     },
     mentorName: record.mentorName ?? chooseMentorName(riskLevel),
     manualCheck: record.manualCheck ?? buildManualCheck(record.criticalTopicTitles, record.weakTopicTitles),
     retestDate: record.retestDate ?? buildRetestDate(record.completedAt, riskLevel),
     nextAction: record.nextAction ?? getDefaultNextAction(riskLevel),
-    blockedTaskTitles: record.blockedTaskTitles ?? []
+    blockedTaskTitles: record.blockedTaskTitles ?? [],
+    openEscalations: record.openEscalations ?? []
   };
 }
 
@@ -337,7 +344,7 @@ function getTaskStatusSummary(route: LearningRoute): Record<LearningTaskStatus, 
     todo: 0,
     in_progress: 0,
     done: 0,
-    needs_mentor: 0
+    blocked: 0
   };
 
   for (const task of route.days.flatMap((day) => day.tasks)) {
@@ -351,7 +358,7 @@ function getRouteStatus(route: LearningRoute): LearningRouteStatus {
   const summary = getTaskStatusSummary(route);
   const totalTasks = Object.values(summary).reduce((sum, count) => sum + count, 0);
 
-  if (summary.needs_mentor > 0) {
+  if (summary.blocked > 0) {
     return "has_blockers";
   }
 

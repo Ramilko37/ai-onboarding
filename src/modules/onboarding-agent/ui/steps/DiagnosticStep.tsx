@@ -45,15 +45,6 @@ export function DiagnosticStep({
 
   function handleSelectAnswer(questionId: string, optionId: string) {
     onSelectAnswer(questionId, optionId);
-
-    window.setTimeout(() => {
-      if (isLastQuestion) {
-        onComplete();
-        return;
-      }
-
-      onNext();
-    }, 420);
   }
 
   if (!currentQuestion) {
@@ -104,6 +95,9 @@ export function DiagnosticStep({
           <DiagnosticNavigation
             canGoBack={currentQuestionIndex > 0}
             onBack={currentQuestionIndex > 0 ? onPrevious : onBackToIntro}
+            onNext={isLastQuestion ? onComplete : onNext}
+            canGoNext={Boolean(currentAnswer)}
+            isLastQuestion={isLastQuestion}
           />
         </div>
       </div>
@@ -127,7 +121,7 @@ export function DiagnosticProgress({
         className="mb-0"
         kicker="Диагностика знаний"
         title={`Вопрос ${currentNumber} из ${totalQuestions}`}
-        description="Один вопрос на экран. После выбора вы увидите подтверждение, затем система перейдёт дальше."
+        description="Это не экзамен. Ответы нужны только для того, чтобы сфокусировать маршрут."
       />
       <div className="rounded-2xl border border-border bg-card p-3">
         <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
@@ -235,15 +229,29 @@ export function DiagnosticOption({
 export function DiagnosticNavigation({
   canGoBack,
   onBack,
+  onNext,
+  canGoNext,
+  isLastQuestion,
 }: {
   canGoBack: boolean;
   onBack: () => void;
+  onNext: () => void;
+  canGoNext: boolean;
+  isLastQuestion: boolean;
 }) {
   return (
-    <MayakActionBar className="mt-3 shrink-0">
+    <MayakActionBar className="mt-3 shrink-0 justify-between">
       <SecondaryButton onClick={onBack}>
-        {canGoBack ? "Назад" : "К вводной"}
+        {canGoBack ? "Назад" : "К началу"}
       </SecondaryButton>
+      <button
+        className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+        disabled={!canGoNext}
+        onClick={onNext}
+        type="button"
+      >
+        {isLastQuestion ? "Завершить" : "Далее"}
+      </button>
     </MayakActionBar>
   );
 }

@@ -18,29 +18,21 @@ const grades: EmployeeGrade[] = [
   "network_experience"
 ];
 
-test("getDiagnosticQuestions returns stable role and grade specific sets that cover all role topics", () => {
+test("getDiagnosticQuestions returns stable eight-question role and grade specific sets", () => {
   for (const role of roles) {
-    const roleTopicIds = getRoleTopicIds(role);
-
     for (const grade of grades) {
       const questions = getDiagnosticQuestions({ role, grade });
       const repeatedQuestions = getDiagnosticQuestions({ role, grade });
       const selectedTopicIds = new Set(questions.map((question) => question.topicId));
 
-      assert.equal(questions.length >= roleTopicIds.length, true);
+      assert.equal(questions.length, 8);
       assert.deepEqual(
         questions.map((question) => question.id),
         repeatedQuestions.map((question) => question.id)
       );
       assert.equal(questions.every((question) => question.role === role), true);
 
-      for (const topicId of roleTopicIds) {
-        assert.equal(
-          selectedTopicIds.has(topicId),
-          true,
-          `${role}/${grade} misses topic ${topicId}`
-        );
-      }
+      assert.equal(selectedTopicIds.size, questions.length);
     }
   }
 });
@@ -71,7 +63,7 @@ test("barista diagnostic covers coffee standards and keeps safety topics require
   });
   const selectedTopicIds = new Set(questions.map((question) => question.topicId));
 
-  assert.equal(questions.length, 12);
+  assert.equal(questions.length, 8);
   assert.equal(questions.every((question) => question.role === "barista"), true);
   assert.equal(selectedTopicIds.has("barista-espresso-setup"), true);
   assert.equal(selectedTopicIds.has("barista-milk-texture"), true);

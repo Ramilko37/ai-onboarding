@@ -31,10 +31,12 @@ export function PersonalSpaceWorkspace({
   profile,
   route,
   onUpdateTaskStatus,
+  onCreateEscalation,
 }: {
   profile?: PersonalSpaceProfile;
   route?: LearningRoute;
   onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
+  onCreateEscalation?: (question: string) => void;
 }) {
   const [activeTab, setActiveTab] = useState<WorkspaceTabId>("today");
   const tabRefs = useRef<Partial<Record<WorkspaceTabId, HTMLButtonElement | null>>>({});
@@ -137,7 +139,7 @@ export function PersonalSpaceWorkspace({
           role="tabpanel"
         >
           <div className="order-3 min-w-0 lg:order-none">
-            <Assistant profile={profile} route={route} />
+            <Assistant profile={profile} route={route} onCreateEscalation={onCreateEscalation} />
           </div>
           <div className="order-5 min-w-0 lg:order-none">
             <SupportPanel />

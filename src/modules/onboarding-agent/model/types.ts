@@ -37,6 +37,14 @@ export type EmployeeProfile = {
   startDate: string;
 };
 
+export type OnboardingEscalation = {
+  id: string;
+  employeeId: string;
+  question: string;
+  status: "open" | "resolved";
+  createdAt: string;
+};
+
 export type CompetencyTopic = {
   id: string;
   title: string;
@@ -129,4 +137,5 @@ export type OnboardingState = {
   diagnosticResult: DiagnosticResult | null;
   learningRoute: LearningRoute | null;
   currentQuestionIndex: number;
+  escalations: OnboardingEscalation[];
 };

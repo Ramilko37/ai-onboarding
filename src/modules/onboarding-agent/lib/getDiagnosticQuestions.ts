@@ -13,24 +13,22 @@ const difficultiesByGrade: Record<EmployeeGrade, QuestionDifficulty[]> = {
   network_experience: ["intermediate", "advanced"]
 };
 
-const limitsByGrade: Record<EmployeeGrade, number> = {
-  no_experience: 12,
-  horeca_experience: 14,
-  network_experience: 12
-};
+const DEMO_QUESTION_LIMIT = 8;
 
 export function getDiagnosticQuestions(params: {
   role: EmployeeRole;
   grade: EmployeeGrade;
 }): DiagnosticQuestion[] {
   const allowedDifficulties = difficultiesByGrade[params.grade];
-  const limit = limitsByGrade[params.grade];
+  const limit = DEMO_QUESTION_LIMIT;
   const roleQuestions = diagnosticQuestions
     .filter((question) => question.role === params.role)
     .sort(compareQuestions);
-  const roleTopicIds = competencyTopics
-    .filter((topic) => topic.role === params.role)
-    .map((topic) => topic.id);
+  const roleTopics = competencyTopics.filter((topic) => topic.role === params.role);
+  const roleTopicIds = [
+    ...roleTopics.filter((topic) => topic.required).map((topic) => topic.id),
+    ...roleTopics.filter((topic) => !topic.required).map((topic) => topic.id),
+  ];
   const selectedQuestions: DiagnosticQuestion[] = [];
   const selectedQuestionIds = new Set<string>();
 
@@ -60,7 +58,7 @@ export function getDiagnosticQuestions(params: {
     }
   }
 
-  return selectedQuestions.sort(compareQuestions).slice(0, limit);
+  return selectedQuestions.slice(0, limit);
 }
 
 function compareQuestions(first: DiagnosticQuestion, second: DiagnosticQuestion) {

@@ -2,6 +2,7 @@ import type {
   LearningRoute,
   LearningTask,
 } from "../../onboarding-agent/model/learningRouteTypes";
+import { getLearningProgress, getNextTask, getRouteTasks, getTodayTasks } from "../../onboarding-agent/model/onboardingSelectors";
 
 export type EmployeeFocusSummary = {
   todayTasks: LearningTask[];
@@ -16,8 +17,8 @@ export type EmployeeFocusSummary = {
 export function getEmployeeFocusSummary(
   route?: LearningRoute,
 ): EmployeeFocusSummary {
-  const todayTasks = route?.days.find((day) => day.id === "day_1")?.tasks ?? [];
-  const routeTasks = route?.days.flatMap((day) => day.tasks) ?? [];
+  const todayTasks = getTodayTasks(route);
+  const routeTasks = getRouteTasks(route);
   const completedTodayCount = todayTasks.filter((task) => task.status === "done").length;
   const routeCompletedCount = routeTasks.filter((task) => task.status === "done").length;
 
@@ -25,12 +26,9 @@ export function getEmployeeFocusSummary(
     todayTasks,
     completedTodayCount,
     totalTodayCount: todayTasks.length,
-    nextTask: todayTasks.find((task) => task.status !== "done"),
+    nextTask: getNextTask(route),
     routeCompletedCount,
     routeTaskCount: routeTasks.length,
-    routeProgressPercent:
-      routeTasks.length === 0
-        ? 0
-        : Math.round((routeCompletedCount / routeTasks.length) * 100),
+    routeProgressPercent: getLearningProgress(route),
   };
 }

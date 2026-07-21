@@ -32,15 +32,12 @@ The UX/UI layer follows the Mayak v1.0 system: warm editorial navigation, oxbloo
 
 Current employee flow:
 
-1. Welcome screen for Valle Sanchez barista entry testing.
-2. Barista profile form: name, grade, coffee shop, start date.
-3. Barista competency map for day 1, day 7, and day 14.
-4. Diagnostic explanation screen.
-5. Diagnostic question flow.
-6. Topic-level diagnostic result.
-7. Automatically generated personal development route for day 1, day 7, and day 14.
-8. Final personal-space screen with route, today focus, selectable high-contrast knowledge constellation with selected-topic details and a direct link to the matching route task, source-backed mentor chat, task status controls, and a direct link to the manager dashboard.
-9. On desktop, the personal space opens in a focused `Today` workspace with separate `Route`, `Mentor`, and `Knowledge` tabs. On mobile and tablet, the existing complete vertical flow remains visible.
+1. Prefilled welcome for Sofia, her role, location and start date.
+2. One click to the first of eight diagnostic questions.
+3. Short neutral focus summary: familiar topics and topics to reinforce; no score, risk or readiness conclusion in employee UI.
+4. `Сегодня` workspace with a next action and at most three Day 1 tasks.
+5. Collapsible full route by period, source-backed mentor panel, and secondary knowledge constellation.
+6. One route task state (`todo`, `in_progress`, `done`, `blocked`) persists into the manager projection.
 
 Current manager flow:
 
@@ -123,13 +120,13 @@ Barista demo and methodologist-supplied sources include:
 Prototype browser persistence uses localStorage:
 
 ```text
-valle-sanchez:barista-onboarding-state:v1
+valle-sanchez:barista-onboarding-state:v2
 barista:assessment-results:v1
 ```
 
-The manager dashboard record stores summary data only: profile summary, total score, topic labels, critical topics, route highlights, risk level, readiness label, and manager recommendation. It does not store raw diagnostic answers.
+The manager dashboard record stores profile summary, learning-route progress, task statuses, blocked task titles and open mentor questions. It does not store raw diagnostic answers.
 
-The manager dashboard record now also stores route status, task status counts, task titles marked as "needs mentor", default mentor label, manual check text, repeat test date, and next action. This is still local browser persistence only.
+This is still local browser persistence only. New employee state uses `valle-sanchez:barista-onboarding-state:v2` and migrates the previous v1 key.
 
 ## Important Files
 
@@ -172,7 +169,7 @@ Latest completed verification on 2026-07-18:
 - 2026-07-18: added the employee desktop `Today`-first workspace and `npm run test:personal-space` coverage for focus selection, route progress, status toggling, and tab navigation.
 - 2026-07-18 browser smoke: completed the full barista diagnostic, generated a route, changed a Today task status, and confirmed the same status in the full route. Verified 375 px and 768 px stacked layouts plus 1024 px, 1280 px, and 1440 px tabbed layouts with no horizontal overflow, correct keyboard navigation, and no browser console errors.
 - 2026-07-18 knowledge constellation: verified a generated route at 375 px and 1280 px; topic nodes are keyboard-selectable, full topic details remain outside nodes, and the task action focuses the matching route card with no horizontal overflow or browser console errors.
-- 2026-07-19 Mayak migration: verified the redesigned employee entry screen at 390 px and the manager dashboard at 1440 px; both have no horizontal overflow or browser console errors. Shared tokens, controls, status treatments and primary actions follow the Mayak v1.0 specification.
+- 2026-07-21 UX simplification: baseline tests and production build passed after reducing the demo diagnostic to eight questions, replacing employee score/risk output with topic focus, unifying task status projections and simplifying the manager view to learning progress and help signals.
 - `npm run build` may need network access because `app/layout.tsx` currently loads Geist and Geist Mono through `next/font/google`.
 
 ## Explicitly Not Implemented

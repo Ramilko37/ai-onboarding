@@ -1,4 +1,5 @@
 import { getLearningTopicMaterial } from "../model/learningRouteData";
+import { ruPlural } from "../../../shared/lib/ruPlural";
 import type {
   LearningRoute,
   LearningRouteDay,
@@ -124,7 +125,7 @@ export function buildPersonalLearningRoute(params: {
       priority: "required",
       estimatedMinutes: 10,
       source: "Результаты диагностики знаний",
-      reason: `Маршрут собран автоматически для ${params.employee.name}: общий результат ${params.result.totalScorePercent}%, сильных зон — ${params.result.strongTopics.length}, зон развития — ${params.result.weakTopics.length}, обязательных блоков — ${params.result.requiredTopics.length}.`
+      reason: "Задача помогает разобраться в персональном маршруте: знакомые темы пройдём короче, а на важных темах сосредоточимся в первые дни."
     })
   );
 
@@ -363,11 +364,11 @@ function buildRouteSummary(result: DiagnosticResult) {
     "Маршрут собран автоматически на основе диагностики: сильные темы сокращены, слабые усилены, обязательные блоки оставлены в программе.";
 
   if (result.criticalTopics.length > 0) {
-    return `${base} Особый фокус — ${result.criticalTopics.length} тем(ы), где требуется поддержка и повторная проверка.`;
+    return `${base} Особый фокус — ${result.criticalTopics.length} ${ruPlural(result.criticalTopics.length, ["тема", "темы", "тем"])}: закрепим их через практику и повторную проверку.`;
   }
 
   if (result.weakTopics.length > 0) {
-    return `${base} Основной фокус — закрепить ${result.weakTopics.length} зон(ы) развития через практику.`;
+    return `${base} Основной фокус — закрепить ${result.weakTopics.length} ${ruPlural(result.weakTopics.length, ["тему", "темы", "тем"])} через практику.`;
   }
 
   return `${base} Основной фокус — быстрое повторение обязательных стандартов и контроль самостоятельности.`;

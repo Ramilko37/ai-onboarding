@@ -10,14 +10,14 @@ import type {
 export function LearningRouteStep({
   employee,
   route,
-  onReset,
   onUpdateTaskStatus,
+  onCreateEscalation,
 }: {
   employee: EmployeeProfile;
   route: LearningRoute;
   onBack: () => void;
-  onReset: () => void;
   onUpdateTaskStatus: (taskId: string, status: LearningTaskStatus) => void;
+  onCreateEscalation: (question: string) => void;
 }) {
   return (
     <PersonalSpace
@@ -29,8 +29,8 @@ export function LearningRouteStep({
         location: employee.location,
       }}
       route={route}
-      onReset={onReset}
       onUpdateTaskStatus={onUpdateTaskStatus}
+      onCreateEscalation={onCreateEscalation}
     />
   );
 }

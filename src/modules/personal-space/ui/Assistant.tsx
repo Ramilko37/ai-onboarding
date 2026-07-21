@@ -14,6 +14,8 @@ type AssistantMessage = {
   sources?: MentorSource[];
 };
 
+type AssistantRequestStatus = "idle" | "loading" | "answered" | "needs_human" | "error";
+
 let idCounter = 0;
 function nextId() {
   idCounter += 1;
@@ -23,15 +25,19 @@ function nextId() {
 export function Assistant({
   profile,
   route,
+  onCreateEscalation,
 }: {
   profile?: PersonalSpaceProfile;
   route?: LearningRoute;
+  onCreateEscalation?: (question: string) => void;
 }) {
   const [messages, setMessages] = useState<AssistantMessage[]>(() =>
     createOpeningMessages(profile?.name),
   );
   const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [requestStatus, setRequestStatus] = useState<AssistantRequestStatus>("idle");
+  const [lastQuestion, setLastQuestion] = useState("");
+  const isTyping = requestStatus === "loading";
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,7 +53,8 @@ export function Assistant({
 
     setMessages((prev) => [...prev, { id: nextId(), author: "you", text: trimmed }]);
     setInput("");
-    setIsTyping(true);
+    setLastQuestion(trimmed);
+    setRequestStatus("loading");
 
     try {
       const response = await fetch("/api/mentor-chat", {
@@ -80,6 +87,7 @@ export function Assistant({
           sources: payload.sources,
         },
       ]);
+      setRequestStatus(response.ok && payload.answer && (payload.sources?.length ?? 0) > 0 ? "answered" : "needs_human");
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -90,8 +98,9 @@ export function Assistant({
             "Сейчас не удалось обратиться к базе знаний. Не буду выдумывать ответ: лучше уточнить у наставника или управляющего.",
         },
       ]);
+      setRequestStatus("error");
     } finally {
-      setIsTyping(false);
+      // Every completion branch above leaves an explicit request state for the UI.
     }
   }
 
@@ -162,6 +171,15 @@ export function Assistant({
               <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/60" />
             </span>
           </div>
+        )}
+        {requestStatus === "needs_human" && (
+          <div className="rounded-2xl border border-primary/25 bg-primary/5 p-3 text-xs text-foreground">
+            Я не нашёл точного ответа в доступной базе знаний. Могу передать вопрос наставнику.
+            <button className="ml-2 font-semibold text-primary" onClick={() => { onCreateEscalation?.(lastQuestion); setRequestStatus("idle"); }} type="button">Передать наставнику</button>
+          </div>
+        )}
+        {requestStatus === "error" && (
+          <button className="w-fit rounded-full border border-border px-3 py-2 text-xs font-semibold text-primary" onClick={() => send(lastQuestion)} type="button">Не удалось получить ответ. Попробовать ещё раз</button>
         )}
       </div>
 

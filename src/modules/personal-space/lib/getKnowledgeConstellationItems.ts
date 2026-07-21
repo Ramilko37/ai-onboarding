@@ -35,7 +35,7 @@ const masteryByStatus: Record<
 > = {
   done: { mastery: "strong", label: "Уверенно" },
   in_progress: { mastery: "learning", label: "В работе" },
-  needs_mentor: { mastery: "learning", label: "В работе" },
+  blocked: { mastery: "learning", label: "Нужна помощь" },
   todo: { mastery: "new", label: "Впереди" },
 };
 

@@ -39,7 +39,7 @@ test("buildLiveManagerRecord summarizes barista diagnostic result without raw an
   assert.equal(record.readinessLabel, "Нужна поддержка перед сменой");
   assert.match(record.managerRecommendation, /эспрессо|молок|наставник/i);
   assert.equal(record.routeStatus, "has_blockers");
-  assert.equal(record.taskStatusSummary.needs_mentor, 1);
+  assert.equal(record.taskStatusSummary.blocked, 1);
   assert.deepEqual(record.blockedTaskTitles, ["Потренировать молоко с наставником"]);
   assert.match(record.manualCheck, /Проверить руками/i);
   assert.deepEqual(record.criticalTopicTitles, [
@@ -174,7 +174,7 @@ function makeRoute(): LearningRoute {
             description: "Отработать микропену на капучино.",
             type: "practice",
             priority: "required",
-            status: "needs_mentor",
+            status: "blocked",
             estimatedMinutes: 20,
             source: "Стандарт молока",
             reason: "Критичная тема требует контроля наставника."

@@ -2,7 +2,7 @@ export type LearningTaskStatus =
   | "todo"
   | "in_progress"
   | "done"
-  | "needs_mentor";
+  | "blocked";
 
 export type LearningRouteStatus =
   | "not_started"
@@ -37,6 +37,7 @@ export type LearningTask = {
   estimatedMinutes: number;
   source?: string;
   reason: string;
+  blockedReason?: string;
 };
 
 export type LearningRouteDay = {

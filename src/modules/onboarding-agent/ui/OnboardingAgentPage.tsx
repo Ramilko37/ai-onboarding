@@ -3,55 +3,14 @@
 import { Coffee, Sparkles } from "lucide-react";
 import { MayakShell, MayakTopBar } from "@/shared/ui/mayak";
 import { useOnboardingAgentState } from "../model/useOnboardingAgentState";
-import { CompetencyMapStep } from "./steps/CompetencyMapStep";
-import { DiagnosticIntroStep } from "./steps/DiagnosticIntroStep";
 import { DiagnosticResultStep } from "./steps/DiagnosticResultStep";
 import { DiagnosticStep } from "./steps/DiagnosticStep";
-import { EmployeeProfileStep } from "./steps/EmployeeProfileStep";
 import { LearningRouteStep } from "./steps/LearningRouteStep";
 import { WelcomeStep } from "./steps/WelcomeStep";
-import { StepProgress, onboardingSteps } from "./components";
 
 export function OnboardingAgentPage() {
   const { state, actions } = useOnboardingAgentState();
-  const currentStepIndex =
-    onboardingSteps.findIndex((step) => step.stepIds.includes(state.currentStep)) + 1;
   const isLearningRouteStep = state.currentStep === "learning_route";
-  const canSelectStep = (step: (typeof onboardingSteps)[number]["id"]) => {
-    if (step === "employee_profile") {
-      return true;
-    }
-
-    if (step === "diagnostic") {
-      return Boolean(state.employee);
-    }
-
-    if (step === "diagnostic_result") {
-      return Boolean(state.diagnosticResult);
-    }
-
-    if (step === "learning_route") {
-      return Boolean(state.learningRoute);
-    }
-
-    return false;
-  };
-  const selectStep = (step: (typeof onboardingSteps)[number]["id"]) => {
-    if (!canSelectStep(step)) {
-      return;
-    }
-
-    if (step === "diagnostic") {
-      actions.goToStep(
-        state.diagnosticQuestions.length > 0 && !state.diagnosticResult
-          ? "diagnostic"
-          : "competency_map",
-      );
-      return;
-    }
-
-    actions.goToStep(step);
-  };
 
   return (
     <MayakShell
@@ -65,19 +24,13 @@ export function OnboardingAgentPage() {
           meta={
             <>
               <Sparkles className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-              Этап {currentStepIndex} из {onboardingSteps.length}
+              Адаптация бариста
             </>
           }
           userName={state.employee?.name ?? "Новый бариста"}
         />
       }
     >
-      <StepProgress
-        currentStep={state.currentStep}
-        canSelectStep={canSelectStep}
-        onSelectStep={selectStep}
-      />
-
       <section
         className={
           isLearningRouteStep
@@ -86,26 +39,14 @@ export function OnboardingAgentPage() {
         }
       >
         {state.currentStep === "welcome" && (
-          <WelcomeStep onStart={() => actions.goToStep("employee_profile")} />
-        )}
-
-        {state.currentStep === "employee_profile" && (
-          <EmployeeProfileStep onSubmit={actions.saveEmployee} />
-        )}
-
-        {state.currentStep === "competency_map" && state.employee && (
-          <CompetencyMapStep
+          <WelcomeStep
             employee={state.employee}
-            onBack={() => actions.goToStep("employee_profile")}
-            onNext={() => actions.goToStep("diagnostic_intro")}
-          />
-        )}
-
-        {state.currentStep === "diagnostic_intro" && state.employee && (
-          <DiagnosticIntroStep
-            employee={state.employee}
-            onBack={() => actions.goToStep("competency_map")}
             onStart={actions.startDiagnostic}
+            onContinue={
+              state.diagnosticQuestions.length > 0 && !state.diagnosticResult
+                ? () => actions.goToStep("diagnostic")
+                : undefined
+            }
           />
         )}
 
@@ -118,7 +59,7 @@ export function OnboardingAgentPage() {
             onSelectAnswer={actions.selectAnswer}
             onPrevious={actions.goToPreviousQuestion}
             onNext={actions.goToNextQuestion}
-            onBackToIntro={actions.resetDiagnostic}
+            onBackToIntro={() => actions.goToStep("welcome")}
             onComplete={actions.completeDiagnostic}
           />
         )}
@@ -139,8 +80,8 @@ export function OnboardingAgentPage() {
             employee={state.employee}
             route={state.learningRoute}
             onBack={() => actions.goToStep("diagnostic_result")}
-            onReset={actions.reset}
             onUpdateTaskStatus={actions.updateLearningTaskStatus}
+            onCreateEscalation={actions.createEscalation}
           />
         )}
       </section>

@@ -1,5 +1,4 @@
-import { ArrowRight, Check, HelpCircle, MapPin } from "lucide-react";
-import Link from "next/link";
+import { Check, HelpCircle, MapPin, Play } from "lucide-react";
 import type {
   LearningRoute,
   LearningRouteDay,
@@ -30,13 +29,6 @@ function StageNode({ status }: { status: JourneyStage["status"] }) {
     </span>
   );
 }
-
-const taskStatusOptions: Array<{ value: LearningTaskStatus; label: string }> = [
-  { value: "todo", label: "Не начато" },
-  { value: "in_progress", label: "В работе" },
-  { value: "done", label: "Готово" },
-  { value: "needs_mentor", label: "Нужна помощь наставника" },
-];
 
 export function JourneyMap({
   route,
@@ -108,18 +100,6 @@ export function JourneyMap({
                 <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
                   {stage.caption}
                 </p>
-                {stage.href && stage.cta && (
-                  <Link
-                    href={stage.href}
-                    className="group mt-2 inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition hover:opacity-90"
-                  >
-                    {stage.cta}
-                    <ArrowRight
-                      className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
-                      aria-hidden="true"
-                    />
-                  </Link>
-                )}
               </div>
             </li>
           );
@@ -140,11 +120,12 @@ export function JourneyMap({
             <RouteStatusPill route={route} />
           </div>
           <div className="grid gap-3">
-            {route.days.map((day) => (
+            {route.days.map((day, index) => (
               <RouteDayTasks
                 day={day}
                 key={day.id}
                 onUpdateTaskStatus={onUpdateTaskStatus}
+                open={index === 0}
               />
             ))}
           </div>
@@ -176,13 +157,15 @@ function getRouteStages(route: LearningRoute): JourneyStage[] {
 function RouteDayTasks({
   day,
   onUpdateTaskStatus,
+  open,
 }: {
   day: LearningRouteDay;
   onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
+  open: boolean;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-secondary/30 p-3">
-      <p className="text-xs font-semibold text-foreground">{day.title}</p>
+    <details className="rounded-2xl border border-border bg-secondary/30 p-3" open={open}>
+      <summary className="cursor-pointer text-xs font-semibold text-foreground">{day.title}</summary>
       <div className="mt-2 grid gap-2">
         {day.tasks.map((task) => (
           <article
@@ -199,31 +182,24 @@ function RouteDayTasks({
                 {task.reason}
               </p>
             </div>
-            <select
-              aria-label={`Статус задачи ${task.title}`}
-              className="min-h-9 rounded-full border border-border bg-card px-3 text-xs font-medium text-foreground outline-none transition hover:border-primary/40 focus:border-primary/50"
-              disabled={!onUpdateTaskStatus}
-              onChange={(event) =>
-                onUpdateTaskStatus?.(task.id, event.target.value as LearningTaskStatus)
-              }
-              value={task.status}
-            >
-              {taskStatusOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            <TaskStatusAction taskId={task.id} status={task.status} onUpdateTaskStatus={onUpdateTaskStatus} />
           </article>
         ))}
       </div>
-    </div>
+    </details>
   );
+}
+
+function TaskStatusAction({ taskId, status, onUpdateTaskStatus }: { taskId: string; status: LearningTaskStatus; onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void }) {
+  if (status === "done") return <span className="text-xs text-muted-foreground">Выполнено</span>;
+  if (status === "blocked") return <button className="min-h-11 text-xs font-semibold text-primary" onClick={() => onUpdateTaskStatus?.(taskId, "in_progress")} type="button">Попросить помощь</button>;
+  if (status === "in_progress") return <span className="grid gap-1 text-right"><button className="min-h-7 text-xs font-semibold text-primary" onClick={() => onUpdateTaskStatus?.(taskId, "done")} type="button">Завершить</button><button className="text-[11px] text-muted-foreground" onClick={() => onUpdateTaskStatus?.(taskId, "blocked")} type="button">Есть проблема</button></span>;
+  return <span className="grid gap-1 text-right"><button className="inline-flex min-h-7 items-center gap-1 text-xs font-semibold text-primary" onClick={() => onUpdateTaskStatus?.(taskId, "in_progress")} type="button"><Play className="h-3.5 w-3.5" />Начать</button><button className="text-[11px] text-muted-foreground" onClick={() => onUpdateTaskStatus?.(taskId, "blocked")} type="button">Есть проблема</button></span>;
 }
 
 function RouteStatusPill({ route }: { route: LearningRoute }) {
   const tasks = route.days.flatMap((day) => day.tasks);
-  const needsMentor = tasks.filter((task) => task.status === "needs_mentor").length;
+  const needsMentor = tasks.filter((task) => task.status === "blocked").length;
   const done = tasks.filter((task) => task.status === "done").length;
   const inProgress = tasks.filter((task) => task.status === "in_progress").length;
   const total = tasks.length;

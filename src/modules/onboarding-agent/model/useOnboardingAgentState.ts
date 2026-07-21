@@ -20,18 +20,27 @@ import type {
 } from "./types";
 
 const initialState: OnboardingState = {
-  employee: null,
-  selectedRole: null,
-  selectedGrade: null,
+  employee: {
+    id: "demo-sofia-kuznetsova",
+    name: "София Кузнецова",
+    role: "barista",
+    grade: "horeca_experience",
+    location: "Valle Sanchez · Арбат",
+    startDate: "2026-07-21",
+  },
+  selectedRole: "barista",
+  selectedGrade: "horeca_experience",
   currentStep: "welcome",
   diagnosticQuestions: [],
   diagnosticAnswers: [],
   diagnosticResult: null,
   learningRoute: null,
-  currentQuestionIndex: 0
+  currentQuestionIndex: 0,
+  escalations: [],
 };
 
-const STORAGE_KEY = "valle-sanchez:barista-onboarding-state:v1";
+const STORAGE_KEY = "valle-sanchez:barista-onboarding-state:v2";
+const LEGACY_STORAGE_KEY = "valle-sanchez:barista-onboarding-state:v1";
 
 const knownSteps = new Set<OnboardingStep>([
   "welcome",
@@ -57,7 +66,7 @@ function readStoredState(): OnboardingState {
   }
 
   try {
-    const rawState = window.localStorage.getItem(STORAGE_KEY);
+    const rawState = window.localStorage.getItem(STORAGE_KEY) ?? window.localStorage.getItem(LEGACY_STORAGE_KEY);
     if (!rawState) {
       return initialState;
     }
@@ -89,10 +98,41 @@ function readStoredState(): OnboardingState {
         typeof parsedState.currentQuestionIndex === "number"
           ? parsedState.currentQuestionIndex
           : 0,
+      escalations: Array.isArray(parsedState.escalations) ? parsedState.escalations : [],
+      learningRoute: migrateRouteStatuses(parsedState.learningRoute ?? null),
+      currentStep: getRestoredStep(parsedState),
     };
   } catch {
     return initialState;
   }
+}
+
+function getRestoredStep(state: Partial<OnboardingState>): OnboardingStep {
+  if (state.learningRoute) return "learning_route";
+  if (state.diagnosticResult) return "diagnostic_result";
+  if (state.currentStep === "diagnostic" && (state.diagnosticQuestions?.length ?? 0) > 0) {
+    return "diagnostic";
+  }
+  return "welcome";
+}
+
+function migrateRouteStatuses(route: OnboardingState["learningRoute"]) {
+  if (!route) return null;
+  return {
+    ...route,
+    summary: "Маршрут собран на основе диагностики: знакомые темы сокращены, а важные темы добавлены в практику и повторение.",
+    days: route.days.map((day) => ({
+      ...day,
+      tasks: day.tasks.map((task) => ({
+        ...task,
+        reason:
+          task.id === "route-intro-diagnostic-summary"
+            ? "Задача помогает разобраться в персональном маршруте: знакомые темы пройдём короче, а на важных темах сосредоточимся в первые дни."
+            : task.reason,
+        status: task.status === ("needs_mentor" as never) ? "blocked" : task.status,
+      })),
+    })),
+  };
 }
 
 function persistState(state: OnboardingState) {
@@ -140,7 +180,8 @@ export function useOnboardingAgentState() {
           diagnosticAnswers: [],
           diagnosticResult: null,
           learningRoute: null,
-          currentQuestionIndex: 0
+          currentQuestionIndex: 0,
+          escalations: []
         });
       },
       startDiagnostic() {
@@ -159,7 +200,7 @@ export function useOnboardingAgentState() {
             diagnosticAnswers: [],
             diagnosticResult: null,
             learningRoute: null,
-            currentQuestionIndex: 0
+            currentQuestionIndex: 0,
           };
         });
       },
@@ -243,7 +284,8 @@ export function useOnboardingAgentState() {
               buildLiveManagerRecord({
                 employee: previous.employee,
                 result: previous.diagnosticResult,
-                route: learningRoute
+                route: learningRoute,
+                escalations: previous.escalations,
               })
             );
           }
@@ -266,7 +308,14 @@ export function useOnboardingAgentState() {
             days: previous.learningRoute.days.map((day) => ({
               ...day,
               tasks: day.tasks.map((task) =>
-                task.id === taskId ? { ...task, status } : task
+                task.id === taskId
+                  ? {
+                      ...task,
+                      status,
+                      blockedReason:
+                        status === "blocked" ? "Нужна помощь наставника, чтобы продолжить." : undefined,
+                    }
+                  : task
               )
             }))
           };
@@ -276,7 +325,8 @@ export function useOnboardingAgentState() {
               buildLiveManagerRecord({
                 employee: previous.employee,
                 result: previous.diagnosticResult,
-                route: learningRoute
+                route: learningRoute,
+                escalations: previous.escalations,
               })
             );
           }
@@ -299,7 +349,34 @@ export function useOnboardingAgentState() {
         }));
       },
       reset() {
-        setState(initialState);
+        setState({ ...initialState, employee: initialState.employee ? { ...initialState.employee } : null });
+      },
+      createEscalation(question: string) {
+        setState((previous) => {
+          if (!previous.employee) return previous;
+          const escalations = [
+            ...previous.escalations,
+            {
+              id: crypto.randomUUID(),
+              employeeId: previous.employee.id,
+              question,
+              status: "open" as const,
+              createdAt: new Date().toISOString(),
+            },
+          ];
+          if (previous.diagnosticResult && previous.learningRoute) {
+            saveLiveManagerRecord(buildLiveManagerRecord({
+              employee: previous.employee,
+              result: previous.diagnosticResult,
+              route: previous.learningRoute,
+              escalations,
+            }));
+          }
+          return {
+            ...previous,
+            escalations,
+          };
+        });
       }
     }),
     []

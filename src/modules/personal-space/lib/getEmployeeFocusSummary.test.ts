@@ -110,5 +110,5 @@ test("toggles a generated Today task between done and todo", () => {
   assert.equal(getTodayTaskToggleStatus("done"), "todo");
   assert.equal(getTodayTaskToggleStatus("todo"), "done");
   assert.equal(getTodayTaskToggleStatus("in_progress"), "done");
-  assert.equal(getTodayTaskToggleStatus("needs_mentor"), "done");
+  assert.equal(getTodayTaskToggleStatus("blocked"), "done");
 });
