@@ -36,7 +36,7 @@ export function TodayFocus({
   }
 
   return (
-    <section className="mx-auto w-full min-w-0 rounded-3xl border border-border bg-card/90 p-5 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8 lg:p-12">
+    <section className="mx-auto w-full min-w-0 rounded-[20px] border border-border bg-card p-5 shadow-[var(--shadow-card)] sm:p-8 lg:p-10">
       <header className="mb-7 flex items-end justify-between gap-6">
         <div className="min-w-0">
           <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
@@ -139,7 +139,7 @@ function TaskCard({
       className={
         featured
           ? "overflow-hidden rounded-2xl border border-primary/20 bg-[linear-gradient(132deg,var(--card)_0%,color-mix(in_oklch,var(--primary)_7%,var(--card))_100%)] p-5 shadow-[0_13px_32px_color-mix(in_oklch,var(--accent-foreground)_8%,transparent)]"
-          : "overflow-hidden rounded-2xl border border-border bg-card transition hover:border-primary/35"
+          : "overflow-hidden rounded-[14px] border border-border bg-card transition hover:border-primary/35"
       }
     >
       <button

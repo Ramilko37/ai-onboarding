@@ -96,7 +96,7 @@ export function PersonalSpaceWorkspace({
       <div
         aria-label="Разделы личного кабинета"
         className={cn(
-          "mb-3 hidden h-14 items-stretch justify-center gap-1 border-b border-border/80 bg-card/80 px-3 backdrop-blur-sm lg:flex",
+          "mb-3 hidden h-14 items-stretch justify-center gap-1 border-b border-border bg-card px-3 lg:flex",
           activeTab === "task" && "lg:hidden",
         )}
         role="tablist"
@@ -197,7 +197,7 @@ export function PersonalSpaceWorkspace({
           </div>
 
           <aside className="hidden grid-cols-1 gap-3 lg:grid">
-            <article className="rounded-2xl bg-deep-surface p-6 text-deep-foreground shadow-[var(--shadow-card)]">
+            <article className="rounded-[20px] bg-deep-surface p-6 text-deep-foreground shadow-[var(--shadow-card)]">
               <span className="mb-7 flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-secondary">
                 <Sparkles className="h-5 w-5" aria-hidden="true" />
               </span>
@@ -211,7 +211,7 @@ export function PersonalSpaceWorkspace({
                 Подскажу по стандартам, покажу источник и помогу без лишнего стресса.
               </p>
               <button
-                className="mt-5 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-card px-4 text-sm font-semibold text-foreground transition hover:bg-secondary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+                className="mt-5 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-[10px] bg-card px-4 text-sm font-semibold text-foreground transition hover:bg-secondary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
                 onClick={() => handleOpenTab("mentor")}
                 type="button"
               >
@@ -236,7 +236,7 @@ export function PersonalSpaceWorkspace({
       {activeTab !== "task" && (
         <nav
           aria-label="Основные разделы"
-          className="fixed inset-x-0 bottom-0 z-30 grid h-[68px] grid-cols-3 border-t border-border bg-card/95 px-4 pb-[env(safe-area-inset-bottom)] shadow-[0_-14px_30px_color-mix(in_oklch,var(--accent-foreground)_10%,transparent)] backdrop-blur-xl lg:hidden"
+          className="fixed inset-x-0 bottom-0 z-30 grid h-[68px] grid-cols-3 border-t border-border bg-card/95 px-4 pb-[env(safe-area-inset-bottom)] shadow-[0_-14px_30px_color-mix(in_oklch,var(--foreground)_8%,transparent)] backdrop-blur-xl lg:hidden"
         >
           {workspaceTabs.map((tab) => {
             const Icon = tabIcons[tab.id];

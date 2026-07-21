@@ -21,7 +21,7 @@ export function JourneyMap({
 
   return (
     <section
-      className="mx-auto flex w-full max-w-[900px] min-w-0 flex-col rounded-3xl border border-border bg-card/90 p-5 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8 lg:p-12"
+      className="mx-auto flex w-full max-w-[900px] min-w-0 flex-col rounded-[20px] border border-border bg-card p-5 shadow-[var(--shadow-card)] sm:p-8 lg:p-10"
       id="route-plan"
     >
       <header className="mb-6">
@@ -37,7 +37,7 @@ export function JourneyMap({
       </header>
 
       {route && (
-        <div className="mb-4 rounded-2xl bg-secondary/75 px-5 py-4">
+        <div className="mb-4 rounded-[14px] bg-secondary px-5 py-4">
           <div className="mb-3 flex items-center justify-between gap-4 text-xs text-muted-foreground">
             <span>Учебный прогресс</span>
             <strong className="text-foreground">
@@ -101,7 +101,7 @@ function RouteDayTasks({
   const doneCount = day.tasks.filter((task) => task.status === "done").length;
 
   return (
-    <details className="group overflow-hidden rounded-2xl border border-border bg-card" open={open}>
+    <details className="group overflow-hidden rounded-[14px] border border-border bg-card" open={open}>
       <summary className="grid min-h-[76px] cursor-pointer grid-cols-[44px_1fr_auto_24px] items-center gap-3 px-4 text-left sm:px-5">
         <span className="font-brand text-xl font-medium text-primary">
           {String(index + 1).padStart(2, "0")}

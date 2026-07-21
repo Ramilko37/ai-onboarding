@@ -14,18 +14,17 @@ export function cn(...classes: ClassValue[]) {
 export const mayakSurface = {
   page: "relative min-h-screen overflow-x-hidden text-foreground lg:h-screen lg:overflow-hidden",
   shell:
-    "mx-auto flex min-h-[calc(100dvh-4rem)] max-w-6xl flex-col px-4 py-3 sm:px-6 sm:py-4 lg:h-[calc(100dvh-4rem)] lg:min-h-0 lg:overflow-hidden",
+    "mx-auto flex min-h-[calc(100dvh-4rem)] max-w-[1184px] flex-col px-4 py-4 sm:px-6 lg:h-[calc(100dvh-4.75rem)] lg:min-h-0 lg:py-5 lg:overflow-hidden",
   panel:
-    "overflow-hidden rounded-3xl border border-border bg-card/80 backdrop-blur-sm shadow-[var(--shadow-card)]",
+    "overflow-hidden rounded-[14px] border border-border bg-card shadow-[var(--shadow-card)]",
   interactive:
     "transition hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
-  deep:
-    "bg-deep-surface overflow-hidden rounded-3xl border border-deep-border text-deep-foreground shadow-[var(--shadow-soft)]",
+  deep: "bg-deep-surface overflow-hidden rounded-[20px] border border-deep-border text-deep-foreground shadow-[var(--shadow-soft)]",
 } as const;
 
 export const mayakTypography = {
   eyebrow: "font-mono text-[10px] font-medium uppercase tracking-wider",
-  h1: "font-brand text-pretty text-2xl font-semibold leading-tight tracking-tight text-foreground sm:text-3xl",
+  h1: "font-brand text-pretty text-[2rem] font-medium leading-[1.04] tracking-[-0.025em] text-foreground sm:text-[2.65rem]",
   h2: "text-sm font-semibold tracking-tight text-foreground",
   body: "text-pretty text-sm leading-relaxed text-muted-foreground",
   caption: "text-xs leading-relaxed text-muted-foreground",
@@ -67,25 +66,6 @@ export function MayakAmbientBackground({ className }: MayakAmbientBackgroundProp
       className={cn("pointer-events-none fixed inset-0 -z-10 overflow-hidden", className)}
     >
       <div className="absolute inset-0 bg-background" />
-      <div className="animate-aurora absolute -top-32 -left-24 h-[32rem] w-[32rem] rounded-full bg-aurora-1 opacity-60 blur-3xl" />
-      <div
-        className="animate-aurora absolute top-1/3 -right-24 h-[30rem] w-[30rem] rounded-full bg-aurora-2 opacity-50 blur-3xl"
-        style={{ animationDelay: "-6s" }}
-      />
-      <div
-        className="animate-aurora absolute -bottom-40 left-1/3 h-[28rem] w-[28rem] rounded-full bg-aurora-3 opacity-40 blur-3xl"
-        style={{ animationDelay: "-3s" }}
-      />
-      <div
-        className="absolute inset-0 opacity-[0.4]"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 1px 1px, color-mix(in oklch, var(--foreground) 8%, transparent) 1px, transparent 0)",
-          backgroundSize: "32px 32px",
-          maskImage:
-            "radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%)",
-        }}
-      />
     </div>
   );
 }
@@ -100,7 +80,7 @@ type MayakShellProps = {
 
 const mayakScrollableSurface = {
   page: "relative min-h-screen overflow-x-hidden text-foreground",
-  shell: "mx-auto flex min-h-[calc(100dvh-4rem)] max-w-6xl flex-col px-4 py-3 sm:px-6 sm:py-4",
+  shell: "mx-auto flex min-h-[calc(100dvh-4rem)] max-w-[1184px] flex-col px-4 py-4 sm:px-6 lg:py-5",
 } as const;
 
 export function MayakShell({
@@ -145,14 +125,14 @@ export function MayakTopBar({
   return (
     <header
       className={cn(
-        "sticky top-0 z-20 h-16 shrink-0 border-b border-border/60 bg-background/70 backdrop-blur-xl",
+        "sticky top-0 z-20 h-16 shrink-0 border-b border-border bg-background/95 backdrop-blur-xl lg:h-[76px]",
         className,
       )}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-[1184px] items-center justify-between gap-4 px-4 sm:px-6 lg:h-[76px]">
         <div className="flex min-w-0 items-center gap-3">
           {icon && (
-            <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+            <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-primary text-primary-foreground shadow-sm">
               {icon}
             </span>
           )}
@@ -217,7 +197,7 @@ export function MayakPanel({
     variant === "deep"
       ? mayakSurface.deep
       : variant === "soft"
-        ? "overflow-hidden rounded-3xl border border-border bg-card/80 backdrop-blur-sm"
+      ? "overflow-hidden rounded-[14px] border border-border bg-background"
         : mayakSurface.panel;
 
   return (
@@ -384,7 +364,7 @@ export function MayakLinkButton({
 
 function buttonClassName(variant: MayakButtonVariant) {
   const base =
-    "inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:cursor-not-allowed disabled:opacity-40";
+    "inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-[10px] px-4 py-2 text-sm font-medium transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:cursor-not-allowed disabled:opacity-40";
 
   if (variant === "secondary") {
     return cn(base, "bg-secondary text-secondary-foreground hover:bg-secondary/80");
@@ -419,7 +399,7 @@ export function MayakTaskRow({
   return (
     <article
       className={cn(
-        "grid gap-3 rounded-2xl border border-border bg-card p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center",
+        "grid gap-3 rounded-[14px] border border-border bg-card p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center",
         className,
       )}
     >

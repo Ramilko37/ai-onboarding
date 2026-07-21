@@ -14,7 +14,7 @@ The prototype supports high-volume onboarding of new baristas: an employee enter
 
 The manager dashboard shows a demo cohort plus live diagnostic results saved in this browser. There is still no backend, external LLM, external embeddings service, or production vector database.
 
-The UX/UI layer follows the Mayak v1.0 system: warm editorial navigation, oxblood direction, paper surfaces, semantic status tokens, 44px controls and a responsive focus-first composition. Visible wording is product-facing, the role is fixed as the barista scenario, the employee route links directly to the manager dashboard, and the manager dashboard includes next actions, attention items, topic analytics, route statuses, and mock action capture.
+The UX/UI layer follows Mayak v2: ink carries content, oxblood marks the primary action and active navigation, paper surfaces reduce cognitive load, and Georgia carries editorial headings. Controls use 10px radii, cards use 14px radii, panels use 20px radii, and all product controls retain 44px touch targets. Visible wording is product-facing, the role is fixed as the barista scenario, the employee route links directly to the manager dashboard, and the manager dashboard includes next actions, attention items, topic analytics, route statuses, and mock action capture.
 
 ## Implemented Routes
 
@@ -176,6 +176,7 @@ Latest completed verification on 2026-07-18:
 - 2026-07-21 diagnostic length restore: the diagnostic run was restored to 14 questions while keeping the simplified screen and direct transition to `Сегодня`.
 - 2026-07-21 welcome simplification: the separate right-hand presentation column was removed, the welcome card was constrained to 800 px without a fixed desktop height, and the entry action was reduced to a single CTA (`Начать диагностику` or `Продолжить диагностику`) with a separate time/progress hint. The development-only `Reset` action remains visible in the top bar as a technical test control.
 - 2026-07-21 interactive design reference pass: the post-diagnostic employee workspace now follows the supplied HTML reference for `Сегодня`, `Мой план`, task detail, and `AI-наставник`: three primary tabs, a mobile bottom nav, a compact Today-first task composition, a 900 px plan view, a 760 px task detail view, and an 860 px mentor chat. The intermediate result screen remains removed.
+- 2026-07-21 Mayak v2 migration: global tokens, shared shell, diagnostic cards, employee Today/Plan/Mentor surfaces and manager dashboard were moved from aurora-style v1 to the reference v2 paper/ink/oxblood system. The migration preserves route logic, questions, persistence and manager data. Verified with `npx tsc --noEmit --ignoreDeprecations 6.0`, all five domain test commands and `npm run build`.
 - `npm run build` may need network access because `app/layout.tsx` currently loads Geist and Geist Mono through `next/font/google`.
 
 ## Explicitly Not Implemented
