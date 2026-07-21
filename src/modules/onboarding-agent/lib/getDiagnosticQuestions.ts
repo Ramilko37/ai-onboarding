@@ -13,7 +13,7 @@ const difficultiesByGrade: Record<EmployeeGrade, QuestionDifficulty[]> = {
   network_experience: ["intermediate", "advanced"]
 };
 
-const DEMO_QUESTION_LIMIT = 8;
+const DEMO_QUESTION_LIMIT = 14;
 
 export function getDiagnosticQuestions(params: {
   role: EmployeeRole;
@@ -53,6 +53,17 @@ export function getDiagnosticQuestions(params: {
       allowedDifficulties.includes(question.difficulty) &&
       !selectedQuestionIds.has(question.id)
     ) {
+      selectedQuestions.push(question);
+      selectedQuestionIds.add(question.id);
+    }
+  }
+
+  for (const question of roleQuestions) {
+    if (selectedQuestions.length >= limit) {
+      break;
+    }
+
+    if (!selectedQuestionIds.has(question.id)) {
       selectedQuestions.push(question);
       selectedQuestionIds.add(question.id);
     }

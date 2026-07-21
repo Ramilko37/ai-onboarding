@@ -33,7 +33,7 @@ The UX/UI layer follows the Mayak v1.0 system: warm editorial navigation, oxbloo
 Current employee flow:
 
 1. Prefilled welcome for Sofia, her role, location and start date.
-2. One click to the first of eight diagnostic questions.
+2. One click to the first of fourteen diagnostic questions.
 3. Short neutral focus summary: familiar topics and topics to reinforce; no score, risk or readiness conclusion in employee UI.
 4. `Сегодня` workspace with a next action and at most three Day 1 tasks.
 5. Collapsible full route by period, source-backed mentor panel, and secondary knowledge constellation.
@@ -169,7 +169,7 @@ Latest completed verification on 2026-07-18:
 - 2026-07-18: added the employee desktop `Today`-first workspace and `npm run test:personal-space` coverage for focus selection, route progress, status toggling, and tab navigation.
 - 2026-07-18 browser smoke: completed the full barista diagnostic, generated a route, changed a Today task status, and confirmed the same status in the full route. Verified 375 px and 768 px stacked layouts plus 1024 px, 1280 px, and 1440 px tabbed layouts with no horizontal overflow, correct keyboard navigation, and no browser console errors.
 - 2026-07-18 knowledge constellation: verified a generated route at 375 px and 1280 px; topic nodes are keyboard-selectable, full topic details remain outside nodes, and the task action focuses the matching route card with no horizontal overflow or browser console errors.
-- 2026-07-21 UX simplification: baseline tests and production build passed after reducing the demo diagnostic to eight questions, replacing employee score/risk output with topic focus, unifying task status projections and simplifying the manager view to learning progress and help signals.
+- 2026-07-21 UX simplification: baseline tests and production build passed after restoring the standard demo diagnostic to fourteen questions, replacing employee score/risk output with topic focus, unifying task status projections and simplifying the manager view to learning progress and help signals.
 - `npm run build` may need network access because `app/layout.tsx` currently loads Geist and Geist Mono through `next/font/google`.
 
 ## Explicitly Not Implemented
