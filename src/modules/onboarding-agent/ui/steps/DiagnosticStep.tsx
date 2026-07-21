@@ -57,7 +57,7 @@ export function DiagnosticStep({
   return (
     <MayakPanel
       padding="lg"
-      className="mx-auto flex w-full max-w-[960px] flex-col gap-6 shadow-none"
+      className="mx-auto flex w-full max-w-[960px] flex-col gap-6 rounded-[20px] shadow-none"
     >
       <DiagnosticProgress
         currentQuestionIndex={currentQuestionIndex}
@@ -161,7 +161,7 @@ export function DiagnosticOption({
     <button
       aria-pressed={selected}
       className={cn(
-        "grid min-h-[72px] cursor-pointer grid-cols-[22px_36px_1fr] items-center gap-3 rounded-2xl border px-4 py-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 sm:min-h-[84px] sm:grid-cols-[24px_40px_1fr] sm:px-5",
+        "grid min-h-[72px] cursor-pointer grid-cols-[22px_36px_1fr] items-center gap-3 rounded-[14px] border px-4 py-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 sm:min-h-[84px] sm:grid-cols-[24px_40px_1fr] sm:px-5",
         selected
           ? "border-primary bg-primary/10 ring-2 ring-primary/25"
           : "border-border bg-card hover:border-primary/45 hover:bg-primary/5",
@@ -220,7 +220,7 @@ export function DiagnosticNavigation({
         <SecondaryButton onClick={onBack}>Назад</SecondaryButton>
       ) : (
         <button
-          className="min-h-11 cursor-pointer rounded-full px-2 text-sm font-medium text-muted-foreground underline-offset-4 transition hover:text-foreground hover:underline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+          className="min-h-11 cursor-pointer rounded-[10px] px-2 text-sm font-medium text-muted-foreground underline-offset-4 transition hover:text-foreground hover:underline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
           onClick={() => {
             if (window.confirm("Выйти из диагностики? Ответы будут сброшены.")) {
               onBack();
@@ -232,7 +232,7 @@ export function DiagnosticNavigation({
         </button>
       )}
       <button
-        className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+        className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[10px] bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
         disabled={!canGoNext}
         onClick={onNext}
         type="button"

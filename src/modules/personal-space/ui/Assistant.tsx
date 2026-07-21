@@ -105,7 +105,7 @@ export function Assistant({
   }
 
   return (
-    <section className="mx-auto flex min-h-[640px] w-full max-w-[860px] min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-card/90 p-5 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8 lg:min-h-[724px] lg:p-10">
+    <section className="mx-auto flex min-h-[640px] w-full max-w-[860px] min-w-0 flex-col overflow-hidden rounded-[20px] border border-border bg-card p-5 shadow-[var(--shadow-card)] sm:p-8 lg:min-h-[724px] lg:p-10">
       <header className="flex shrink-0 items-center gap-3 border-b border-border pb-5">
         <span className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
           <Compass className="h-4 w-4" aria-hidden="true" />
@@ -131,7 +131,7 @@ export function Assistant({
         {messages.map((message) =>
           message.author === "guide" ? (
             <div key={message.id} className="flex items-end gap-2">
-              <div className="max-w-[88%] rounded-2xl rounded-bl-md bg-secondary px-4 py-3 text-xs leading-relaxed text-secondary-foreground sm:max-w-[72%]">
+              <div className="max-w-[88%] rounded-[14px] rounded-bl-md bg-secondary px-4 py-3 text-xs leading-relaxed text-secondary-foreground sm:max-w-[72%]">
                 <p className="whitespace-pre-line">{message.text}</p>
                 {message.sources && message.sources.length > 0 && (
                   <ul className="mt-3 grid gap-1 text-[10px] text-primary">
@@ -151,7 +151,7 @@ export function Assistant({
           ) : (
             <p
               key={message.id}
-              className="ml-auto max-w-[88%] rounded-2xl rounded-br-md bg-primary px-4 py-3 text-xs leading-relaxed text-primary-foreground sm:max-w-[72%]"
+              className="ml-auto max-w-[88%] rounded-[14px] rounded-br-md bg-primary px-4 py-3 text-xs leading-relaxed text-primary-foreground sm:max-w-[72%]"
             >
               {message.text}
             </p>
@@ -196,7 +196,7 @@ export function Assistant({
             event.preventDefault();
             send(input);
           }}
-          className="flex min-h-[55px] items-center gap-2 rounded-2xl border border-border bg-card py-1.5 pr-1.5 pl-4 transition focus-within:border-primary/50"
+          className="flex min-h-[55px] items-center gap-2 rounded-[14px] border border-border bg-card py-1.5 pr-1.5 pl-4 transition focus-within:border-primary/50"
         >
           <input
             value={input}
