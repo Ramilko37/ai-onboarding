@@ -1,4 +1,5 @@
 export type WelcomeDiagnosticAction = {
+  hint: string;
   label: string;
   mode: "start" | "continue";
 };
@@ -12,7 +13,8 @@ export function getWelcomeDiagnosticAction(params: {
 
   if (!hasActiveProgress) {
     return {
-      label: "Начать — около 4 минут",
+      hint: "8 вопросов · примерно 4 минуты",
+      label: "Начать диагностику",
       mode: "start",
     };
   }
@@ -23,7 +25,8 @@ export function getWelcomeDiagnosticAction(params: {
   );
 
   return {
-    label: `Продолжить с вопроса ${nextQuestionNumber} из ${params.questionsCount}`,
+    hint: `вопрос ${nextQuestionNumber} из ${params.questionsCount}`,
+    label: "Продолжить диагностику",
     mode: "continue",
   };
 }

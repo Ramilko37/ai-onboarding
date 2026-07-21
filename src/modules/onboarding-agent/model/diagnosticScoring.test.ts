@@ -239,7 +239,8 @@ test("getWelcomeDiagnosticAction keeps one clear welcome CTA", () => {
       questionsCount: 0,
     }),
     {
-      label: "Начать — около 4 минут",
+      hint: "8 вопросов · примерно 4 минуты",
+      label: "Начать диагностику",
       mode: "start",
     },
   );
@@ -250,7 +251,8 @@ test("getWelcomeDiagnosticAction keeps one clear welcome CTA", () => {
       questionsCount: 8,
     }),
     {
-      label: "Продолжить с вопроса 4 из 8",
+      hint: "вопрос 4 из 8",
+      label: "Продолжить диагностику",
       mode: "continue",
     },
   );

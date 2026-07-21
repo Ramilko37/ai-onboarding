@@ -1,5 +1,5 @@
 import { ArrowRight, CalendarDays, Heart } from "lucide-react";
-import { MayakBadge, MayakPanel, MayakSectionHeader } from "@/shared/ui/mayak";
+import { MayakPanel, MayakSectionHeader } from "@/shared/ui/mayak";
 import { PrimaryButton } from "../components";
 import type { EmployeeProfile } from "../../model/types";
 import type { WelcomeDiagnosticAction } from "../../lib/getWelcomeDiagnosticAction";
@@ -38,21 +38,9 @@ export function WelcomeStep({ employee, action, onStart, onContinue }: {
             Бариста · {employee?.location ?? "Valle Sanchez"} · старт сегодня
           </p>
 
-          <div className="flex flex-wrap gap-2">
-            {[
-              "8 вопросов",
-              "фокус обучения",
-              "задачи на сегодня",
-            ].map((caption, index) => (
-              <span
-                className="inline-flex min-h-8 items-center gap-2 rounded-full bg-secondary px-3 text-xs font-medium text-secondary-foreground"
-                key={caption}
-              >
-                <MayakBadge tone="muted">{index + 1}</MayakBadge>
-                {caption}
-              </span>
-            ))}
-          </div>
+          <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
+            Диагностика займёт несколько минут и сразу откроет первые задачи на сегодня.
+          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 border-t border-border pt-5">
@@ -60,6 +48,7 @@ export function WelcomeStep({ employee, action, onStart, onContinue }: {
             {action.label}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </PrimaryButton>
+          <span className="text-sm text-muted-foreground">{action.hint}</span>
         </div>
       </MayakPanel>
     </section>
