@@ -34,10 +34,6 @@ function PersonalSpaceContent({
         onUpdateTaskStatus={onUpdateTaskStatus}
         onCreateEscalation={onCreateEscalation}
       />
-
-      <footer className="shrink-0 text-center text-[11px] text-muted-foreground">
-        Valle Sanchez ведёт развитие спокойно: один экран, один следующий шаг.
-      </footer>
     </div>
   );
 }
