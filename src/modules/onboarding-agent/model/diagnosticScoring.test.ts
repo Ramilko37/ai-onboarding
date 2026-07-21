@@ -10,6 +10,7 @@ import type {
 } from "./types";
 import { calculateDiagnosticResult } from "../lib/calculateDiagnosticResult";
 import { getDiagnosticQuestions } from "../lib/getDiagnosticQuestions";
+import { restoreOnboardingState } from "./useOnboardingAgentState";
 
 const roles: EmployeeRole[] = ["cook", "admin", "barista"];
 const grades: EmployeeGrade[] = [
@@ -94,6 +95,26 @@ test("barista diagnostic includes methodologist day-one espresso material", () =
   assert.match(questionText, /времени экстракции/i);
   assert.match(questionText, /температур/i);
   assert.match(optionText, /55-65°C|23-32 секунды|17\.5 г/);
+});
+
+test("restoreOnboardingState repairs welcome state without an employee profile", () => {
+  const restoredState = restoreOnboardingState({
+    employee: null,
+    selectedRole: "barista",
+    selectedGrade: "horeca_experience",
+    currentStep: "welcome",
+    diagnosticQuestions: [],
+    diagnosticAnswers: [],
+    diagnosticResult: null,
+    learningRoute: null,
+    currentQuestionIndex: 0,
+    escalations: [],
+  });
+
+  assert.equal(restoredState.currentStep, "welcome");
+  assert.equal(restoredState.employee?.id, "demo-sofia-kuznetsova");
+  assert.equal(restoredState.employee?.role, "barista");
+  assert.equal(restoredState.selectedGrade, "horeca_experience");
 });
 
 test("calculateDiagnosticResult scores topics and keeps required topics mandatory", () => {

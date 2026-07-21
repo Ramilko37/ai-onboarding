@@ -85,26 +85,38 @@ function readStoredState(): OnboardingState {
       return initialState;
     }
 
-    return {
-      ...initialState,
-      ...parsedState,
-      diagnosticQuestions: Array.isArray(parsedState.diagnosticQuestions)
-        ? parsedState.diagnosticQuestions
-        : [],
-      diagnosticAnswers: Array.isArray(parsedState.diagnosticAnswers)
-        ? parsedState.diagnosticAnswers
-        : [],
-      currentQuestionIndex:
-        typeof parsedState.currentQuestionIndex === "number"
-          ? parsedState.currentQuestionIndex
-          : 0,
-      escalations: Array.isArray(parsedState.escalations) ? parsedState.escalations : [],
-      learningRoute: migrateRouteStatuses(parsedState.learningRoute ?? null),
-      currentStep: getRestoredStep(parsedState),
-    };
+    return restoreOnboardingState(parsedState);
   } catch {
     return initialState;
   }
+}
+
+export function restoreOnboardingState(parsedState: Partial<OnboardingState>): OnboardingState {
+  const restoredStep = getRestoredStep(parsedState);
+  const employee =
+    parsedState.employee ??
+    (restoredStep === "welcome" || restoredStep === "employee_profile"
+      ? initialState.employee
+      : null);
+
+  return {
+    ...initialState,
+    ...parsedState,
+    employee,
+    diagnosticQuestions: Array.isArray(parsedState.diagnosticQuestions)
+      ? parsedState.diagnosticQuestions
+      : [],
+    diagnosticAnswers: Array.isArray(parsedState.diagnosticAnswers)
+      ? parsedState.diagnosticAnswers
+      : [],
+    currentQuestionIndex:
+      typeof parsedState.currentQuestionIndex === "number"
+        ? parsedState.currentQuestionIndex
+        : 0,
+    escalations: Array.isArray(parsedState.escalations) ? parsedState.escalations : [],
+    learningRoute: migrateRouteStatuses(parsedState.learningRoute ?? null),
+    currentStep: restoredStep,
+  };
 }
 
 function getRestoredStep(state: Partial<OnboardingState>): OnboardingStep {
