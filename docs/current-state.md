@@ -21,10 +21,15 @@ The UX/UI layer follows the Mayak v1.0 system: warm editorial navigation, oxbloo
 ```text
 /
 /onboarding-agent
+/onboarding-agent/today
+/onboarding-agent/plan
+/onboarding-agent/mentor
+/onboarding-agent/tasks/[taskId]
 /manager
 ```
 
-- `/` and `/onboarding-agent` render the barista diagnostic and learning-route flow.
+- `/` and `/onboarding-agent` render the barista diagnostic and then redirect restored learning-route state to `/onboarding-agent/today`.
+- `/onboarding-agent/today`, `/onboarding-agent/plan`, `/onboarding-agent/mentor`, and `/onboarding-agent/tasks/[taskId]` are deep-linkable employee workspace views backed by the same local learning-route state.
 - `/manager` renders the manager dashboard with demo baristas plus locally saved live results.
 - `/api/mentor-chat` answers mentor questions from the local demo knowledge base.
 
@@ -35,9 +40,11 @@ Current employee flow:
 1. Compact prefilled welcome for Sofia, her role, location and start date.
 2. One primary action starts the first of fourteen diagnostic questions, or resumes an unfinished diagnostic at the saved question number.
 3. Completing the last diagnostic question immediately builds the personal route.
-4. `Сегодня` workspace with a reference-inspired next action, compact follow-up tasks, desktop mentor callout, and mobile bottom navigation.
-5. `Мой план` route view with collapsible day sections, source-backed task detail screens, and a source-backed AI mentor chat. Knowledge content is surfaced through task sources and mentor citations instead of a separate employee tab.
-6. One route task state (`todo`, `in_progress`, `done`, `blocked`) persists into the manager projection.
+4. `Сегодня` workspace with a reference-inspired next action, compact follow-up tasks, desktop mentor callout, route-level navigation, and mobile bottom navigation.
+5. `Мой план` route view with collapsible day sections and compact one-action task rows. Task status actions live only inside task detail screens.
+6. Source-backed task detail screens at `/onboarding-agent/tasks/[taskId]`.
+7. A source-backed AI mentor chat at `/onboarding-agent/mentor`. The prompt `С чего начать сегодня?` is answered from the employee's next route task with a CTA to open that task before falling back to knowledge-base retrieval.
+8. One route task state (`todo`, `in_progress`, `done`, `blocked`) persists into the manager projection.
 
 Current manager flow:
 
@@ -174,8 +181,11 @@ Latest completed verification on 2026-07-18:
 - 2026-07-21 diagnostic completion: the intermediate focus/result screen was removed; finishing the last diagnostic question now opens the `Сегодня` task workspace directly. Verified with `npm run test:diagnostic`, `npx tsc --noEmit --ignoreDeprecations 6.0`, browser flow on `localhost:3000`, and `npm run build`.
 - 2026-07-21 diagnostic question redesign: the question screen was constrained to a 960 px outer / 880 px content width, the duplicate inner frame and old explanatory blocks were removed, answer cards were normalized to 72-88 px with left radio indicators and clear selected state, and the first-screen back action became `Выйти из диагностики` with confirmation.
 - 2026-07-21 diagnostic length restore: the diagnostic run was restored to 14 questions while keeping the simplified screen and direct transition to `Сегодня`.
-- 2026-07-21 welcome simplification: the separate right-hand presentation column was removed, the welcome card was constrained to 800 px without a fixed desktop height, and the entry action was reduced to a single CTA (`Начать диагностику` or `Продолжить диагностику`) with a separate time/progress hint. The development-only `Reset` action remains visible in the top bar as a technical test control.
+- 2026-07-21 welcome simplification: the separate right-hand presentation column was removed, the welcome card was constrained to 800 px without a fixed desktop height, and the entry action was reduced to a single CTA (`Начать диагностику` or `Продолжить диагностику`) with a separate time/progress hint. The development-only `Reset` action remains visible before the learning route as a technical test control, and is hidden from the post-diagnostic employee workspace.
 - 2026-07-21 interactive design reference pass: the post-diagnostic employee workspace now follows the supplied HTML reference for `Сегодня`, `Мой план`, task detail, and `AI-наставник`: three primary tabs, a mobile bottom nav, a compact Today-first task composition, a 900 px plan view, a 760 px task detail view, and an 860 px mentor chat. The intermediate result screen remains removed.
+- 2026-07-21 desktop UI fixes: employee workspace views are now route-level (`/today`, `/plan`, `/mentor`, `/tasks/[taskId]`), progress values use task completion directly with no artificial 4% minimum, plan rows have one open-task action, task status changes happen in task details, the post-diagnostic header reads `Персональная адаптация`, and the mentor's `С чего начать сегодня?` prompt opens the actual next task from the route.
+- 2026-07-21 desktop/browser verification: completed a full 14-question diagnostic on `localhost:3000`, verified redirect to `/onboarding-agent/today`, `0/3` and `0/22` render `0%`, finishing a task updates Today to `1/3` and Plan to `1/22` / `5%`, Plan reload/deep link/task unknown states work, mentor CTA opens the next task, and checked 1024×768, 1280×800, 1440×900, 1920×1080, and mobile 390×844 with no horizontal overflow.
+- 2026-07-21 verification commands: `pnpm run test:diagnostic`, `pnpm run test:learning-route`, `pnpm run test:knowledge-base`, `pnpm run test:manager-dashboard`, `pnpm run test:personal-space`, `npx tsc --noEmit --ignoreDeprecations 6.0`, and `pnpm run build` passed. `pnpm run lint` is currently blocked by the existing `next lint` script on Next 16; `npx eslint .` is also blocked by the current ESLint 9 / Next config circular-schema issue.
 - `npm run build` may need network access because `app/layout.tsx` currently loads Geist and Geist Mono through `next/font/google`.
 
 ## Explicitly Not Implemented

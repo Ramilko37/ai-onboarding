@@ -1,10 +1,13 @@
 "use client";
 
 import { BookOpen, Compass, Send } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { MentorSource } from "../../knowledge-base";
 import type { LearningRoute } from "../../onboarding-agent/model/learningRouteTypes";
+import { getNextTask } from "../../onboarding-agent/model/onboardingSelectors";
 import { assistantSuggestions } from "../data";
+import { buildNextTaskAnswer, isNextTaskPrompt, type MentorRouteAction } from "../lib/mentorRouteAnswer";
 import type { PersonalSpaceProfile } from "../PersonalSpace";
 
 type AssistantMessage = {
@@ -12,6 +15,8 @@ type AssistantMessage = {
   author: "guide" | "you";
   text: string;
   sources?: MentorSource[];
+  sourceLabel?: string;
+  action?: MentorRouteAction;
 };
 
 type AssistantRequestStatus = "idle" | "loading" | "answered" | "needs_human" | "error";
@@ -31,6 +36,7 @@ export function Assistant({
   route?: LearningRoute;
   onCreateEscalation?: (question: string) => void;
 }) {
+  const router = useRouter();
   const [messages, setMessages] = useState<AssistantMessage[]>(() =>
     createOpeningMessages(profile?.name),
   );
@@ -54,6 +60,14 @@ export function Assistant({
     setMessages((prev) => [...prev, { id: nextId(), author: "you", text: trimmed }]);
     setInput("");
     setLastQuestion(trimmed);
+
+    if (isNextTaskPrompt(trimmed)) {
+      const answer = buildNextTaskAnswer(getNextTask(route), nextId);
+      setMessages((prev) => [...prev, answer]);
+      setRequestStatus("answered");
+      return;
+    }
+
     setRequestStatus("loading");
 
     try {
@@ -146,6 +160,21 @@ export function Assistant({
                     ))}
                   </ul>
                 )}
+                {message.sourceLabel && (
+                  <div className="mt-3 flex items-center gap-1.5 rounded-lg bg-card px-2 py-1.5 text-[10px] text-primary">
+                    <BookOpen className="h-3 w-3 shrink-0" aria-hidden="true" />
+                    {message.sourceLabel}
+                  </div>
+                )}
+                {message.action && (
+                  <button
+                    className="mt-3 inline-flex min-h-9 cursor-pointer items-center justify-center rounded-lg bg-primary px-3 text-[11px] font-semibold text-primary-foreground transition hover:opacity-90 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+                    onClick={() => router.push(message.action!.href)}
+                    type="button"
+                  >
+                    {message.action.label}
+                  </button>
+                )}
               </div>
             </div>
           ) : (
@@ -201,15 +230,15 @@ export function Assistant({
           <input
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            placeholder="Спросите про стандарт"
-            aria-label="Сообщение проводнику"
+            placeholder="Задайте вопрос о работе…"
+            aria-label="Сообщение AI-наставнику"
             className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
           />
           <button
             type="submit"
             disabled={!input.trim() || isTyping}
-            aria-label="Отправить"
-            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-primary text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            aria-label="Отправить сообщение"
+            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-primary text-primary-foreground transition hover:opacity-90 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:cursor-not-allowed disabled:opacity-40"
           >
             <Send className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -226,13 +255,7 @@ function createOpeningMessages(employeeName?: string): AssistantMessage[] {
     {
       id: "m1",
       author: "guide",
-      text: `Привет, ${name}. Я помощник Valle Sanchez на старте. Я отвечаю по базе стандартов и показываю источники, чтобы не выдумывать правила точки.`,
-    },
-    {
-      id: "m2",
-      author: "guide",
-      text:
-        "Можно спросить про эспрессо, молоко, чистку оборудования, зерно или работу в потоке. Если источника нет, я честно отправлю вопрос к наставнику.",
+      text: `${name}, задайте вопрос о работе — отвечу по базе знаний или помогу открыть следующий шаг.`,
     },
   ];
 }

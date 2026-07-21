@@ -22,13 +22,13 @@ export function TodayFocus({
 }) {
   const focus = getEmployeeFocusSummary(route);
   const tasks = focus.todayTasks;
-  const visibleTasks = tasks.filter((task) => task.status !== "done").slice(0, 3);
-  const nextTask = visibleTasks[0];
+  const nextTask = focus.nextTask?.dayId === "day_1" ? focus.nextTask : tasks.find((task) => task.status !== "done");
+  const visibleTasks = [
+    ...(nextTask ? [nextTask] : []),
+    ...tasks.filter((task) => task.id !== nextTask?.id && task.status !== "done"),
+  ].slice(0, 3);
   const doneCount = focus.completedTodayCount;
-  const progressPercent =
-    focus.totalTodayCount > 0
-      ? Math.max(4, Math.round((doneCount / focus.totalTodayCount) * 100))
-      : 100;
+  const progressPercent = focus.todayProgressPercent;
   const name = profile?.name.split(" ")[0] ?? "София";
 
   function update(id: string, status: LearningTaskStatus) {
