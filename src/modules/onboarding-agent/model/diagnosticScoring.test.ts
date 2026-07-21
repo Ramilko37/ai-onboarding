@@ -26,7 +26,7 @@ test("getDiagnosticQuestions returns stable role and grade specific sets", () =>
       const repeatedQuestions = getDiagnosticQuestions({ role, grade });
       const selectedTopicIds = new Set(questions.map((question) => question.topicId));
 
-      assert.equal(questions.length <= 14, true);
+      assert.equal(questions.length <= 8, true);
       assert.deepEqual(
         questions.map((question) => question.id),
         repeatedQuestions.map((question) => question.id)
@@ -57,14 +57,14 @@ test("getDiagnosticQuestions keeps basic anchors for network employees when a to
   assert.equal(adminNetworkTopicIds.has("admin-discounts"), true);
 });
 
-test("barista diagnostic covers coffee standards and keeps safety topics required", () => {
+test("barista diagnostic is compact and keeps safety topics required", () => {
   const questions = getDiagnosticQuestions({
     role: "barista",
     grade: "network_experience"
   });
   const selectedTopicIds = new Set(questions.map((question) => question.topicId));
 
-  assert.equal(questions.length, 14);
+  assert.equal(questions.length, 8);
   assert.equal(questions.every((question) => question.role === "barista"), true);
   assert.equal(selectedTopicIds.has("barista-espresso-setup"), true);
   assert.equal(selectedTopicIds.has("barista-milk-texture"), true);

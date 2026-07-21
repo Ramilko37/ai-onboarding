@@ -64,7 +64,7 @@ export function OnboardingAgentPage() {
             onSelectAnswer={actions.selectAnswer}
             onPrevious={actions.goToPreviousQuestion}
             onNext={actions.goToNextQuestion}
-            onBackToIntro={() => actions.goToStep("welcome")}
+            onBackToIntro={actions.reset}
             onComplete={actions.completeDiagnostic}
           />
         )}

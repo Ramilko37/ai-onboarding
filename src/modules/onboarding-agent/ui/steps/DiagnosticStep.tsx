@@ -55,28 +55,29 @@ export function DiagnosticStep({
   }
 
   return (
-    <MayakPanel padding="lg" className="flex h-full min-h-0 flex-col gap-3">
+    <MayakPanel
+      padding="lg"
+      className="mx-auto flex w-full max-w-[960px] flex-col gap-6 shadow-none"
+    >
       <DiagnosticProgress
         currentQuestionIndex={currentQuestionIndex}
         totalQuestions={questions.length}
       />
 
-      <div className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col gap-3">
-        <div className="flex min-h-0 flex-1 flex-col">
-          <DiagnosticQuestionCard
-            question={currentQuestion}
-            selectedOptionId={currentAnswer?.selectedOptionId}
-            onSelectAnswer={handleSelectAnswer}
-          />
+      <div className="mx-auto w-full max-w-[880px]">
+        <DiagnosticQuestionCard
+          question={currentQuestion}
+          selectedOptionId={currentAnswer?.selectedOptionId}
+          onSelectAnswer={handleSelectAnswer}
+        />
 
-          <DiagnosticNavigation
-            canGoBack={currentQuestionIndex > 0}
-            onBack={currentQuestionIndex > 0 ? onPrevious : onBackToIntro}
-            onNext={isLastQuestion ? onComplete : onNext}
-            canGoNext={Boolean(currentAnswer)}
-            isLastQuestion={isLastQuestion}
-          />
-        </div>
+        <DiagnosticNavigation
+          canGoBack={currentQuestionIndex > 0}
+          onBack={currentQuestionIndex > 0 ? onPrevious : onBackToIntro}
+          onNext={isLastQuestion ? onComplete : onNext}
+          canGoNext={Boolean(currentAnswer)}
+          isLastQuestion={isLastQuestion}
+        />
       </div>
     </MayakPanel>
   );
@@ -90,14 +91,28 @@ export function DiagnosticProgress({
   totalQuestions: number;
 }) {
   const currentNumber = currentQuestionIndex + 1;
+  const progress = Math.round((currentNumber / totalQuestions) * 100);
 
   return (
-    <header className="shrink-0">
+    <header className="shrink-0 space-y-4">
       <MayakSectionHeader
         className="mb-0"
         kicker="Диагностика знаний"
         title={`Вопрос ${currentNumber} из ${totalQuestions}`}
       />
+      <div
+        aria-label={`Прогресс диагностики ${progress} процентов`}
+        className="h-1.5 overflow-hidden rounded-full bg-border/60"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={progress}
+      >
+        <div
+          className="h-full rounded-full bg-primary transition-[width]"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
     </header>
   );
 }
@@ -112,11 +127,11 @@ export function DiagnosticQuestionCard({
   onSelectAnswer: (questionId: string, optionId: string) => void;
 }) {
   return (
-    <MayakPanel padding="md" className="flex min-h-0 flex-1 flex-col shadow-none">
-      <h2 className="shrink-0 text-xl font-semibold leading-snug tracking-tight text-foreground sm:text-2xl">
+    <section>
+      <h2 className="text-xl font-semibold leading-snug tracking-tight text-foreground sm:text-2xl">
         {question.question}
       </h2>
-      <div className="mt-4 grid min-h-0 flex-1 gap-2 overflow-y-auto pr-1" role="list">
+      <div className="mt-5 grid gap-3" role="list">
         {question.options.map((option) => (
           <DiagnosticOption
             key={option.id}
@@ -127,7 +142,7 @@ export function DiagnosticQuestionCard({
           />
         ))}
       </div>
-    </MayakPanel>
+    </section>
   );
 }
 
@@ -146,17 +161,26 @@ export function DiagnosticOption({
     <button
       aria-pressed={selected}
       className={cn(
-        "grid min-h-16 cursor-pointer grid-cols-[36px_1fr] items-center gap-3 rounded-2xl border p-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 sm:grid-cols-[36px_1fr_auto] sm:p-4",
+        "grid min-h-[72px] cursor-pointer grid-cols-[22px_36px_1fr] items-center gap-3 rounded-2xl border px-4 py-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 sm:min-h-[84px] sm:grid-cols-[24px_40px_1fr] sm:px-5",
         selected
-          ? "border-primary bg-primary/8 ring-1 ring-primary/40"
-          : "border-border bg-card hover:border-primary/40 hover:bg-primary/5",
+          ? "border-primary bg-primary/10 ring-2 ring-primary/25"
+          : "border-border bg-card hover:border-primary/45 hover:bg-primary/5",
       )}
       onClick={onSelect}
       type="button"
     >
       <span
         className={cn(
-          "flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold transition",
+          "flex h-5 w-5 items-center justify-center rounded-full border transition",
+          selected ? "border-primary bg-card text-primary" : "border-border bg-card",
+        )}
+        aria-hidden="true"
+      >
+        {selected && <span className="h-2.5 w-2.5 rounded-full bg-primary" />}
+      </span>
+      <span
+        className={cn(
+          "flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold transition sm:h-10 sm:w-10",
           selected ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground",
         )}
       >
@@ -164,20 +188,11 @@ export function DiagnosticOption({
       </span>
       <span
         className={cn(
-          "text-base leading-relaxed transition sm:text-lg",
+          "text-base leading-snug transition sm:text-lg",
           selected ? "font-medium text-foreground" : "text-foreground",
         )}
       >
         {text}
-      </span>
-      <span
-        className={cn(
-          "hidden h-5 w-5 items-center justify-center rounded-full transition sm:flex",
-          selected ? "bg-primary text-primary-foreground" : "border border-border bg-card",
-        )}
-        aria-hidden="true"
-      >
-        {selected && <span className="h-2 w-2 rounded-full bg-current" />}
       </span>
       {selected && (
         <span className="sr-only">Выбранный ответ</span>
@@ -201,9 +216,21 @@ export function DiagnosticNavigation({
 }) {
   return (
     <MayakActionBar className="mt-3 shrink-0 justify-between">
-      <SecondaryButton onClick={onBack}>
-        {canGoBack ? "Назад" : "К началу"}
-      </SecondaryButton>
+      {canGoBack ? (
+        <SecondaryButton onClick={onBack}>Назад</SecondaryButton>
+      ) : (
+        <button
+          className="min-h-11 cursor-pointer rounded-full px-2 text-sm font-medium text-muted-foreground underline-offset-4 transition hover:text-foreground hover:underline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+          onClick={() => {
+            if (window.confirm("Выйти из диагностики? Ответы будут сброшены.")) {
+              onBack();
+            }
+          }}
+          type="button"
+        >
+          Выйти из диагностики
+        </button>
+      )}
       <button
         className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
         disabled={!canGoNext}

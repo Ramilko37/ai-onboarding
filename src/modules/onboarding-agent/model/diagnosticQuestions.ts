@@ -559,10 +559,10 @@ export const baristaQuestions: DiagnosticQuestion[] = [
     difficulty: "basic",
     question: "Что бариста проверяет перед первым напитком на смене?",
     options: [
-      { id: "a", text: "Только наличие стаканов на стойке", isCorrect: false },
-      { id: "b", text: "Чистоту рук, станции, инвентаря и готовность оборудования", isCorrect: true },
-      { id: "c", text: "Только очередь заказов", isCorrect: false },
-      { id: "d", text: "Только температуру в зале", isCorrect: false }
+      { id: "a", text: "Стаканы, крышки и запас сиропов на стойке", isCorrect: false },
+      { id: "b", text: "Руки, станцию, инвентарь и готовность оборудования", isCorrect: true },
+      { id: "c", text: "Очередь заказов, таймеры и наличие молока", isCorrect: false },
+      { id: "d", text: "Температуру зала, меню и внешний вид витрины", isCorrect: false }
     ],
     explanation:
       "Перед работой бариста проверяет личную гигиену, чистоту станции и безопасную готовность оборудования.",
@@ -577,10 +577,10 @@ export const baristaQuestions: DiagnosticQuestion[] = [
     difficulty: "basic",
     question: "Как правильно обращаться с открытым пакетом зерна по стандарту сети?",
     options: [
-      { id: "a", text: "Оставить открытым рядом с кофемолкой", isCorrect: false },
-      { id: "b", text: "Закрыть, промаркировать и хранить вдали от влаги и тепла", isCorrect: true },
-      { id: "c", text: "Пересыпать в любую свободную ёмкость без даты", isCorrect: false },
-      { id: "d", text: "Смешать с остатками предыдущего зерна", isCorrect: false }
+      { id: "a", text: "Оставить рядом с кофемолкой до конца потока", isCorrect: false },
+      { id: "b", text: "Закрыть, промаркировать и убрать от влаги и тепла", isCorrect: true },
+      { id: "c", text: "Пересыпать в контейнер без даты открытия", isCorrect: false },
+      { id: "d", text: "Смешать с прошлой партией для ровного вкуса", isCorrect: false }
     ],
     explanation:
       "Зерно защищают от воздуха, влаги и тепла, а открытие партии фиксируют для ротации.",
@@ -595,10 +595,10 @@ export const baristaQuestions: DiagnosticQuestion[] = [
     difficulty: "basic",
     question: "Что означает учебный рецепт эспрессо 18-27-38?",
     options: [
-      { id: "a", text: "18 мл воды, 27 г кофе и 38 секунд прогрева группы", isCorrect: false },
-      { id: "b", text: "18 г закладка, 27 секунд экстракция и 38 мл выход напитка", isCorrect: true },
-      { id: "c", text: "18 секунд помол, 27 мл молока и 38°C температура напитка", isCorrect: false },
-      { id: "d", text: "Номер рецептуры, который не связан с параметрами шота", isCorrect: false }
+      { id: "a", text: "18 мл воды, 27 г кофе и 38 секунд прогрева", isCorrect: false },
+      { id: "b", text: "18 г закладка, 27 секунд и 38 мл выход шота", isCorrect: true },
+      { id: "c", text: "18 секунд помол, 27 мл молока и 38°C чашка", isCorrect: false },
+      { id: "d", text: "18 кликов помола, 27 мл воды и 38 г напитка", isCorrect: false }
     ],
     explanation:
       "В учебном рецепте 18-27-38 фиксируются закладка, время экстракции и выход эспрессо.",
@@ -613,10 +613,10 @@ export const baristaQuestions: DiagnosticQuestion[] = [
     difficulty: "basic",
     question: "Как бариста выбирает закладку эспрессо по учебному материалу?",
     options: [
-      { id: "a", text: "По дате обжарки зерна: примерно от 17.5 г до 18.5 г", isCorrect: true },
-      { id: "b", text: "Всегда ровно 15 г, независимо от зерна", isCorrect: false },
-      { id: "c", text: "По размеру очереди у стойки", isCorrect: false },
-      { id: "d", text: "По температуре молока в питчере", isCorrect: false }
+      { id: "a", text: "По дате обжарки: примерно от 17.5 г до 18.5 г", isCorrect: true },
+      { id: "b", text: "По стандартной цифре 15 г для любой партии", isCorrect: false },
+      { id: "c", text: "По скорости очереди и текущей загрузке стойки", isCorrect: false },
+      { id: "d", text: "По температуре молока и размеру питчера", isCorrect: false }
     ],
     explanation:
       "Методологический материал связывает закладку с датой обжарки: чем старше зерно, тем выше учебная закладка.",
@@ -631,10 +631,10 @@ export const baristaQuestions: DiagnosticQuestion[] = [
     difficulty: "intermediate",
     question: "Какой диапазон времени экстракции указан в учебном стандарте эспрессо?",
     options: [
-      { id: "a", text: "23-32 секунды, с целевым диапазоном 27-30 секунд", isCorrect: true },
-      { id: "b", text: "10-12 секунд, чтобы не задерживать очередь", isCorrect: false },
-      { id: "c", text: "45-60 секунд для любой партии зерна", isCorrect: false },
-      { id: "d", text: "Время не контролируется, важен только объём чашки", isCorrect: false }
+      { id: "a", text: "23-32 секунды, цель — около 27-30 секунд", isCorrect: true },
+      { id: "b", text: "10-12 секунд, если на стойке растёт очередь", isCorrect: false },
+      { id: "c", text: "45-60 секунд, чтобы получить более плотный вкус", isCorrect: false },
+      { id: "d", text: "Любое время, если итоговый объём совпадает", isCorrect: false }
     ],
     explanation:
       "Материал фиксирует стандарт 23-32 секунды и целевой ориентир 27-30 секунд.",
@@ -649,10 +649,10 @@ export const baristaQuestions: DiagnosticQuestion[] = [
     difficulty: "basic",
     question: "До какой температуры рекомендуется греть молоко для капучино?",
     options: [
-      { id: "a", text: "55-65°C, около 60°C как ориентир сладости", isCorrect: true },
-      { id: "b", text: "30-35°C, чтобы молоко осталось почти холодным", isCorrect: false },
-      { id: "c", text: "80-90°C, чтобы пена была максимально горячей", isCorrect: false },
-      { id: "d", text: "Температура не важна, если есть рисунок", isCorrect: false }
+      { id: "a", text: "55-65°C, ориентир — около 60°C для сладости", isCorrect: true },
+      { id: "b", text: "30-35°C, чтобы молоко сохранило свежий вкус", isCorrect: false },
+      { id: "c", text: "80-90°C, чтобы напиток дольше был горячим", isCorrect: false },
+      { id: "d", text: "Любая температура, если пена выглядит гладкой", isCorrect: false }
     ],
     explanation:
       "В материале указано 55-65°C; около 60°C молоко лучше раскрывает сладость.",
@@ -667,10 +667,10 @@ export const baristaQuestions: DiagnosticQuestion[] = [
     difficulty: "basic",
     question: "Чем флэт уайт отличается от капучино в учебном материале?",
     options: [
-      { id: "a", text: "Готовится с двумя порциями эспрессо и очень тонкой пеной", isCorrect: true },
-      { id: "b", text: "Всегда готовится без эспрессо", isCorrect: false },
-      { id: "c", text: "Должен иметь самую толстую сухую пену", isCorrect: false },
-      { id: "d", text: "Отличается только цветом чашки", isCorrect: false }
+      { id: "a", text: "Две порции эспрессо и тонкая молочная текстура", isCorrect: true },
+      { id: "b", text: "Одна порция эспрессо и более высокая сухая пена", isCorrect: false },
+      { id: "c", text: "Больше молока и температура выше капучино", isCorrect: false },
+      { id: "d", text: "Тот же рецепт, но в чашке другого размера", isCorrect: false }
     ],
     explanation:
       "Флэт уайт в материале описан как напиток 150-180 мл с двумя порциями эспрессо и тонкой пеной около 0.25 см.",
@@ -685,10 +685,10 @@ export const baristaQuestions: DiagnosticQuestion[] = [
     difficulty: "basic",
     question: "Что делать после работы с молоком и перед следующим напитком?",
     options: [
-      { id: "a", text: "Оставить питчер до паузы", isCorrect: false },
-      { id: "b", text: "Очистить паровую трубку и промыть питчер по чек-листу", isCorrect: true },
-      { id: "c", text: "Протереть только внешнюю сторону кофемашины", isCorrect: false },
-      { id: "d", text: "Ничего, если очередь большая", isCorrect: false }
+      { id: "a", text: "Оставить питчер до ближайшей паузы в потоке", isCorrect: false },
+      { id: "b", text: "Очистить паровую трубку и промыть питчер", isCorrect: true },
+      { id: "c", text: "Протереть корпус машины и продолжить выдачу", isCorrect: false },
+      { id: "d", text: "Слить остаток молока только в конце смены", isCorrect: false }
     ],
     explanation:
       "Чистка после молока — обязательный блок безопасности и качества напитков.",
