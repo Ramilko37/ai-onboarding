@@ -1,10 +1,13 @@
 "use client";
 
 import { BookOpen, Compass, Send } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { MentorSource } from "../../knowledge-base";
 import type { LearningRoute } from "../../onboarding-agent/model/learningRouteTypes";
+import { getNextTask } from "../../onboarding-agent/model/onboardingSelectors";
 import { assistantSuggestions } from "../data";
+import { buildNextTaskAnswer, isNextTaskPrompt, type MentorRouteAction } from "../lib/mentorRouteAnswer";
 import type { PersonalSpaceProfile } from "../PersonalSpace";
 
 type AssistantMessage = {
@@ -12,6 +15,8 @@ type AssistantMessage = {
   author: "guide" | "you";
   text: string;
   sources?: MentorSource[];
+  sourceLabel?: string;
+  action?: MentorRouteAction;
 };
 
 type AssistantRequestStatus = "idle" | "loading" | "answered" | "needs_human" | "error";
@@ -31,6 +36,7 @@ export function Assistant({
   route?: LearningRoute;
   onCreateEscalation?: (question: string) => void;
 }) {
+  const router = useRouter();
   const [messages, setMessages] = useState<AssistantMessage[]>(() =>
     createOpeningMessages(profile?.name),
   );
@@ -54,6 +60,14 @@ export function Assistant({
     setMessages((prev) => [...prev, { id: nextId(), author: "you", text: trimmed }]);
     setInput("");
     setLastQuestion(trimmed);
+
+    if (isNextTaskPrompt(trimmed)) {
+      const answer = buildNextTaskAnswer(getNextTask(route), nextId);
+      setMessages((prev) => [...prev, answer]);
+      setRequestStatus("answered");
+      return;
+    }
+
     setRequestStatus("loading");
 
     try {
@@ -105,8 +119,8 @@ export function Assistant({
   }
 
   return (
-    <section className="mx-auto flex min-h-[640px] w-full max-w-[860px] min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-card/90 p-5 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8 lg:min-h-[724px] lg:p-10">
-      <header className="flex shrink-0 items-center gap-3 border-b border-border pb-5">
+    <section className="mx-auto flex h-[calc(100dvh-var(--mobile-header-height)-var(--mobile-bottom-offset)-1rem)] w-full max-w-[860px] min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-card/90 p-4 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-6 lg:h-auto lg:min-h-[724px] lg:p-10 [@media(max-height:500px)]:p-3">
+      <header className="flex shrink-0 items-center gap-3 border-b border-border pb-5 [@media(max-height:500px)]:pb-3">
         <span className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
           <Compass className="h-4 w-4" aria-hidden="true" />
         </span>
@@ -114,27 +128,31 @@ export function Assistant({
           <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
             Всегда на связи
           </p>
-          <h1 className="mt-1 font-brand text-3xl leading-tight tracking-tight text-foreground">
+          <h1 className="mt-1 font-brand text-3xl leading-tight tracking-tight text-foreground [@media(max-height:500px)]:text-2xl">
             AI-наставник
           </h1>
         </div>
-        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/12 px-3 py-1.5 text-[10px] font-medium text-success">
+        <span className="inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-full bg-success/12 px-3 py-1.5 text-xs font-medium text-success">
           <span className="h-1.5 w-1.5 rounded-full bg-success" aria-hidden="true" />
           В сети
         </span>
       </header>
 
-      <div ref={scrollRef} className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto py-5">
+      <div
+        ref={scrollRef}
+        aria-label="Диалог с наставником"
+        className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overscroll-contain py-4 [-webkit-overflow-scrolling:touch] sm:py-5 [@media(max-height:500px)]:py-2"
+      >
         <div className="self-center font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
           Сегодня
         </div>
         {messages.map((message) =>
           message.author === "guide" ? (
             <div key={message.id} className="flex items-end gap-2">
-              <div className="max-w-[88%] rounded-2xl rounded-bl-md bg-secondary px-4 py-3 text-xs leading-relaxed text-secondary-foreground sm:max-w-[72%]">
+              <div className="max-w-[88%] rounded-2xl rounded-bl-md bg-secondary px-4 py-3 text-sm leading-relaxed text-secondary-foreground sm:max-w-[72%] sm:text-xs">
                 <p className="whitespace-pre-line">{message.text}</p>
                 {message.sources && message.sources.length > 0 && (
-                  <ul className="mt-3 grid gap-1 text-[10px] text-primary">
+                  <ul className="mt-3 grid gap-1 text-xs text-primary sm:text-[10px]">
                     {message.sources.slice(0, 2).map((source) => (
                       <li
                         className="flex items-center gap-1.5 rounded-lg bg-card px-2 py-1.5"
@@ -146,12 +164,27 @@ export function Assistant({
                     ))}
                   </ul>
                 )}
+                {message.sourceLabel && (
+                  <div className="mt-3 flex items-center gap-1.5 rounded-lg bg-card px-2 py-1.5 text-xs text-primary sm:text-[10px]">
+                    <BookOpen className="h-3 w-3 shrink-0" aria-hidden="true" />
+                    {message.sourceLabel}
+                  </div>
+                )}
+                {message.action && (
+                  <button
+                    className="mt-3 inline-flex min-h-11 cursor-pointer items-center justify-center rounded-lg bg-primary px-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 sm:min-h-9 sm:text-[11px]"
+                    onClick={() => router.push(message.action!.href)}
+                    type="button"
+                  >
+                    {message.action.label}
+                  </button>
+                )}
               </div>
             </div>
           ) : (
             <p
               key={message.id}
-              className="ml-auto max-w-[88%] rounded-2xl rounded-br-md bg-primary px-4 py-3 text-xs leading-relaxed text-primary-foreground sm:max-w-[72%]"
+              className="ml-auto max-w-[88%] rounded-2xl rounded-br-md bg-primary px-4 py-3 text-sm leading-relaxed text-primary-foreground sm:max-w-[72%] sm:text-xs"
             >
               {message.text}
             </p>
@@ -168,24 +201,24 @@ export function Assistant({
           </div>
         )}
         {requestStatus === "needs_human" && (
-          <div className="rounded-2xl border border-primary/25 bg-primary/5 p-3 text-xs text-foreground">
+          <div className="rounded-2xl border border-primary/25 bg-primary/5 p-3 text-sm text-foreground sm:text-xs">
             Я не нашёл точного ответа в доступной базе знаний. Могу передать вопрос наставнику.
-            <button className="ml-2 font-semibold text-primary" onClick={() => { onCreateEscalation?.(lastQuestion); setRequestStatus("idle"); }} type="button">Передать наставнику</button>
+            <button className="ml-2 inline-flex min-h-11 items-center font-semibold text-primary sm:min-h-8" onClick={() => { onCreateEscalation?.(lastQuestion); setRequestStatus("idle"); }} type="button">Передать наставнику</button>
           </div>
         )}
         {requestStatus === "error" && (
-          <button className="w-fit rounded-full border border-border px-3 py-2 text-xs font-semibold text-primary" onClick={() => send(lastQuestion)} type="button">Не удалось получить ответ. Попробовать ещё раз</button>
+          <button className="min-h-11 w-fit rounded-full border border-border px-3 py-2 text-sm font-semibold text-primary sm:text-xs" onClick={() => send(lastQuestion)} type="button">Не удалось получить ответ. Попробовать ещё раз</button>
         )}
       </div>
 
-      <div className="shrink-0 border-t border-border pt-3">
-        <div className="mb-2 flex gap-1.5 overflow-x-auto pb-0.5">
+      <div className="shrink-0 border-t border-border pt-3 [@media(max-height:500px)]:pt-2">
+        <div className="mb-2 flex gap-1.5 overflow-x-auto pb-0.5 [@media(max-height:500px)]:hidden">
           {assistantSuggestions.map((suggestion) => (
             <button
               key={suggestion}
               type="button"
               onClick={() => send(suggestion)}
-              className="min-h-9 min-w-fit cursor-pointer rounded-full border border-border bg-card px-3 text-[11px] text-muted-foreground transition hover:border-primary/40 hover:text-primary"
+              className="min-h-11 min-w-fit cursor-pointer rounded-full border border-border bg-card px-3 text-xs text-muted-foreground transition hover:border-primary/40 hover:text-primary"
             >
               {suggestion}
             </button>
@@ -196,20 +229,20 @@ export function Assistant({
             event.preventDefault();
             send(input);
           }}
-          className="flex min-h-[55px] items-center gap-2 rounded-2xl border border-border bg-card py-1.5 pr-1.5 pl-4 transition focus-within:border-primary/50"
+          className="flex min-h-[55px] items-center gap-2 rounded-2xl border border-border bg-card py-1.5 pr-1.5 pl-4 transition focus-within:border-primary/50 [@media(max-height:500px)]:min-h-12"
         >
           <input
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            placeholder="Спросите про стандарт"
-            aria-label="Сообщение проводнику"
-            className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+            placeholder="Задайте вопрос о работе…"
+            aria-label="Сообщение AI-наставнику"
+            className="min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground sm:text-sm"
           />
           <button
             type="submit"
             disabled={!input.trim() || isTyping}
-            aria-label="Отправить"
-            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-primary text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            aria-label="Отправить сообщение"
+            className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl bg-primary text-primary-foreground transition hover:opacity-90 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:cursor-not-allowed disabled:opacity-40"
           >
             <Send className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -226,13 +259,7 @@ function createOpeningMessages(employeeName?: string): AssistantMessage[] {
     {
       id: "m1",
       author: "guide",
-      text: `Привет, ${name}. Я помощник Valle Sanchez на старте. Я отвечаю по базе стандартов и показываю источники, чтобы не выдумывать правила точки.`,
-    },
-    {
-      id: "m2",
-      author: "guide",
-      text:
-        "Можно спросить про эспрессо, молоко, чистку оборудования, зерно или работу в потоке. Если источника нет, я честно отправлю вопрос к наставнику.",
+      text: `${name}, задайте вопрос о работе — отвечу по базе знаний или помогу открыть следующий шаг.`,
     },
   ];
 }

@@ -1,8 +1,15 @@
 import type {
   LearningRoute,
+  LearningRouteDayId,
   LearningRouteStatus,
   LearningTask,
 } from "./learningRouteTypes";
+
+export type ProgressValue = {
+  done: number;
+  total: number;
+  percent: number;
+};
 
 export function getRouteTasks(route?: LearningRoute): LearningTask[] {
   return route?.days.flatMap((day) => day.tasks) ?? [];
@@ -13,13 +20,46 @@ export function getTodayTasks(route?: LearningRoute): LearningTask[] {
 }
 
 export function getNextTask(route?: LearningRoute): LearningTask | undefined {
-  return getRouteTasks(route).find((task) => task.status !== "done");
+  const todayTasks = getTodayTasks(route);
+  const routeTasks = getRouteTasks(route);
+
+  return (
+    todayTasks.find((task) => task.status === "in_progress") ??
+    todayTasks.find((task) => task.status === "todo") ??
+    routeTasks.find((task) => task.status === "in_progress") ??
+    routeTasks.find((task) => task.status === "todo")
+  );
+}
+
+export function calculateTaskProgress(tasks: LearningTask[]): ProgressValue {
+  const total = tasks.length;
+  const done = tasks.filter((task) => task.status === "done").length;
+
+  return {
+    done,
+    total,
+    percent: total === 0 ? 0 : Math.round((done / total) * 100),
+  };
+}
+
+export function getLearningProgressValue(route?: LearningRoute): ProgressValue {
+  return calculateTaskProgress(getRouteTasks(route));
+}
+
+export function getPeriodProgress(
+  route: LearningRoute | undefined,
+  dayId: LearningRouteDayId,
+): ProgressValue & { periodId: LearningRouteDayId } {
+  const tasks = route?.days.find((day) => day.id === dayId)?.tasks ?? [];
+
+  return {
+    ...calculateTaskProgress(tasks),
+    periodId: dayId,
+  };
 }
 
 export function getLearningProgress(route?: LearningRoute): number {
-  const tasks = getRouteTasks(route);
-  const doneTasks = tasks.filter((task) => task.status === "done").length;
-  return tasks.length === 0 ? 0 : Math.round((doneTasks / tasks.length) * 100);
+  return getLearningProgressValue(route).percent;
 }
 
 export function getRouteStatus(route?: LearningRoute): LearningRouteStatus {

@@ -1,23 +1,21 @@
-import { ArrowRight, ChevronRight, HelpCircle, Play } from "lucide-react";
+import { ArrowRight, ChevronRight, HelpCircle } from "lucide-react";
 import type {
   LearningRoute,
   LearningRouteDay,
   LearningTask,
   LearningTaskStatus,
 } from "../../onboarding-agent/model/learningRouteTypes";
+import { getLearningProgressValue } from "../../onboarding-agent/model/onboardingSelectors";
 
 export function JourneyMap({
   route,
   onOpenTask,
-  onUpdateTaskStatus,
 }: {
   route?: LearningRoute;
   onOpenTask: (taskId: string) => void;
-  onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
 }) {
   const tasks = route?.days.flatMap((day) => day.tasks) ?? [];
-  const doneCount = tasks.filter((task) => task.status === "done").length;
-  const progress = tasks.length > 0 ? Math.max(4, Math.round((doneCount / tasks.length) * 100)) : 0;
+  const progress = getLearningProgressValue(route);
 
   return (
     <section
@@ -31,36 +29,36 @@ export function JourneyMap({
         <h1 className="mt-2 font-brand text-4xl leading-none tracking-tight text-foreground sm:text-5xl">
           Мой план
         </h1>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-3 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-sm">
           Весь путь — по этапам. Открывайте детали только тогда, когда они нужны.
         </p>
       </header>
 
-      {route && (
+      {route && tasks.length > 0 && (
         <div className="mb-4 rounded-2xl bg-secondary/75 px-5 py-4">
           <div className="mb-3 flex items-center justify-between gap-4 text-xs text-muted-foreground">
             <span>Учебный прогресс</span>
             <strong className="text-foreground">
-              {doneCount} из {tasks.length}
+              {progress.done} из {progress.total}
             </strong>
           </div>
           <div
-            aria-label={`Выполнено ${progress}% маршрута`}
+            aria-label={`Выполнено ${progress.percent}% маршрута`}
             aria-valuemax={100}
             aria-valuemin={0}
-            aria-valuenow={progress}
+            aria-valuenow={progress.percent}
             className="h-1.5 overflow-hidden rounded-full bg-card"
             role="progressbar"
           >
             <span
               className="block h-full rounded-full bg-primary transition-[width]"
-              style={{ width: `${progress}%` }}
+              style={{ width: `${progress.percent}%` }}
             />
           </div>
         </div>
       )}
 
-      {route ? (
+      {route && tasks.length > 0 ? (
         <div className="grid gap-2">
           {route.days.map((day, index) => (
             <RouteDayTasks
@@ -68,16 +66,19 @@ export function JourneyMap({
               index={index}
               key={day.id}
               onOpenTask={onOpenTask}
-              onUpdateTaskStatus={onUpdateTaskStatus}
               open={index === 0}
             />
           ))}
         </div>
       ) : (
         <div className="rounded-2xl border border-border bg-secondary/50 p-5">
-          <p className="text-sm font-semibold text-foreground">Маршрут появится после диагностики</p>
+          <p className="text-sm font-semibold text-foreground">
+            {route ? "План пока пуст" : "Маршрут появится после диагностики"}
+          </p>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-            Сначала система соберёт ответы и только потом покажет персональные задачи.
+            {route
+              ? "План пока пуст. Обновите страницу или обратитесь к наставнику."
+              : "Сначала система соберёт ответы и только потом покажет персональные задачи."}
           </p>
         </div>
       )}
@@ -89,13 +90,11 @@ function RouteDayTasks({
   day,
   index,
   onOpenTask,
-  onUpdateTaskStatus,
   open,
 }: {
   day: LearningRouteDay;
   index: number;
   onOpenTask: (taskId: string) => void;
-  onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
   open: boolean;
 }) {
   const doneCount = day.tasks.filter((task) => task.status === "done").length;
@@ -108,11 +107,11 @@ function RouteDayTasks({
         </span>
         <span className="min-w-0">
           <strong className="block text-sm font-semibold text-foreground">{day.title}</strong>
-          <small className="mt-0.5 line-clamp-1 block text-[10px] text-muted-foreground">
+          <small className="mt-0.5 line-clamp-1 block text-xs text-muted-foreground sm:text-[10px]">
             {day.goal}
           </small>
         </span>
-        <span className="text-[10px] text-muted-foreground">
+        <span className="text-xs text-muted-foreground sm:text-[10px]">
           {doneCount} / {day.tasks.length}
         </span>
         <ChevronRight
@@ -126,7 +125,6 @@ function RouteDayTasks({
             isCurrent={index === 0 && taskIndex === 0 && task.status !== "done"}
             key={task.id}
             onOpenTask={onOpenTask}
-            onUpdateTaskStatus={onUpdateTaskStatus}
             task={task}
           />
         ))}
@@ -139,18 +137,18 @@ function RouteTask({
   task,
   isCurrent,
   onOpenTask,
-  onUpdateTaskStatus,
 }: {
   task: LearningTask;
   isCurrent: boolean;
   onOpenTask: (taskId: string) => void;
-  onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
 }) {
   return (
-    <article
-      className="grid min-h-[72px] grid-cols-[24px_1fr_20px] items-center gap-3 border-b border-border py-3 last:border-b-0 sm:grid-cols-[24px_1fr_auto_auto_20px]"
+    <button
+      aria-label={`Открыть задачу ${task.title}`}
+      className="grid min-h-[72px] w-full cursor-pointer grid-cols-[24px_1fr_auto_20px] items-center gap-3 border-b border-border py-3 text-left transition last:border-b-0 hover:text-primary focus-visible:outline-3 focus-visible:outline-offset-[-2px] focus-visible:outline-ring/45"
       id={`route-task-${task.id}`}
-      tabIndex={-1}
+      onClick={() => onOpenTask(task.id)}
+      type="button"
     >
       <span
         className={
@@ -162,43 +160,18 @@ function RouteTask({
         }
         aria-hidden="true"
       />
-      <button
-        className="min-w-0 cursor-pointer text-left focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
-        onClick={() => onOpenTask(task.id)}
-        type="button"
-      >
-        <small className="font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-primary">
-          {task.status === "in_progress" ? "Следующая" : getTaskTypeLabel(task.type)}
+      <span className="min-w-0">
+        <small className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-primary">
+          {isCurrent ? "Следующая" : task.status === "in_progress" ? "В процессе" : getTaskTypeLabel(task.type)}
         </small>
         <strong className="mt-0.5 block text-sm leading-snug text-foreground">{task.title}</strong>
-        <span className="mt-0.5 block text-[10px] text-muted-foreground">
-          {task.estimatedMinutes} мин
+        <span className="mt-0.5 block text-xs text-muted-foreground sm:text-[10px]">
+          {getTaskTypeLabel(task.type)} · {task.estimatedMinutes} мин
         </span>
-      </button>
+      </span>
       <RouteStatusPill status={task.status} />
-      <div className="hidden sm:block">
-        <TaskStatusAction
-          onUpdateTaskStatus={onUpdateTaskStatus}
-          status={task.status}
-          taskId={task.id}
-        />
-      </div>
-      <button
-        aria-label={`Открыть задачу ${task.title}`}
-        className="cursor-pointer text-muted-foreground transition hover:text-primary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
-        onClick={() => onOpenTask(task.id)}
-        type="button"
-      >
-        <ArrowRight className="h-4 w-4" aria-hidden="true" />
-      </button>
-      <div className="col-span-3 flex justify-end gap-3 sm:hidden">
-        <TaskStatusAction
-          onUpdateTaskStatus={onUpdateTaskStatus}
-          status={task.status}
-          taskId={task.id}
-        />
-      </div>
-    </article>
+      <ArrowRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+    </button>
   );
 }
 
@@ -211,76 +184,9 @@ function RouteStatusPill({ status }: { status: LearningTaskStatus }) {
   };
 
   return (
-    <span className="hidden items-center gap-1.5 text-[10px] text-muted-foreground sm:inline-flex">
+    <span className="hidden items-center gap-1.5 text-xs text-muted-foreground sm:inline-flex sm:text-[10px]">
       {status === "blocked" && <HelpCircle className="h-3 w-3 text-primary" aria-hidden="true" />}
       {label[status]}
-    </span>
-  );
-}
-
-function TaskStatusAction({
-  taskId,
-  status,
-  onUpdateTaskStatus,
-}: {
-  taskId: string;
-  status: LearningTaskStatus;
-  onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
-}) {
-  if (status === "done") {
-    return <span className="text-xs text-muted-foreground">Выполнено</span>;
-  }
-
-  if (status === "blocked") {
-    return (
-      <button
-        className="min-h-8 cursor-pointer text-xs font-semibold text-primary"
-        onClick={() => onUpdateTaskStatus?.(taskId, "in_progress")}
-        type="button"
-      >
-        Вернуться
-      </button>
-    );
-  }
-
-  if (status === "in_progress") {
-    return (
-      <span className="grid gap-1 text-right">
-        <button
-          className="min-h-8 cursor-pointer text-xs font-semibold text-primary"
-          onClick={() => onUpdateTaskStatus?.(taskId, "done")}
-          type="button"
-        >
-          Завершить
-        </button>
-        <button
-          className="cursor-pointer text-[11px] text-muted-foreground"
-          onClick={() => onUpdateTaskStatus?.(taskId, "blocked")}
-          type="button"
-        >
-          Есть проблема
-        </button>
-      </span>
-    );
-  }
-
-  return (
-    <span className="grid gap-1 text-right">
-      <button
-        className="inline-flex min-h-8 cursor-pointer items-center gap-1 text-xs font-semibold text-primary"
-        onClick={() => onUpdateTaskStatus?.(taskId, "in_progress")}
-        type="button"
-      >
-        <Play className="h-3.5 w-3.5" />
-        Начать
-      </button>
-      <button
-        className="cursor-pointer text-[11px] text-muted-foreground"
-        onClick={() => onUpdateTaskStatus?.(taskId, "blocked")}
-        type="button"
-      >
-        Есть проблема
-      </button>
     </span>
   );
 }

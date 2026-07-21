@@ -2,12 +2,19 @@ import type {
   LearningRoute,
   LearningTask,
 } from "../../onboarding-agent/model/learningRouteTypes";
-import { getLearningProgress, getNextTask, getRouteTasks, getTodayTasks } from "../../onboarding-agent/model/onboardingSelectors";
+import {
+  calculateTaskProgress,
+  getLearningProgressValue,
+  getNextTask,
+  getRouteTasks,
+  getTodayTasks,
+} from "../../onboarding-agent/model/onboardingSelectors";
 
 export type EmployeeFocusSummary = {
   todayTasks: LearningTask[];
   completedTodayCount: number;
   totalTodayCount: number;
+  todayProgressPercent: number;
   nextTask?: LearningTask;
   routeCompletedCount: number;
   routeTaskCount: number;
@@ -19,16 +26,17 @@ export function getEmployeeFocusSummary(
 ): EmployeeFocusSummary {
   const todayTasks = getTodayTasks(route);
   const routeTasks = getRouteTasks(route);
-  const completedTodayCount = todayTasks.filter((task) => task.status === "done").length;
-  const routeCompletedCount = routeTasks.filter((task) => task.status === "done").length;
+  const todayProgress = calculateTaskProgress(todayTasks);
+  const routeProgress = getLearningProgressValue(route);
 
   return {
     todayTasks,
-    completedTodayCount,
-    totalTodayCount: todayTasks.length,
+    completedTodayCount: todayProgress.done,
+    totalTodayCount: todayProgress.total,
+    todayProgressPercent: todayProgress.percent,
     nextTask: getNextTask(route),
-    routeCompletedCount,
+    routeCompletedCount: routeProgress.done,
     routeTaskCount: routeTasks.length,
-    routeProgressPercent: getLearningProgress(route),
+    routeProgressPercent: routeProgress.percent,
   };
 }

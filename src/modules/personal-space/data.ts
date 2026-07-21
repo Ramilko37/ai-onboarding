@@ -157,8 +157,8 @@ export const initialTodayTasks: TodayTask[] = [
 
 export const assistantSuggestions = [
   "С чего начать сегодня?",
-  "Что делать с быстрым проливом?",
-  "Что важно в первый день?",
+  "Как понять, что молоко готово?",
+  "Что делать, если эспрессо течёт быстро?",
 ];
 
 export const assistantOpening: AssistantMessage[] = [

@@ -22,13 +22,13 @@ export function TodayFocus({
 }) {
   const focus = getEmployeeFocusSummary(route);
   const tasks = focus.todayTasks;
-  const visibleTasks = tasks.filter((task) => task.status !== "done").slice(0, 3);
-  const nextTask = visibleTasks[0];
+  const nextTask = focus.nextTask?.dayId === "day_1" ? focus.nextTask : tasks.find((task) => task.status !== "done");
+  const visibleTasks = [
+    ...(nextTask ? [nextTask] : []),
+    ...tasks.filter((task) => task.id !== nextTask?.id && task.status !== "done"),
+  ].slice(0, 3);
   const doneCount = focus.completedTodayCount;
-  const progressPercent =
-    focus.totalTodayCount > 0
-      ? Math.max(4, Math.round((doneCount / focus.totalTodayCount) * 100))
-      : 100;
+  const progressPercent = focus.todayProgressPercent;
   const name = profile?.name.split(" ")[0] ?? "София";
 
   function update(id: string, status: LearningTaskStatus) {
@@ -45,7 +45,7 @@ export function TodayFocus({
           <h1 className="mt-2 font-brand text-4xl leading-none tracking-tight text-foreground sm:text-5xl">
             Сегодня
           </h1>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-3 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-sm">
             Добрый день, {name}. Продолжим с того места, где остановились.
           </p>
         </div>
@@ -55,7 +55,7 @@ export function TodayFocus({
             <strong className="font-brand text-2xl font-medium leading-none text-primary sm:text-3xl">
               {doneCount}
             </strong>
-            <span className="text-[10px] text-muted-foreground sm:text-xs">
+            <span className="text-xs text-muted-foreground">
               из {focus.totalTodayCount} задач
             </span>
           </div>
@@ -81,7 +81,7 @@ export function TodayFocus({
             <Check className="h-6 w-6" aria-hidden="true" />
           </span>
           <p className="mt-4 font-brand text-3xl leading-tight text-foreground">На сегодня всё</p>
-          <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
+          <p className="mx-auto mt-2 max-w-md text-base leading-relaxed text-muted-foreground sm:text-sm">
             На сегодня обязательных задач не осталось. Можно открыть полный маршрут и
             посмотреть следующий контроль.
           </p>
@@ -158,7 +158,7 @@ function TaskCard({
           {featured ? <Play className="h-5 w-5" /> : <BookOpen className="h-4 w-4" />}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="mb-1 flex flex-wrap items-center gap-3 text-[10px] text-muted-foreground">
+          <span className="mb-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
             <span>{getTaskTypeLabel(task.type)}</span>
             <span className="inline-flex items-center gap-1">
               <Clock className="h-3 w-3" aria-hidden="true" />
@@ -169,7 +169,7 @@ function TaskCard({
             {task.title}
           </strong>
           {featured ? (
-            <span className="mt-2 block max-w-xl text-xs leading-relaxed text-muted-foreground">
+            <span className="mt-2 line-clamp-1 block max-w-xl text-sm leading-relaxed text-muted-foreground sm:line-clamp-none sm:text-xs">
               {task.description}
             </span>
           ) : (
@@ -207,7 +207,7 @@ function StatusLabel({ status }: { status: LearningTaskStatus }) {
   };
 
   return (
-    <span className="mt-2 inline-flex items-center gap-1.5 text-[10px] text-muted-foreground">
+    <span className="mt-2 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
       <span
         className={
           status === "done"

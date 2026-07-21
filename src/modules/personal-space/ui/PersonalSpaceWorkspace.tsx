@@ -6,12 +6,14 @@ import {
   BookOpen,
   Check,
   Compass,
+  X,
   Map,
   Send,
   Sparkles,
   Sun,
 } from "lucide-react";
-import { useRef, useState, type KeyboardEvent } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/shared/ui/mayak";
 import type {
   LearningTask,
@@ -20,7 +22,11 @@ import type {
 } from "../../onboarding-agent/model/learningRouteTypes";
 import { getEmployeeFocusSummary } from "../lib/getEmployeeFocusSummary";
 import {
-  getNextWorkspaceTab,
+  getTaskHref,
+  getTaskIdFromPathname,
+  getWorkspaceHref,
+  getWorkspaceTabFromParam,
+  getWorkspaceViewFromPathname,
   workspaceTabs,
   type WorkspaceTabId,
 } from "../lib/workspaceNavigation";
@@ -35,8 +41,6 @@ const tabIcons = {
   mentor: Compass,
 } satisfies Record<WorkspaceTabId, typeof Sun>;
 
-type WorkspaceViewId = WorkspaceTabId | "task";
-
 export function PersonalSpaceWorkspace({
   profile,
   route,
@@ -48,109 +52,118 @@ export function PersonalSpaceWorkspace({
   onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
   onCreateEscalation?: (question: string) => void;
 }) {
-  const [activeTab, setActiveTab] = useState<WorkspaceViewId>("today");
-  const [previousTab, setPreviousTab] = useState<WorkspaceTabId>("today");
-  const [selectedTaskId, setSelectedTaskId] = useState<string | undefined>();
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeTab = getWorkspaceViewFromPathname(pathname);
+  const sourceTab = getWorkspaceTabFromParam(searchParams.get("from"));
+  const selectedTaskId = getTaskIdFromPathname(pathname);
   const [isReasonOpen, setIsReasonOpen] = useState(false);
-  const tabRefs = useRef<Partial<Record<WorkspaceTabId, HTMLButtonElement | null>>>({});
+  const mobileReasonTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const desktopReasonTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const reasonDialogRef = useRef<HTMLElement | null>(null);
   const focus = getEmployeeFocusSummary(route);
-  const selectedTask = getSelectedTask(route, selectedTaskId) ?? focus.nextTask ?? focus.todayTasks[0];
+  const selectedTask = activeTab === "task" ? getSelectedTask(route, selectedTaskId) : undefined;
 
-  function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
-    if (activeTab === "task") {
+  useEffect(() => {
+    if (!isReasonOpen) {
       return;
     }
 
-    const nextTab = getNextWorkspaceTab(activeTab, event.key);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
 
-    if (!nextTab) {
-      return;
+    function handleKeyDown(event: globalThis.KeyboardEvent) {
+      if (event.key === "Escape") {
+        closeReasonDialog();
+        return;
+      }
+
+      if (event.key !== "Tab" || !reasonDialogRef.current) {
+        return;
+      }
+
+      const focusableElements = Array.from(
+        reasonDialogRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (!firstElement || !lastElement) {
+        return;
+      }
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
     }
 
-    event.preventDefault();
-    setActiveTab(nextTab);
-    tabRefs.current[nextTab]?.focus();
-  }
+    document.addEventListener("keydown", handleKeyDown);
+    requestAnimationFrame(() => reasonDialogRef.current?.focus());
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isReasonOpen]);
 
   function panelClass(tabId: WorkspaceTabId, desktopDisplay = "lg:block") {
     return activeTab === tabId ? cn("contents", desktopDisplay) : "hidden";
   }
 
-  function handleOpenTask(taskId: string) {
-    if (activeTab !== "task") {
-      setPreviousTab(activeTab);
-    }
-    setSelectedTaskId(taskId);
-    setActiveTab("task");
+  function handleOpenTask(taskId: string, from?: WorkspaceTabId) {
+    const fromTab = from ?? (activeTab === "task" ? sourceTab : activeTab);
+    router.push(getTaskHref(taskId, fromTab as WorkspaceTabId));
     requestAnimationFrame(() => document.getElementById("task-detail")?.focus());
   }
 
   function handleOpenTab(tabId: WorkspaceTabId) {
-    setActiveTab(tabId);
-    setSelectedTaskId(undefined);
+    router.push(getWorkspaceHref(tabId));
     setIsReasonOpen(false);
   }
 
+  function closeReasonDialog() {
+    setIsReasonOpen(false);
+    requestAnimationFrame(() => {
+      const visibleTrigger = [mobileReasonTriggerRef.current, desktopReasonTriggerRef.current].find(
+        (node) => node && node.getClientRects().length > 0,
+      );
+      visibleTrigger?.focus();
+    });
+  }
+
   return (
-    <section className="relative min-w-0" aria-label="Пространство развития сотрудника">
-      <div
-        aria-label="Разделы личного кабинета"
-        className={cn(
-          "mb-3 hidden h-14 items-stretch justify-center gap-1 border-b border-border/80 bg-card/80 px-3 backdrop-blur-sm lg:flex",
-          activeTab === "task" && "lg:hidden",
-        )}
-        role="tablist"
-      >
-        {workspaceTabs.map((tab) => {
-          const Icon = tabIcons[tab.id];
-          const isActive = activeTab === tab.id;
-
-          return (
-            <button
-              aria-controls={`${tab.id}-panel`}
-              aria-selected={isActive}
-              className={cn(
-                "relative inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 px-5 text-sm font-medium text-muted-foreground transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
-                "after:absolute after:right-5 after:bottom-0 after:left-5 after:h-0.5 after:bg-transparent after:transition",
-                isActive
-                  ? "text-primary after:bg-primary"
-                  : "hover:text-foreground",
-              )}
-              id={`${tab.id}-tab`}
-              key={tab.id}
-              onClick={() => handleOpenTab(tab.id)}
-              onKeyDown={handleTabKeyDown}
-              ref={(node) => {
-                tabRefs.current[tab.id] = node;
-              }}
-              role="tab"
-              tabIndex={isActive ? 0 : -1}
-              type="button"
-            >
-              <Icon className="h-4 w-4" aria-hidden="true" />
-              {tab.label}
-            </button>
-          );
-        })}
-      </div>
-
+    <section
+      className={cn(
+        "relative mx-auto w-full max-w-[1224px] min-w-0",
+        activeTab !== "mentor" && activeTab !== "task" && "pb-[calc(var(--mobile-bottom-offset)+1rem)] lg:pb-0",
+      )}
+      aria-label="Пространство развития сотрудника"
+    >
       <div className="grid min-w-0 gap-3">
         {activeTab === "task" && selectedTask && (
           <section aria-label="Задача маршрута" className="contents">
             <TaskDetail
               task={selectedTask}
-              onBack={() => {
-                setActiveTab(previousTab);
-                requestAnimationFrame(() => tabRefs.current[previousTab]?.focus());
-              }}
+              onBack={() => handleOpenTab(sourceTab)}
               onOpenMentor={() => handleOpenTab("mentor")}
               onUpdateTaskStatus={onUpdateTaskStatus}
             />
           </section>
         )}
 
+        {activeTab === "task" && !selectedTask && (
+          <TaskNotFound onBack={() => handleOpenTab(sourceTab)} />
+        )}
+
         <section
-          aria-labelledby="route-tab"
+          aria-label="Мой план"
           className={panelClass("route")}
           id="route-panel"
           role="tabpanel"
@@ -159,13 +172,12 @@ export function PersonalSpaceWorkspace({
             <JourneyMap
               route={route}
               onOpenTask={handleOpenTask}
-              onUpdateTaskStatus={onUpdateTaskStatus}
             />
           </div>
         </section>
 
         <section
-          aria-labelledby="mentor-tab"
+          aria-label="Наставник"
           className={panelClass(
             "mentor",
             "lg:block",
@@ -174,12 +186,16 @@ export function PersonalSpaceWorkspace({
           role="tabpanel"
         >
           <div className="order-3 min-w-0 lg:order-none">
-            <Assistant profile={profile} route={route} onCreateEscalation={onCreateEscalation} />
+            <Assistant
+              profile={profile}
+              route={route}
+              onCreateEscalation={onCreateEscalation}
+            />
           </div>
         </section>
 
         <section
-          aria-labelledby="today-tab"
+          aria-label="Сегодня"
           className={panelClass(
             "today",
             "lg:grid lg:grid-cols-[minmax(0,1.65fr)_minmax(260px,0.75fr)] lg:items-start lg:gap-6",
@@ -195,6 +211,17 @@ export function PersonalSpaceWorkspace({
               onUpdateTaskStatus={onUpdateTaskStatus}
             />
           </div>
+
+          <button
+            ref={mobileReasonTriggerRef}
+            className="order-5 flex min-h-11 w-full cursor-pointer items-center gap-2 rounded-2xl border border-border bg-card/90 px-4 text-left text-sm font-medium text-primary shadow-sm transition hover:bg-primary/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 lg:hidden"
+            onClick={() => setIsReasonOpen(true)}
+            type="button"
+          >
+            <Sparkles className="h-4 w-4" aria-hidden="true" />
+            Почему такой план?
+            <ArrowRight className="ml-auto h-4 w-4" aria-hidden="true" />
+          </button>
 
           <aside className="hidden grid-cols-1 gap-3 lg:grid">
             <article className="rounded-2xl bg-deep-surface p-6 text-deep-foreground shadow-[var(--shadow-card)]">
@@ -212,7 +239,7 @@ export function PersonalSpaceWorkspace({
               </p>
               <button
                 className="mt-5 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-card px-4 text-sm font-semibold text-foreground transition hover:bg-secondary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
-                onClick={() => handleOpenTab("mentor")}
+              onClick={() => handleOpenTab("mentor")}
                 type="button"
               >
                 Спросить наставника
@@ -221,6 +248,7 @@ export function PersonalSpaceWorkspace({
             </article>
 
             <button
+              ref={desktopReasonTriggerRef}
               className="flex min-h-13 w-full cursor-pointer items-center gap-2 rounded-xl px-3 text-left text-sm font-medium text-primary transition hover:bg-primary/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
               onClick={() => setIsReasonOpen(true)}
               type="button"
@@ -236,7 +264,7 @@ export function PersonalSpaceWorkspace({
       {activeTab !== "task" && (
         <nav
           aria-label="Основные разделы"
-          className="fixed inset-x-0 bottom-0 z-30 grid h-[68px] grid-cols-3 border-t border-border bg-card/95 px-4 pb-[env(safe-area-inset-bottom)] shadow-[0_-14px_30px_color-mix(in_oklch,var(--accent-foreground)_10%,transparent)] backdrop-blur-xl lg:hidden"
+          className="fixed inset-x-0 bottom-0 z-30 grid h-[calc(var(--mobile-nav-height)+var(--mobile-safe-bottom))] grid-cols-3 border-t border-border bg-card/95 px-4 pb-[var(--mobile-safe-bottom)] shadow-[0_-10px_24px_color-mix(in_oklch,var(--accent-foreground)_8%,transparent)] backdrop-blur-xl lg:hidden"
         >
           {workspaceTabs.map((tab) => {
             const Icon = tabIcons[tab.id];
@@ -246,7 +274,7 @@ export function PersonalSpaceWorkspace({
               <button
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1 text-[10px] font-medium transition focus-visible:outline-3 focus-visible:outline-offset-[-3px] focus-visible:outline-ring/45",
+                  "flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1 text-xs font-medium leading-none transition focus-visible:outline-3 focus-visible:outline-offset-[-3px] focus-visible:outline-ring/45",
                   isActive ? "text-primary" : "text-muted-foreground",
                 )}
                 key={tab.id}
@@ -267,16 +295,26 @@ export function PersonalSpaceWorkspace({
           role="presentation"
           onClick={(event) => {
             if (event.target === event.currentTarget) {
-              setIsReasonOpen(false);
+              closeReasonDialog();
             }
           }}
         >
           <section
             aria-modal="true"
             aria-labelledby="route-reason-title"
-            className="w-full max-w-xl rounded-t-3xl border border-border bg-card p-6 shadow-[0_-24px_70px_color-mix(in_oklch,var(--accent-foreground)_18%,transparent)] sm:rounded-3xl"
+            className="relative max-h-[calc(100dvh-1rem)] w-full max-w-[680px] overflow-y-auto overscroll-contain rounded-t-3xl border border-border bg-card p-6 pb-[calc(1.5rem+var(--mobile-safe-bottom))] shadow-[0_-24px_70px_color-mix(in_oklch,var(--accent-foreground)_18%,transparent)] outline-none [-webkit-overflow-scrolling:touch] sm:rounded-3xl lg:max-h-[min(720px,calc(100dvh-2rem))] lg:pb-6"
+            ref={reasonDialogRef}
             role="dialog"
+            tabIndex={-1}
           >
+            <button
+              aria-label="Закрыть"
+              className="absolute right-4 top-4 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition hover:bg-secondary hover:text-foreground focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+              onClick={closeReasonDialog}
+              type="button"
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
             <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Sparkles className="h-5 w-5" aria-hidden="true" />
             </span>
@@ -287,8 +325,7 @@ export function PersonalSpaceWorkspace({
               Почему такой план?
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Диагностика изменила порядок тем: в начало попали задачи, которые быстрее
-              помогут выйти на спокойную смену. Это не оценка и не экзамен.
+              Диагностика помогла изменить порядок тем — это не оценка и не экзамен.
             </p>
             <div className="mt-5 grid gap-2 sm:grid-cols-2">
               <ReasonCard title="Уже знакомо" items={getFamiliarTopics(route)} tone="calm" />
@@ -297,7 +334,7 @@ export function PersonalSpaceWorkspace({
             <div className="mt-5 flex gap-2">
               <button
                 className="inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center rounded-xl bg-secondary px-4 text-sm font-semibold text-secondary-foreground"
-                onClick={() => setIsReasonOpen(false)}
+                onClick={closeReasonDialog}
                 type="button"
               >
                 Понятно
@@ -336,12 +373,12 @@ function TaskDetail({
 
   return (
     <article
-      className="mx-auto w-full max-w-[760px] rounded-3xl border border-border bg-card/90 p-5 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8 lg:p-10"
+      className="mx-auto w-full max-w-[760px] rounded-3xl border border-border bg-card/90 p-4 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8 lg:p-10"
       id="task-detail"
       tabIndex={-1}
     >
       <button
-        className="inline-flex min-h-10 cursor-pointer items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-primary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+        className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-primary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
         onClick={onBack}
         type="button"
       >
@@ -349,17 +386,17 @@ function TaskDetail({
         К задачам
       </button>
 
-      <div className="py-5 sm:py-7">
-        <span className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+      <div className="py-3 sm:py-7">
+        <span className="mb-5 hidden h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary sm:flex">
           <BookOpen className="h-5 w-5" aria-hidden="true" />
         </span>
         <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
           {getTaskTypeLabel(task.type)} · {task.estimatedMinutes} минут
         </p>
-        <h1 className="mt-2 max-w-2xl font-brand text-4xl leading-[1.05] tracking-tight text-foreground sm:text-5xl">
+        <h1 className="mt-1 max-w-2xl font-brand text-[clamp(1.875rem,8vw,2rem)] leading-[1.08] tracking-tight text-foreground sm:mt-2 sm:text-5xl sm:leading-[1.05]">
           {task.title}
         </h1>
-        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-4 sm:text-sm">
           {task.description}
         </p>
       </div>
@@ -379,7 +416,7 @@ function TaskDetail({
               </span>
               <div>
                 <strong className="text-sm text-foreground">{item.title}</strong>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{item.text}</p>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground sm:text-xs">{item.text}</p>
               </div>
             </li>
           ))}
@@ -392,23 +429,31 @@ function TaskDetail({
           <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
             Источник
           </p>
-          <p className="truncate text-xs font-semibold text-primary">
+          <p className="truncate text-sm font-semibold text-primary sm:text-xs">
             {task.source ?? "База знаний Valle Sanchez"}
           </p>
         </div>
       </div>
 
-      <div className="sticky bottom-0 -mx-5 mt-5 flex gap-2 bg-card/95 px-5 pt-3 pb-1 backdrop-blur sm:static sm:mx-0 sm:bg-transparent sm:p-0">
+      <div className="-mx-5 mt-5 flex gap-2 bg-card/95 px-5 pt-3 pb-[var(--mobile-safe-bottom)] backdrop-blur sm:static sm:mx-0 sm:bg-transparent sm:p-0">
         <button
-          className="inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
-          onClick={() => onUpdateTaskStatus?.(task.id, isStarted ? "done" : "in_progress")}
+          className="inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:cursor-default disabled:opacity-60"
+          disabled={isDone}
+          onClick={() => {
+            const nextStatus = isStarted ? "done" : "in_progress";
+            onUpdateTaskStatus?.(task.id, nextStatus);
+            if (nextStatus === "done") {
+              requestAnimationFrame(onBack);
+            }
+          }}
           type="button"
         >
           {isDone ? "Задача выполнена" : isStarted ? "Завершить задачу" : "Начать задачу"}
           {isStarted ? <Check className="h-4 w-4" aria-hidden="true" /> : <ArrowRight className="h-4 w-4" aria-hidden="true" />}
         </button>
         <button
-          className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-xl border border-border bg-card px-4 text-sm font-semibold text-muted-foreground transition hover:border-primary/40 hover:text-primary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+          className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-xl border border-border bg-card px-4 text-sm font-semibold text-muted-foreground transition hover:border-primary/40 hover:text-primary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 disabled:cursor-default disabled:opacity-50"
+          disabled={isDone}
           onClick={() => {
             onUpdateTaskStatus?.(task.id, "blocked");
             onOpenMentor();
@@ -416,6 +461,39 @@ function TaskDetail({
           type="button"
         >
           Есть проблема
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function TaskNotFound({ onBack }: { onBack: () => void }) {
+  return (
+    <article className="mx-auto w-full max-w-[760px] rounded-3xl border border-border bg-card/90 p-6 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8 lg:p-10">
+      <button
+        className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-primary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+        onClick={onBack}
+        type="button"
+      >
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+        К задачам
+      </button>
+      <div className="py-8">
+        <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
+          Маршрут
+        </p>
+        <h1 className="mt-2 font-brand text-[clamp(1.875rem,8vw,2rem)] leading-tight tracking-tight text-foreground sm:text-4xl">
+          Задача не найдена
+        </h1>
+        <p className="mt-3 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-sm">
+          Возможно, ссылка устарела или маршрут был пересобран. Вернитесь к сегодняшним задачам.
+        </p>
+        <button
+          className="mt-6 inline-flex min-h-11 cursor-pointer items-center justify-center rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground"
+          onClick={onBack}
+          type="button"
+        >
+          Открыть задачи
         </button>
       </div>
     </article>

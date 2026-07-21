@@ -26,7 +26,7 @@ function PersonalSpaceContent({
   onCreateEscalation?: (question: string) => void;
 }) {
   return (
-    <div className="grid w-full min-w-0 gap-3 pb-20 lg:pb-0">
+    <div className="grid w-full min-w-0 gap-3">
       {!route && <HeroGreeting profile={profile} route={route} />}
       <PersonalSpaceWorkspace
         profile={profile}
