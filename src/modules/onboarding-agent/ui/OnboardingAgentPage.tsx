@@ -3,7 +3,6 @@
 import { Coffee } from "lucide-react";
 import { MayakShell, MayakTopBar } from "@/shared/ui/mayak";
 import { useOnboardingAgentState } from "../model/useOnboardingAgentState";
-import { DiagnosticResultStep } from "./steps/DiagnosticResultStep";
 import { DiagnosticStep } from "./steps/DiagnosticStep";
 import { LearningRouteStep } from "./steps/LearningRouteStep";
 import { WelcomeStep } from "./steps/WelcomeStep";
@@ -58,22 +57,11 @@ export function OnboardingAgentPage() {
           />
         )}
 
-        {state.currentStep === "diagnostic_result" &&
-          state.employee &&
-          state.diagnosticResult && (
-            <DiagnosticResultStep
-              employee={state.employee}
-              result={state.diagnosticResult}
-              onBackToDiagnostic={() => actions.goToStep("diagnostic")}
-              onBuildRoute={actions.buildLearningRoute}
-            />
-          )}
-
         {state.currentStep === "learning_route" && state.employee && state.learningRoute && (
           <LearningRouteStep
             employee={state.employee}
             route={state.learningRoute}
-            onBack={() => actions.goToStep("diagnostic_result")}
+            onBack={() => actions.goToStep("diagnostic")}
             onUpdateTaskStatus={actions.updateLearningTaskStatus}
             onCreateEscalation={actions.createEscalation}
           />

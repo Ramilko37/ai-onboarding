@@ -117,6 +117,55 @@ test("restoreOnboardingState repairs welcome state without an employee profile",
   assert.equal(restoredState.selectedGrade, "horeca_experience");
 });
 
+test("restoreOnboardingState skips diagnostic result screen when a route can be built", () => {
+  const employee: EmployeeProfile = {
+    id: "barista-restored-1",
+    name: "София Кузнецова",
+    role: "barista",
+    grade: "horeca_experience",
+    location: "Valle Sanchez · Арбат",
+    startDate: "2026-07-21",
+  };
+  const questions = getDiagnosticQuestions({
+    role: employee.role,
+    grade: employee.grade,
+  });
+  const answers: DiagnosticAnswer[] = questions.map((question) => {
+    const selectedOption = question.options.find((option) => option.isCorrect);
+    assert.ok(selectedOption);
+    return {
+      questionId: question.id,
+      selectedOptionId: selectedOption.id,
+      isCorrect: selectedOption.isCorrect,
+      topicId: question.topicId,
+      weight: question.weight,
+    };
+  });
+  const diagnosticResult = calculateDiagnosticResult({
+    employee,
+    questions,
+    answers,
+    topics: competencyTopics,
+  });
+
+  const restoredState = restoreOnboardingState({
+    employee,
+    selectedRole: employee.role,
+    selectedGrade: employee.grade,
+    currentStep: "diagnostic_result",
+    diagnosticQuestions: questions,
+    diagnosticAnswers: answers,
+    diagnosticResult,
+    learningRoute: null,
+    currentQuestionIndex: questions.length - 1,
+    escalations: [],
+  });
+
+  assert.equal(restoredState.currentStep, "learning_route");
+  assert.equal(restoredState.learningRoute?.employeeId, employee.id);
+  assert.equal(restoredState.learningRoute?.days.length, 3);
+});
+
 test("calculateDiagnosticResult scores topics and keeps required topics mandatory", () => {
   const employee: EmployeeProfile = {
     id: "emp-1",

@@ -34,7 +34,7 @@ Current employee flow:
 
 1. Prefilled welcome for Sofia, her role, location and start date.
 2. One click to the first of fourteen diagnostic questions.
-3. Short neutral focus summary: familiar topics and topics to reinforce; no score, risk or readiness conclusion in employee UI.
+3. Completing the last diagnostic question immediately builds the personal route.
 4. `Сегодня` workspace with a next action and at most three Day 1 tasks.
 5. Collapsible full route by period, source-backed mentor panel, and secondary knowledge constellation.
 6. One route task state (`todo`, `in_progress`, `done`, `blocked`) persists into the manager projection.
@@ -170,6 +170,7 @@ Latest completed verification on 2026-07-18:
 - 2026-07-18 browser smoke: completed the full barista diagnostic, generated a route, changed a Today task status, and confirmed the same status in the full route. Verified 375 px and 768 px stacked layouts plus 1024 px, 1280 px, and 1440 px tabbed layouts with no horizontal overflow, correct keyboard navigation, and no browser console errors.
 - 2026-07-18 knowledge constellation: verified a generated route at 375 px and 1280 px; topic nodes are keyboard-selectable, full topic details remain outside nodes, and the task action focuses the matching route card with no horizontal overflow or browser console errors.
 - 2026-07-21 UX simplification: baseline tests and production build passed after restoring the standard demo diagnostic to fourteen questions, replacing employee score/risk output with topic focus, unifying task status projections and simplifying the manager view to learning progress and help signals.
+- 2026-07-21 diagnostic completion: the intermediate focus/result screen was removed; finishing question 14 now opens the `Сегодня` task workspace directly. Verified with `npm run test:diagnostic`, `npx tsc --noEmit --ignoreDeprecations 6.0`, browser flow on `localhost:3000`, and `npm run build`.
 - `npm run build` may need network access because `app/layout.tsx` currently loads Geist and Geist Mono through `next/font/google`.
 
 ## Explicitly Not Implemented

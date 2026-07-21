@@ -98,6 +98,14 @@ export function restoreOnboardingState(parsedState: Partial<OnboardingState>): O
     (restoredStep === "welcome" || restoredStep === "employee_profile"
       ? initialState.employee
       : null);
+  const learningRoute =
+    migrateRouteStatuses(parsedState.learningRoute ?? null) ??
+    (employee && parsedState.diagnosticResult
+      ? buildPersonalLearningRoute({
+          employee,
+          result: parsedState.diagnosticResult,
+        })
+      : null);
 
   return {
     ...initialState,
@@ -114,8 +122,12 @@ export function restoreOnboardingState(parsedState: Partial<OnboardingState>): O
         ? parsedState.currentQuestionIndex
         : 0,
     escalations: Array.isArray(parsedState.escalations) ? parsedState.escalations : [],
-    learningRoute: migrateRouteStatuses(parsedState.learningRoute ?? null),
-    currentStep: restoredStep,
+    learningRoute,
+    currentStep: learningRoute
+      ? "learning_route"
+      : restoredStep === "diagnostic_result"
+        ? "welcome"
+        : restoredStep,
   };
 }
 
@@ -268,16 +280,33 @@ export function useOnboardingAgentState() {
             return previous;
           }
 
+          const diagnosticResult = calculateDiagnosticResult({
+            employee: previous.employee,
+            questions: previous.diagnosticQuestions,
+            answers: previous.diagnosticAnswers,
+            topics: competencyTopics
+          });
+          const learningRoute = buildPersonalLearningRoute({
+            employee: previous.employee,
+            result: diagnosticResult
+          });
+
+          if (previous.employee.role === "barista") {
+            saveLiveManagerRecord(
+              buildLiveManagerRecord({
+                employee: previous.employee,
+                result: diagnosticResult,
+                route: learningRoute,
+                escalations: previous.escalations,
+              })
+            );
+          }
+
           return {
             ...previous,
-            currentStep: "diagnostic_result",
-            diagnosticResult: calculateDiagnosticResult({
-              employee: previous.employee,
-              questions: previous.diagnosticQuestions,
-              answers: previous.diagnosticAnswers,
-              topics: competencyTopics
-            }),
-            learningRoute: null
+            currentStep: "learning_route",
+            diagnosticResult,
+            learningRoute
           };
         });
       },
