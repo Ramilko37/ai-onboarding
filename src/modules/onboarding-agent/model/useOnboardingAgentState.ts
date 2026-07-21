@@ -98,6 +98,23 @@ export function restoreOnboardingState(parsedState: Partial<OnboardingState>): O
     (restoredStep === "welcome" || restoredStep === "employee_profile"
       ? initialState.employee
       : null);
+  const parsedDiagnosticQuestions = Array.isArray(parsedState.diagnosticQuestions)
+    ? parsedState.diagnosticQuestions
+    : [];
+  const hasOutdatedActiveDiagnostic =
+    Boolean(employee) &&
+    restoredStep === "diagnostic" &&
+    !parsedState.diagnosticResult &&
+    !diagnosticQuestionSetMatchesCurrent(
+      parsedDiagnosticQuestions,
+      employee as EmployeeProfile,
+    );
+  const diagnosticQuestions = hasOutdatedActiveDiagnostic ? [] : parsedDiagnosticQuestions;
+  const diagnosticAnswers = hasOutdatedActiveDiagnostic
+    ? []
+    : Array.isArray(parsedState.diagnosticAnswers)
+      ? parsedState.diagnosticAnswers
+      : [];
   const learningRoute =
     migrateRouteStatuses(parsedState.learningRoute ?? null) ??
     (employee && parsedState.diagnosticResult
@@ -111,14 +128,12 @@ export function restoreOnboardingState(parsedState: Partial<OnboardingState>): O
     ...initialState,
     ...parsedState,
     employee,
-    diagnosticQuestions: Array.isArray(parsedState.diagnosticQuestions)
-      ? parsedState.diagnosticQuestions
-      : [],
-    diagnosticAnswers: Array.isArray(parsedState.diagnosticAnswers)
-      ? parsedState.diagnosticAnswers
-      : [],
+    diagnosticQuestions,
+    diagnosticAnswers,
     currentQuestionIndex:
-      typeof parsedState.currentQuestionIndex === "number"
+      hasOutdatedActiveDiagnostic
+        ? 0
+        : typeof parsedState.currentQuestionIndex === "number"
         ? parsedState.currentQuestionIndex
         : 0,
     escalations: Array.isArray(parsedState.escalations) ? parsedState.escalations : [],
@@ -127,8 +142,30 @@ export function restoreOnboardingState(parsedState: Partial<OnboardingState>): O
       ? "learning_route"
       : restoredStep === "diagnostic_result"
         ? "welcome"
+        : hasOutdatedActiveDiagnostic
+          ? "welcome"
         : restoredStep,
   };
+}
+
+function diagnosticQuestionSetMatchesCurrent(
+  questions: OnboardingState["diagnosticQuestions"],
+  employee: EmployeeProfile,
+) {
+  if (questions.length === 0) {
+    return false;
+  }
+
+  const currentQuestions = getDiagnosticQuestions({
+    role: employee.role,
+    grade: employee.grade,
+  });
+
+  if (questions.length !== currentQuestions.length) {
+    return false;
+  }
+
+  return questions.every((question, index) => question.id === currentQuestions[index]?.id);
 }
 
 function getRestoredStep(state: Partial<OnboardingState>): OnboardingStep {

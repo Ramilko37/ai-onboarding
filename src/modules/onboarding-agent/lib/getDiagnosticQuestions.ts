@@ -13,7 +13,7 @@ const difficultiesByGrade: Record<EmployeeGrade, QuestionDifficulty[]> = {
   network_experience: ["intermediate", "advanced"]
 };
 
-const DEMO_QUESTION_LIMIT = 8;
+const DEMO_QUESTION_LIMIT = 14;
 
 export function getDiagnosticQuestions(params: {
   role: EmployeeRole;

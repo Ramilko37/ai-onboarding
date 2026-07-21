@@ -13,7 +13,7 @@ export function getWelcomeDiagnosticAction(params: {
 
   if (!hasActiveProgress) {
     return {
-      hint: "8 вопросов · примерно 4 минуты",
+      hint: "14 вопросов · примерно 7 минут",
       label: "Начать диагностику",
       mode: "start",
     };

@@ -20,8 +20,8 @@ import { getRoleLabel } from "../../lib/getRoleLabel";
 import { PrimaryButton, SecondaryButton } from "../components";
 
 const facts = [
-  { icon: Clock, value: "8 минут" },
-  { icon: ListChecks, value: "10–14 вопросов" },
+  { icon: Clock, value: "7 минут" },
+  { icon: ListChecks, value: "14 вопросов" },
   { icon: ShieldCheck, value: "без оценки" },
   { icon: Sparkles, value: "персональный маршрут" },
 ];

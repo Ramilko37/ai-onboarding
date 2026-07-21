@@ -27,7 +27,7 @@ test("getDiagnosticQuestions returns stable role and grade specific sets", () =>
       const repeatedQuestions = getDiagnosticQuestions({ role, grade });
       const selectedTopicIds = new Set(questions.map((question) => question.topicId));
 
-      assert.equal(questions.length <= 8, true);
+      assert.equal(questions.length <= 14, true);
       assert.deepEqual(
         questions.map((question) => question.id),
         repeatedQuestions.map((question) => question.id)
@@ -58,14 +58,14 @@ test("getDiagnosticQuestions keeps basic anchors for network employees when a to
   assert.equal(adminNetworkTopicIds.has("admin-discounts"), true);
 });
 
-test("barista diagnostic is compact and keeps safety topics required", () => {
+test("barista diagnostic keeps fourteen questions and required safety topics", () => {
   const questions = getDiagnosticQuestions({
     role: "barista",
     grade: "network_experience"
   });
   const selectedTopicIds = new Set(questions.map((question) => question.topicId));
 
-  assert.equal(questions.length, 8);
+  assert.equal(questions.length, 14);
   assert.equal(questions.every((question) => question.role === "barista"), true);
   assert.equal(selectedTopicIds.has("barista-espresso-setup"), true);
   assert.equal(selectedTopicIds.has("barista-milk-texture"), true);
@@ -167,6 +167,48 @@ test("restoreOnboardingState skips diagnostic result screen when a route can be 
   assert.equal(restoredState.learningRoute?.days.length, 3);
 });
 
+test("restoreOnboardingState resets outdated active diagnostic question sets", () => {
+  const employee: EmployeeProfile = {
+    id: "barista-outdated-questions",
+    name: "София Кузнецова",
+    role: "barista",
+    grade: "horeca_experience",
+    location: "Valle Sanchez · Арбат",
+    startDate: "2026-07-21",
+  };
+  const questions = getDiagnosticQuestions({
+    role: employee.role,
+    grade: employee.grade,
+  }).slice(0, 8);
+  const selectedOption = questions[0]?.options.find((option) => option.isCorrect);
+  assert.ok(questions[0]);
+  assert.ok(selectedOption);
+
+  const restoredState = restoreOnboardingState({
+    employee,
+    selectedRole: employee.role,
+    selectedGrade: employee.grade,
+    currentStep: "diagnostic",
+    diagnosticQuestions: questions,
+    diagnosticAnswers: [{
+      questionId: questions[0].id,
+      selectedOptionId: selectedOption.id,
+      isCorrect: selectedOption.isCorrect,
+      topicId: questions[0].topicId,
+      weight: questions[0].weight,
+    }],
+    diagnosticResult: null,
+    learningRoute: null,
+    currentQuestionIndex: 4,
+    escalations: [],
+  });
+
+  assert.equal(restoredState.currentStep, "welcome");
+  assert.equal(restoredState.diagnosticQuestions.length, 0);
+  assert.equal(restoredState.diagnosticAnswers.length, 0);
+  assert.equal(restoredState.currentQuestionIndex, 0);
+});
+
 test("resetOnboardingProgress clears diagnostic answers, route and task progress", () => {
   const employee: EmployeeProfile = {
     id: "barista-reset-1",
@@ -239,7 +281,7 @@ test("getWelcomeDiagnosticAction keeps one clear welcome CTA", () => {
       questionsCount: 0,
     }),
     {
-      hint: "8 вопросов · примерно 4 минуты",
+      hint: "14 вопросов · примерно 7 минут",
       label: "Начать диагностику",
       mode: "start",
     },
@@ -248,10 +290,10 @@ test("getWelcomeDiagnosticAction keeps one clear welcome CTA", () => {
     getWelcomeDiagnosticAction({
       currentQuestionIndex: 3,
       hasDiagnosticResult: false,
-      questionsCount: 8,
+      questionsCount: 14,
     }),
     {
-      hint: "вопрос 4 из 8",
+      hint: "вопрос 4 из 14",
       label: "Продолжить диагностику",
       mode: "continue",
     },

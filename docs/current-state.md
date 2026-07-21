@@ -33,7 +33,7 @@ The UX/UI layer follows the Mayak v1.0 system: warm editorial navigation, oxbloo
 Current employee flow:
 
 1. Compact prefilled welcome for Sofia, her role, location and start date.
-2. One primary action starts the first of eight diagnostic questions, or resumes an unfinished diagnostic at the saved question number.
+2. One primary action starts the first of fourteen diagnostic questions, or resumes an unfinished diagnostic at the saved question number.
 3. Completing the last diagnostic question immediately builds the personal route.
 4. `Сегодня` workspace with a reference-inspired next action, compact follow-up tasks, desktop mentor callout, and mobile bottom navigation.
 5. `Мой план` route view with collapsible day sections, source-backed task detail screens, and a source-backed AI mentor chat. Knowledge content is surfaced through task sources and mentor citations instead of a separate employee tab.
@@ -79,7 +79,7 @@ Required topics:
 Current barista question bank:
 
 - 15 single-choice questions, including methodologist-supplied day-1 espresso checks.
-- The active diagnostic run now selects 8 compact questions from the bank.
+- The active diagnostic run now selects 14 questions from the bank.
 - The diagnostic checks the 18-27-38 espresso recipe, roast-date dose range, extraction timing, milk temperature, flat white recipe basics, hygiene, equipment cleaning, and storage.
 - Question selection remains grade-aware and stable.
 - Every barista diagnostic keeps required safety topics while using a compact role-representative sample.
@@ -172,7 +172,8 @@ Latest completed verification on 2026-07-18:
 - 2026-07-18 knowledge constellation: verified a generated route at 375 px and 1280 px; topic nodes are keyboard-selectable, full topic details remain outside nodes, and the task action focuses the matching route card with no horizontal overflow or browser console errors.
 - 2026-07-21 UX simplification: baseline tests and production build passed after replacing employee score/risk output with topic focus, unifying task status projections and simplifying the manager view to learning progress and help signals.
 - 2026-07-21 diagnostic completion: the intermediate focus/result screen was removed; finishing the last diagnostic question now opens the `Сегодня` task workspace directly. Verified with `npm run test:diagnostic`, `npx tsc --noEmit --ignoreDeprecations 6.0`, browser flow on `localhost:3000`, and `npm run build`.
-- 2026-07-21 diagnostic question redesign: the diagnostic run was shortened to 8 questions, the question screen was constrained to a 960 px outer / 880 px content width, the duplicate inner frame and old explanatory blocks were removed, answer cards were normalized to 72-88 px with left radio indicators and clear selected state, and the first-screen back action became `Выйти из диагностики` with confirmation.
+- 2026-07-21 diagnostic question redesign: the question screen was constrained to a 960 px outer / 880 px content width, the duplicate inner frame and old explanatory blocks were removed, answer cards were normalized to 72-88 px with left radio indicators and clear selected state, and the first-screen back action became `Выйти из диагностики` with confirmation.
+- 2026-07-21 diagnostic length restore: the diagnostic run was restored to 14 questions while keeping the simplified screen and direct transition to `Сегодня`.
 - 2026-07-21 welcome simplification: the separate right-hand presentation column was removed, the welcome card was constrained to 800 px without a fixed desktop height, and the entry action was reduced to a single CTA (`Начать диагностику` or `Продолжить диагностику`) with a separate time/progress hint. The development-only `Reset` action remains visible in the top bar as a technical test control.
 - 2026-07-21 interactive design reference pass: the post-diagnostic employee workspace now follows the supplied HTML reference for `Сегодня`, `Мой план`, task detail, and `AI-наставник`: three primary tabs, a mobile bottom nav, a compact Today-first task composition, a 900 px plan view, a 760 px task detail view, and an 860 px mentor chat. The intermediate result screen remains removed.
 - `npm run build` may need network access because `app/layout.tsx` currently loads Geist and Geist Mono through `next/font/google`.
