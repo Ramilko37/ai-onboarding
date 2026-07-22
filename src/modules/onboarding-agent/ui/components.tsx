@@ -158,7 +158,7 @@ export function StepProgress({
                 className={cn(
                   "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold",
                   isDone && "bg-primary text-primary-foreground",
-                  isActive && "animate-pulse-ring bg-card text-primary ring-1 ring-primary/40",
+                isActive && "bg-card text-primary ring-1 ring-primary/40",
                   !isDone && !isActive && isAvailable && "bg-secondary text-muted-foreground",
                   !isDone && !isActive && !isAvailable && "bg-muted text-muted-foreground/50",
                 )}

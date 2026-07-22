@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight, BookOpen, Check, Clock, Play } from "lucide-react";
+import type { CSSProperties } from "react";
 import type {
   LearningTask,
   LearningRoute,
@@ -9,26 +10,30 @@ import type {
 import { getEmployeeFocusSummary } from "../lib/getEmployeeFocusSummary";
 import { formatTodayLabel } from "../lib/formatTodayLabel";
 import type { PersonalSpaceProfile } from "../PersonalSpace";
+import { usePrefersReducedMotion } from "@/shared/lib/usePrefersReducedMotion";
 
 export function TodayFocus({
   profile,
   route,
   onOpenTask,
   onUpdateTaskStatus,
+  transitionTaskId,
 }: {
   profile?: PersonalSpaceProfile;
   route?: LearningRoute;
   onOpenTask: (taskId: string) => void;
   onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
+  transitionTaskId?: string;
 }) {
   const focus = getEmployeeFocusSummary(route);
+  const prefersReducedMotion = usePrefersReducedMotion();
   const tasks = focus.todayTasks;
   const visibleTasks = tasks.filter((task) => task.status !== "done").slice(0, 3);
   const nextTask = visibleTasks[0];
   const doneCount = focus.completedTodayCount;
   const progressPercent =
     focus.totalTodayCount > 0
-      ? Math.max(4, Math.round((doneCount / focus.totalTodayCount) * 100))
+      ? Math.round((doneCount / focus.totalTodayCount) * 100)
       : 100;
   const name = profile?.name.split(" ")[0] ?? "София";
   const todayLabel = formatTodayLabel(new Date());
@@ -70,7 +75,7 @@ export function TodayFocus({
             role="progressbar"
           >
             <span
-              className="block h-full rounded-full bg-primary transition-[width]"
+              className={prefersReducedMotion ? "block h-full rounded-full bg-primary" : "block h-full rounded-full bg-primary transition-[width] duration-[var(--motion-emphasis)] ease-[var(--motion-ease-premium)]"}
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -100,6 +105,7 @@ export function TodayFocus({
                 task={nextTask}
                 onOpenTask={onOpenTask}
                 onUpdate={update}
+                transitionTaskId={transitionTaskId}
               />
             </>
           )}
@@ -115,6 +121,7 @@ export function TodayFocus({
                   task={task}
                   onOpenTask={onOpenTask}
                   onUpdate={update}
+                  transitionTaskId={transitionTaskId}
                 />
               ))}
             </div>
@@ -130,18 +137,24 @@ function TaskCard({
   featured = false,
   onOpenTask,
   onUpdate,
+  transitionTaskId,
 }: {
   task: LearningTask;
   featured?: boolean;
   onOpenTask: (taskId: string) => void;
   onUpdate: (id: string, status: LearningTaskStatus) => void;
+  transitionTaskId?: string;
 }) {
   return (
     <article
+      data-interactive-surface
+      id={`route-task-${task.id}`}
+      data-task-transition={transitionTaskId === task.id || undefined}
+      style={transitionTaskId === task.id ? ({ "--task-transition-name": `task-${task.id}` } as CSSProperties) : undefined}
       className={
         featured
-          ? "overflow-hidden rounded-2xl border border-primary/20 bg-[linear-gradient(132deg,var(--card)_0%,color-mix(in_oklch,var(--primary)_7%,var(--card))_100%)] p-5 shadow-[0_13px_32px_color-mix(in_oklch,var(--accent-foreground)_8%,transparent)]"
-          : "overflow-hidden rounded-[14px] border border-border bg-card transition hover:border-primary/35"
+          ? "overflow-hidden rounded-2xl border border-primary/20 bg-[linear-gradient(132deg,var(--card)_0%,color-mix(in_oklch,var(--primary)_7%,var(--card))_100%)] p-5 shadow-[0_13px_32px_color-mix(in_oklch,var(--accent-foreground)_8%,transparent)] active:scale-[0.99]"
+          : "overflow-hidden rounded-[14px] border border-border bg-card active:scale-[0.99]"
       }
     >
       <button
@@ -183,7 +196,7 @@ function TaskCard({
 
       {featured && (
         <button
-          className="mt-5 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 sm:ml-16 sm:w-[calc(100%-4rem)]"
+          className="mt-5 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-[opacity,transform] duration-[var(--motion-fast)] hover:opacity-90 active:scale-[0.985] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 sm:ml-16 sm:w-[calc(100%-4rem)]"
           onClick={() => {
             if (task.status === "todo") {
               onUpdate(task.id, "in_progress");

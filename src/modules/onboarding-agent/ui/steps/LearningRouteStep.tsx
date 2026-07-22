@@ -6,18 +6,23 @@ import type {
   LearningRoute,
   LearningTaskStatus,
 } from "../../model/learningRouteTypes";
+import type { WorkspaceRouteView } from "@/modules/personal-space/lib/workspaceRoute";
 
 export function LearningRouteStep({
   employee,
   route,
   onUpdateTaskStatus,
   onCreateEscalation,
+  initialView,
+  initialTaskId,
 }: {
   employee: EmployeeProfile;
   route: LearningRoute;
   onBack: () => void;
   onUpdateTaskStatus: (taskId: string, status: LearningTaskStatus) => void;
   onCreateEscalation: (question: string) => void;
+  initialView?: WorkspaceRouteView;
+  initialTaskId?: string;
 }) {
   return (
     <PersonalSpace
@@ -31,6 +36,8 @@ export function LearningRouteStep({
       route={route}
       onUpdateTaskStatus={onUpdateTaskStatus}
       onCreateEscalation={onCreateEscalation}
+      initialView={initialView}
+      initialTaskId={initialTaskId}
     />
   );
 }

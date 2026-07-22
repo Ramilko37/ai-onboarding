@@ -1,4 +1,7 @@
+"use client";
+
 import { ArrowRight, CalendarDays, Heart } from "lucide-react";
+import { useEffect, useState } from "react";
 import { MayakPanel, MayakSectionHeader } from "@/shared/ui/mayak";
 import { PrimaryButton } from "../components";
 import type { EmployeeProfile } from "../../model/types";
@@ -12,13 +15,23 @@ export function WelcomeStep({ employee, action, onStart, onContinue }: {
 }) {
   const firstName = employee?.name.split(" ")[0] ?? "София";
   const handleAction = action.mode === "continue" && onContinue ? onContinue : onStart;
+  const [playEntrance, setPlayEntrance] = useState(false);
+
+  useEffect(() => {
+    const key = "valle-sanchez:welcome-motion-played";
+    if (!window.sessionStorage.getItem(key)) {
+      window.sessionStorage.setItem(key, "true");
+      setPlayEntrance(true);
+    }
+  }, []);
 
   return (
     <section className="w-full">
       <MayakPanel
         variant="soft"
         padding="lg"
-        className="grid gap-8 rounded-[24px] border-border bg-card shadow-[var(--shadow-card)] md:p-8 xl:p-12"
+        className={`grid gap-8 rounded-[24px] border-border bg-card shadow-[var(--shadow-card)] md:p-8 xl:p-12 ${playEntrance ? "motion-surface-enter" : ""}`}
+        data-motion
       >
         <div className="grid gap-6">
           <MayakSectionHeader
@@ -44,7 +57,7 @@ export function WelcomeStep({ employee, action, onStart, onContinue }: {
         </div>
 
         <div className="flex flex-wrap items-center gap-3 border-t border-border pt-5">
-          <PrimaryButton onClick={handleAction}>
+          <PrimaryButton className="transition-transform duration-[var(--motion-fast)] active:scale-[0.985]" onClick={handleAction}>
             {action.label}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </PrimaryButton>

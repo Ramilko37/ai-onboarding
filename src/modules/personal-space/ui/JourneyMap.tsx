@@ -1,23 +1,28 @@
-import { ArrowRight, ChevronRight, HelpCircle, Play } from "lucide-react";
+import { ArrowRight, ChevronRight, HelpCircle } from "lucide-react";
+import type { CSSProperties } from "react";
 import type {
   LearningRoute,
   LearningRouteDay,
   LearningTask,
   LearningTaskStatus,
 } from "../../onboarding-agent/model/learningRouteTypes";
+import { usePrefersReducedMotion } from "@/shared/lib/usePrefersReducedMotion";
 
 export function JourneyMap({
   route,
   onOpenTask,
   onUpdateTaskStatus,
+  transitionTaskId,
 }: {
   route?: LearningRoute;
   onOpenTask: (taskId: string) => void;
   onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
+  transitionTaskId?: string;
 }) {
+  const prefersReducedMotion = usePrefersReducedMotion();
   const tasks = route?.days.flatMap((day) => day.tasks) ?? [];
   const doneCount = tasks.filter((task) => task.status === "done").length;
-  const progress = tasks.length > 0 ? Math.max(4, Math.round((doneCount / tasks.length) * 100)) : 0;
+  const progress = tasks.length > 0 ? Math.round((doneCount / tasks.length) * 100) : 0;
 
   return (
     <section
@@ -53,7 +58,7 @@ export function JourneyMap({
             role="progressbar"
           >
             <span
-              className="block h-full rounded-full bg-primary transition-[width]"
+              className={prefersReducedMotion ? "block h-full rounded-full bg-primary" : "block h-full rounded-full bg-primary transition-[width] duration-[var(--motion-emphasis)] ease-[var(--motion-ease-premium)]"}
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -69,6 +74,7 @@ export function JourneyMap({
               key={day.id}
               onOpenTask={onOpenTask}
               onUpdateTaskStatus={onUpdateTaskStatus}
+              transitionTaskId={transitionTaskId}
               open={index === 0}
             />
           ))}
@@ -90,18 +96,20 @@ function RouteDayTasks({
   index,
   onOpenTask,
   onUpdateTaskStatus,
+  transitionTaskId,
   open,
 }: {
   day: LearningRouteDay;
   index: number;
   onOpenTask: (taskId: string) => void;
   onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
+  transitionTaskId?: string;
   open: boolean;
 }) {
   const doneCount = day.tasks.filter((task) => task.status === "done").length;
 
   return (
-    <details className="group overflow-hidden rounded-[14px] border border-border bg-card" open={open}>
+    <details className="motion-accordion group overflow-hidden rounded-[14px] border border-border bg-card transition-[border-color,background-color] duration-[var(--motion-fast)]" open={open}>
       <summary className="grid min-h-[76px] cursor-pointer grid-cols-[44px_1fr_auto_24px] items-center gap-3 px-4 text-left sm:px-5">
         <span className="font-brand text-xl font-medium text-primary">
           {String(index + 1).padStart(2, "0")}
@@ -116,7 +124,7 @@ function RouteDayTasks({
           {doneCount} / {day.tasks.length}
         </span>
         <ChevronRight
-          className="h-4 w-4 text-muted-foreground transition group-open:rotate-90"
+          className="h-4 w-4 text-muted-foreground transition-transform duration-[180ms] ease-[var(--motion-ease-premium)] group-open:rotate-180"
           aria-hidden="true"
         />
       </summary>
@@ -128,6 +136,7 @@ function RouteDayTasks({
             onOpenTask={onOpenTask}
             onUpdateTaskStatus={onUpdateTaskStatus}
             task={task}
+            transitionTaskId={transitionTaskId}
           />
         ))}
       </div>
@@ -140,16 +149,20 @@ function RouteTask({
   isCurrent,
   onOpenTask,
   onUpdateTaskStatus,
+  transitionTaskId,
 }: {
   task: LearningTask;
   isCurrent: boolean;
   onOpenTask: (taskId: string) => void;
   onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
+  transitionTaskId?: string;
 }) {
   return (
     <article
-      className="grid min-h-[72px] grid-cols-[24px_1fr_20px] items-center gap-3 border-b border-border py-3 last:border-b-0 sm:grid-cols-[24px_1fr_auto_auto_20px]"
+      className="grid min-h-[72px] grid-cols-[24px_1fr_20px] items-center gap-3 border-b border-border py-3 transition-[background-color,border-color] duration-[var(--motion-fast)] last:border-b-0 hover:bg-secondary/40 sm:grid-cols-[24px_1fr_auto_20px]"
       id={`route-task-${task.id}`}
+      data-task-transition={transitionTaskId === task.id || undefined}
+      style={transitionTaskId === task.id ? ({ "--task-transition-name": `task-${task.id}` } as CSSProperties) : undefined}
       tabIndex={-1}
     >
       <span
@@ -176,13 +189,6 @@ function RouteTask({
         </span>
       </button>
       <RouteStatusPill status={task.status} />
-      <div className="hidden sm:block">
-        <TaskStatusAction
-          onUpdateTaskStatus={onUpdateTaskStatus}
-          status={task.status}
-          taskId={task.id}
-        />
-      </div>
       <button
         aria-label={`Открыть задачу ${task.title}`}
         className="cursor-pointer text-muted-foreground transition hover:text-primary focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
@@ -191,13 +197,6 @@ function RouteTask({
       >
         <ArrowRight className="h-4 w-4" aria-hidden="true" />
       </button>
-      <div className="col-span-3 flex justify-end gap-3 sm:hidden">
-        <TaskStatusAction
-          onUpdateTaskStatus={onUpdateTaskStatus}
-          status={task.status}
-          taskId={task.id}
-        />
-      </div>
     </article>
   );
 }
@@ -214,73 +213,6 @@ function RouteStatusPill({ status }: { status: LearningTaskStatus }) {
     <span className="hidden items-center gap-1.5 text-[10px] text-muted-foreground sm:inline-flex">
       {status === "blocked" && <HelpCircle className="h-3 w-3 text-primary" aria-hidden="true" />}
       {label[status]}
-    </span>
-  );
-}
-
-function TaskStatusAction({
-  taskId,
-  status,
-  onUpdateTaskStatus,
-}: {
-  taskId: string;
-  status: LearningTaskStatus;
-  onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
-}) {
-  if (status === "done") {
-    return <span className="text-xs text-muted-foreground">Выполнено</span>;
-  }
-
-  if (status === "blocked") {
-    return (
-      <button
-        className="min-h-8 cursor-pointer text-xs font-semibold text-primary"
-        onClick={() => onUpdateTaskStatus?.(taskId, "in_progress")}
-        type="button"
-      >
-        Вернуться
-      </button>
-    );
-  }
-
-  if (status === "in_progress") {
-    return (
-      <span className="grid gap-1 text-right">
-        <button
-          className="min-h-8 cursor-pointer text-xs font-semibold text-primary"
-          onClick={() => onUpdateTaskStatus?.(taskId, "done")}
-          type="button"
-        >
-          Завершить
-        </button>
-        <button
-          className="cursor-pointer text-[11px] text-muted-foreground"
-          onClick={() => onUpdateTaskStatus?.(taskId, "blocked")}
-          type="button"
-        >
-          Есть проблема
-        </button>
-      </span>
-    );
-  }
-
-  return (
-    <span className="grid gap-1 text-right">
-      <button
-        className="inline-flex min-h-8 cursor-pointer items-center gap-1 text-xs font-semibold text-primary"
-        onClick={() => onUpdateTaskStatus?.(taskId, "in_progress")}
-        type="button"
-      >
-        <Play className="h-3.5 w-3.5" />
-        Начать
-      </button>
-      <button
-        className="cursor-pointer text-[11px] text-muted-foreground"
-        onClick={() => onUpdateTaskStatus?.(taskId, "blocked")}
-        type="button"
-      >
-        Есть проблема
-      </button>
     </span>
   );
 }

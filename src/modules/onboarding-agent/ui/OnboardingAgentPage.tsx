@@ -8,8 +8,15 @@ import { useOnboardingAgentState } from "../model/useOnboardingAgentState";
 import { DiagnosticStep } from "./steps/DiagnosticStep";
 import { LearningRouteStep } from "./steps/LearningRouteStep";
 import { WelcomeStep } from "./steps/WelcomeStep";
+import type { WorkspaceRouteView } from "@/modules/personal-space/lib/workspaceRoute";
 
-export function OnboardingAgentPage() {
+export function OnboardingAgentPage({
+  initialWorkspaceView,
+  initialTaskId,
+}: {
+  initialWorkspaceView?: WorkspaceRouteView;
+  initialTaskId?: string;
+}) {
   const { state, actions } = useOnboardingAgentState();
   const isLearningRouteStep = state.currentStep === "learning_route";
   const showDevReset = process.env.NODE_ENV === "development";
@@ -89,6 +96,8 @@ export function OnboardingAgentPage() {
             onBack={() => actions.goToStep("diagnostic")}
             onUpdateTaskStatus={actions.updateLearningTaskStatus}
             onCreateEscalation={actions.createEscalation}
+            initialView={initialWorkspaceView}
+            initialTaskId={initialTaskId}
           />
         )}
       </section>

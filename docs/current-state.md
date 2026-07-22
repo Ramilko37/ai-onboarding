@@ -21,10 +21,15 @@ The UX/UI layer follows Mayak v2: ink carries content, oxblood marks the primary
 ```text
 /
 /onboarding-agent
+/onboarding-agent/today
+/onboarding-agent/plan
+/onboarding-agent/mentor
+/onboarding-agent/task/[taskId]
 /manager
 ```
 
-- `/` and `/onboarding-agent` render the barista diagnostic and learning-route flow.
+- `/` renders the barista diagnostic and learning-route flow; `/onboarding-agent` redirects to `/onboarding-agent/today`.
+- Employee workspace tabs and task detail have shareable URLs (`today`, `plan`, `mentor`, `task/[taskId]`) and restore the selected view after reload from the URL while reusing the existing browser-persisted route data.
 - `/manager` renders the manager dashboard with demo baristas plus locally saved live results.
 - `/api/mentor-chat` answers mentor questions from the local demo knowledge base.
 
@@ -178,6 +183,8 @@ Latest completed verification on 2026-07-18:
 - 2026-07-21 interactive design reference pass: the post-diagnostic employee workspace now follows the supplied HTML reference for `Сегодня`, `Мой план`, task detail, and `AI-наставник`: three primary tabs, a mobile bottom nav, a compact Today-first task composition, a 900 px plan view, a 760 px task detail view, and an 860 px mentor chat. The intermediate result screen remains removed.
 - 2026-07-21 Mayak v2 migration: global tokens, shared shell, diagnostic cards, employee Today/Plan/Mentor surfaces and manager dashboard were moved from aurora-style v1 to the reference v2 paper/ink/oxblood system. The migration preserves route logic, questions, persistence and manager data. Verified with `npx tsc --noEmit --ignoreDeprecations 6.0`, all five domain test commands and `npm run build`.
 - 2026-07-22 UI consistency fixes: the header and content use one 1200px responsive shell, employee tabs use a shared rounded wrapper, and Today, Plan, Mentor and task views use one outer workspace surface. The task keeps its 760px reading column inside that surface. The workspace date is dynamically formatted in Russian and covered with a deterministic test. Existing local tab-state navigation remains unchanged because URL routing is outside this iteration's scope.
+- 2026-07-22 workspace URLs: `/onboarding-agent/today`, `/plan`, `/mentor` and `/task/[taskId]` now map to the existing employee views. The base onboarding route redirects to Today, and the existing localStorage route data is reused after a refresh.
+- 2026-07-22 motion polish: the employee flow now uses one token set for restrained route, diagnostic, task, chat and overlay feedback. The workspace keeps the shell stable while tabs move their indicator and content uses short enter fallbacks; task cards use hover/press only where pointer hover exists; progress begins at a truthful `0%`; the chat only auto-scrolls near its end; and reduced-motion removes transforms, scale and progress tweening.
 - `npm run build` may need network access because `app/layout.tsx` currently loads Geist and Geist Mono through `next/font/google`.
 
 ## Explicitly Not Implemented

@@ -11,7 +11,8 @@ import {
   Sparkles,
   Sun,
 } from "lucide-react";
-import { useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { useRouter } from "next/navigation";
 import { cn, MayakWorkspaceSurface } from "@/shared/ui/mayak";
 import type {
   LearningTask,
@@ -24,10 +25,14 @@ import {
   workspaceTabs,
   type WorkspaceTabId,
 } from "../lib/workspaceNavigation";
+import { getWorkspaceHref, type WorkspaceRouteView } from "../lib/workspaceRoute";
+import { shouldFocusTaskDetail } from "../lib/shouldFocusTaskDetail";
+import { shouldUseTaskSharedTransition } from "../lib/shouldUseTaskSharedTransition";
 import type { PersonalSpaceProfile } from "../PersonalSpace";
 import { Assistant } from "./Assistant";
 import { JourneyMap } from "./JourneyMap";
 import { TodayFocus } from "./TodayFocus";
+import { usePrefersReducedMotion } from "@/shared/lib/usePrefersReducedMotion";
 
 const tabIcons = {
   today: Sun,
@@ -42,19 +47,63 @@ export function PersonalSpaceWorkspace({
   route,
   onUpdateTaskStatus,
   onCreateEscalation,
+  initialView = "today",
+  initialTaskId,
 }: {
   profile?: PersonalSpaceProfile;
   route?: LearningRoute;
   onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
   onCreateEscalation?: (question: string) => void;
+  initialView?: WorkspaceRouteView;
+  initialTaskId?: string;
 }) {
-  const [activeTab, setActiveTab] = useState<WorkspaceViewId>("today");
-  const [previousTab, setPreviousTab] = useState<WorkspaceTabId>("today");
-  const [selectedTaskId, setSelectedTaskId] = useState<string | undefined>();
+  const router = useRouter();
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [activeTab, setActiveTab] = useState<WorkspaceViewId>(initialView);
+  const [previousTab, setPreviousTab] = useState<WorkspaceTabId>(
+    initialView === "task" ? "route" : initialView,
+  );
+  const [selectedTaskId, setSelectedTaskId] = useState<string | undefined>(initialTaskId);
+  const [transitionTaskId, setTransitionTaskId] = useState<string | undefined>();
   const [isReasonOpen, setIsReasonOpen] = useState(false);
   const tabRefs = useRef<Partial<Record<WorkspaceTabId, HTMLButtonElement | null>>>({});
+  const reasonTriggerRef = useRef<HTMLButtonElement>(null);
+  const wasReasonOpenRef = useRef(false);
+  const scrollPositionRef = useRef(0);
   const focus = getEmployeeFocusSummary(route);
   const selectedTask = getSelectedTask(route, selectedTaskId) ?? focus.nextTask ?? focus.todayTasks[0];
+
+  useEffect(() => {
+    if (!isReasonOpen) {
+      return;
+    }
+
+    function closeOnEscape(event: globalThis.KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsReasonOpen(false);
+      }
+    }
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [isReasonOpen]);
+
+  useEffect(() => {
+    if (!isReasonOpen && wasReasonOpenRef.current) {
+      reasonTriggerRef.current?.focus();
+    }
+    wasReasonOpenRef.current = isReasonOpen;
+  }, [isReasonOpen]);
+
+  useEffect(() => {
+    if (!initialView) return;
+
+    setActiveTab(initialView);
+    setSelectedTaskId(initialView === "task" ? initialTaskId : undefined);
+    if (initialView !== "task") {
+      setPreviousTab(initialView);
+    }
+  }, [initialTaskId, initialView]);
 
   function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
     if (activeTab === "task") {
@@ -68,7 +117,7 @@ export function PersonalSpaceWorkspace({
     }
 
     event.preventDefault();
-    setActiveTab(nextTab);
+    handleOpenTab(nextTab);
     tabRefs.current[nextTab]?.focus();
   }
 
@@ -80,27 +129,63 @@ export function PersonalSpaceWorkspace({
     if (activeTab !== "task") {
       setPreviousTab(activeTab);
     }
-    setSelectedTaskId(taskId);
-    setActiveTab("task");
-    requestAnimationFrame(() => document.getElementById("task-detail")?.focus());
+    scrollPositionRef.current = window.scrollY;
+    router.push(getWorkspaceHref("task", taskId));
+    requestAnimationFrame(() => {
+      const isDesktopViewport = window.matchMedia("(min-width: 1024px)").matches;
+      const canUseSharedTransition = shouldUseTaskSharedTransition(isDesktopViewport, prefersReducedMotion);
+      const startViewTransition = (
+        document as Document & {
+          startViewTransition?: (update: () => void) => { finished: Promise<void> };
+        }
+      ).startViewTransition;
+      const showTask = () => {
+        setSelectedTaskId(taskId);
+        setActiveTab("task");
+      };
+
+      if (startViewTransition && canUseSharedTransition) {
+        setTransitionTaskId(taskId);
+        void startViewTransition.call(document, showTask).finished.finally(() => setTransitionTaskId(undefined));
+      } else {
+        showTask();
+        setTransitionTaskId(undefined);
+      }
+      requestAnimationFrame(() => {
+        if (shouldFocusTaskDetail(isDesktopViewport)) {
+          document.getElementById("task-detail")?.focus();
+        }
+      });
+    });
   }
 
   function handleOpenTab(tabId: WorkspaceTabId) {
     setActiveTab(tabId);
     setSelectedTaskId(undefined);
     setIsReasonOpen(false);
+    router.push(getWorkspaceHref(tabId));
   }
 
   return (
     <section className="relative min-w-0" aria-label="Пространство развития сотрудника">
       <div
         aria-label="Разделы личного кабинета"
+        data-motion
         className={cn(
-          "mb-4 hidden w-full items-stretch gap-1 rounded-[16px] border border-border bg-secondary p-1 lg:flex",
+          "relative mb-4 hidden w-full items-stretch gap-1 rounded-[16px] border border-border bg-secondary p-1 lg:flex",
           activeTab === "task" && "lg:hidden",
         )}
         role="tablist"
       >
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute top-1 bottom-1 rounded-[12px] bg-card shadow-[var(--shadow-card)] transition-transform duration-[var(--motion-control)] ease-[var(--motion-ease-premium)]"
+          style={{
+            left: "0.25rem",
+            width: "calc((100% - 0.5rem) / 3)",
+            transform: `translateX(${workspaceTabs.findIndex((tab) => tab.id === activeTab) * 100}%)`,
+          }}
+        />
         {workspaceTabs.map((tab) => {
           const Icon = tabIcons[tab.id];
           const isActive = activeTab === tab.id;
@@ -111,9 +196,9 @@ export function PersonalSpaceWorkspace({
               aria-current={isActive ? "page" : undefined}
               aria-selected={isActive}
               className={cn(
-                "inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[12px] px-4 text-sm font-medium text-muted-foreground transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
+                "relative z-10 inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[12px] px-4 text-sm font-medium text-muted-foreground transition-[color] duration-[var(--motion-control)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
                 isActive
-                  ? "bg-card text-foreground shadow-[var(--shadow-card)]"
+                  ? "text-foreground"
                   : "hover:text-foreground",
               )}
               id={`${tab.id}-tab`}
@@ -134,15 +219,35 @@ export function PersonalSpaceWorkspace({
         })}
       </div>
 
-      <div className="grid min-w-0 gap-3">
+      <div className="grid min-w-0 gap-3" data-motion>
         {activeTab === "task" && selectedTask && (
-          <section aria-label="Задача маршрута" className="contents">
-            <MayakWorkspaceSurface>
+          <section aria-label="Задача маршрута" className="contents" key={`task-${selectedTask.id}`}>
+            <MayakWorkspaceSurface className="motion-surface-enter">
               <TaskDetail
                 task={selectedTask}
+                transitionTaskId={transitionTaskId}
                 onBack={() => {
-                  setActiveTab(previousTab);
-                  requestAnimationFrame(() => tabRefs.current[previousTab]?.focus());
+                  router.push(getWorkspaceHref(previousTab));
+                  const returnToList = () => setActiveTab(previousTab);
+                  const startViewTransition = (
+                    document as Document & {
+                      startViewTransition?: (update: () => void) => { finished: Promise<void> };
+                    }
+                  ).startViewTransition;
+                  const canUseSharedTransition = shouldUseTaskSharedTransition(
+                    window.matchMedia("(min-width: 1024px)").matches,
+                    prefersReducedMotion,
+                  );
+                  if (startViewTransition && transitionTaskId && canUseSharedTransition) {
+                    void startViewTransition.call(document, returnToList).finished.finally(() => setTransitionTaskId(undefined));
+                  } else {
+                    returnToList();
+                    setTransitionTaskId(undefined);
+                  }
+                  requestAnimationFrame(() => {
+                    window.scrollTo({ top: scrollPositionRef.current, behavior: "auto" });
+                    document.getElementById(`route-task-${selectedTask.id}`)?.focus();
+                  });
                 }}
                 onOpenMentor={() => handleOpenTab("mentor")}
                 onUpdateTaskStatus={onUpdateTaskStatus}
@@ -153,13 +258,14 @@ export function PersonalSpaceWorkspace({
 
         <section
           aria-labelledby="route-tab"
-          className={panelClass("route")}
+          className={cn(panelClass("route"), activeTab === "route" && "motion-route-enter")}
           id="route-panel"
           role="tabpanel"
         >
           <MayakWorkspaceSurface className="order-1 min-w-0 lg:order-none">
             <JourneyMap
               route={route}
+              transitionTaskId={transitionTaskId}
               onOpenTask={handleOpenTask}
               onUpdateTaskStatus={onUpdateTaskStatus}
             />
@@ -168,10 +274,10 @@ export function PersonalSpaceWorkspace({
 
         <section
           aria-labelledby="mentor-tab"
-          className={panelClass(
+          className={cn(panelClass(
             "mentor",
             "lg:block",
-          )}
+          ), activeTab === "mentor" && "motion-route-enter")}
           id="mentor-panel"
           role="tabpanel"
         >
@@ -182,10 +288,10 @@ export function PersonalSpaceWorkspace({
 
         <section
           aria-labelledby="today-tab"
-          className={panelClass(
+          className={cn(panelClass(
             "today",
             "lg:block",
-          )}
+          ), activeTab === "today" && "motion-route-enter")}
           id="today-panel"
           role="tabpanel"
         >
@@ -196,6 +302,7 @@ export function PersonalSpaceWorkspace({
             <TodayFocus
               profile={profile}
               route={route}
+              transitionTaskId={transitionTaskId}
               onOpenTask={handleOpenTask}
               onUpdateTaskStatus={onUpdateTaskStatus}
             />
@@ -224,8 +331,9 @@ export function PersonalSpaceWorkspace({
             </article>
 
             <button
-              className="flex min-h-13 w-full cursor-pointer items-center gap-2 rounded-xl px-3 text-left text-sm font-medium text-primary transition hover:bg-primary/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+              className="flex min-h-13 w-full cursor-pointer items-center gap-2 rounded-xl px-3 text-left text-sm font-medium text-primary transition-[background-color] duration-[var(--motion-fast)] hover:bg-primary/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
               onClick={() => setIsReasonOpen(true)}
+              ref={reasonTriggerRef}
               type="button"
             >
               <Sparkles className="h-4 w-4" aria-hidden="true" />
@@ -250,7 +358,7 @@ export function PersonalSpaceWorkspace({
               <button
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1 text-[10px] font-medium transition focus-visible:outline-3 focus-visible:outline-offset-[-3px] focus-visible:outline-ring/45",
+                  "flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1 text-xs font-medium transition-[color,background-color] duration-[var(--motion-control)] focus-visible:outline-3 focus-visible:outline-offset-[-3px] focus-visible:outline-ring/45",
                   isActive ? "text-primary" : "text-muted-foreground",
                 )}
                 key={tab.id}
@@ -267,7 +375,7 @@ export function PersonalSpaceWorkspace({
 
       {isReasonOpen && (
         <div
-          className="fixed inset-0 z-40 flex items-end justify-center bg-deep/35 p-0 backdrop-blur-[2px] lg:items-center lg:p-6"
+          className="motion-dialog-overlay fixed inset-0 z-40 flex items-end justify-center bg-deep/35 p-0 lg:items-center lg:p-6"
           role="presentation"
           onClick={(event) => {
             if (event.target === event.currentTarget) {
@@ -278,7 +386,7 @@ export function PersonalSpaceWorkspace({
           <section
             aria-modal="true"
             aria-labelledby="route-reason-title"
-            className="w-full max-w-xl rounded-t-3xl border border-border bg-card p-6 shadow-[0_-24px_70px_color-mix(in_oklch,var(--accent-foreground)_18%,transparent)] sm:rounded-3xl"
+            className="motion-sheet-enter motion-responsive-dialog max-h-[calc(100dvh-1rem)] w-full max-w-xl overflow-y-auto rounded-t-3xl border border-border bg-card p-6 shadow-[0_-24px_70px_color-mix(in_oklch,var(--accent-foreground)_18%,transparent)] sm:rounded-3xl lg:max-h-[calc(100dvh-3rem)]"
             role="dialog"
           >
             <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -326,11 +434,13 @@ export function PersonalSpaceWorkspace({
 
 function TaskDetail({
   task,
+  transitionTaskId,
   onBack,
   onOpenMentor,
   onUpdateTaskStatus,
 }: {
   task: LearningTask;
+  transitionTaskId?: string;
   onBack: () => void;
   onOpenMentor: () => void;
   onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
@@ -341,6 +451,9 @@ function TaskDetail({
   return (
     <article
       className="mx-auto w-full max-w-[760px] p-5 sm:p-8 lg:p-10"
+      data-motion
+      data-task-transition={transitionTaskId === task.id || undefined}
+      style={transitionTaskId === task.id ? ({ "--task-transition-name": `task-${task.id}` } as CSSProperties) : undefined}
       id="task-detail"
       tabIndex={-1}
     >
@@ -404,7 +517,7 @@ function TaskDetail({
 
       <div className="sticky bottom-0 -mx-5 mt-5 flex gap-2 bg-card/95 px-5 pt-3 pb-1 backdrop-blur sm:static sm:mx-0 sm:bg-transparent sm:p-0">
         <button
-          className="inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+        className="inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-[opacity,background-color,transform] duration-[var(--motion-local)] hover:opacity-90 active:scale-[0.985] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
           onClick={() => onUpdateTaskStatus?.(task.id, isStarted ? "done" : "in_progress")}
           type="button"
         >

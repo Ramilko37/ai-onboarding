@@ -1,5 +1,5 @@
-import { OnboardingAgentPage } from "@/modules/onboarding-agent";
+import { redirect } from "next/navigation";
 
 export default function OnboardingAgentRoute() {
-  return <OnboardingAgentPage />;
+  redirect("/onboarding-agent/today");
 }

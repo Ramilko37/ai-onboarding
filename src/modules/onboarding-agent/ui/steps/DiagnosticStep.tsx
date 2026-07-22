@@ -3,6 +3,7 @@ import type {
   DiagnosticQuestion,
   EmployeeProfile,
 } from "../../model/types";
+import { useEffect, useRef, useState } from "react";
 import {
   MayakActionBar,
   MayakPanel,
@@ -37,6 +38,13 @@ export function DiagnosticStep({
     (answer) => answer.questionId === currentQuestion?.id,
   );
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
+  const previousQuestionIndex = useRef(currentQuestionIndex);
+  const [direction, setDirection] = useState<"forward" | "backward">("forward");
+
+  useEffect(() => {
+    setDirection(currentQuestionIndex >= previousQuestionIndex.current ? "forward" : "backward");
+    previousQuestionIndex.current = currentQuestionIndex;
+  }, [currentQuestionIndex]);
 
   function handleSelectAnswer(questionId: string, optionId: string) {
     onSelectAnswer(questionId, optionId);
@@ -65,11 +73,17 @@ export function DiagnosticStep({
       />
 
       <div className="mx-auto w-full max-w-[880px]">
-        <DiagnosticQuestionCard
-          question={currentQuestion}
-          selectedOptionId={currentAnswer?.selectedOptionId}
-          onSelectAnswer={handleSelectAnswer}
-        />
+        <div
+          className={direction === "forward" ? "motion-question-forward" : "motion-question-backward"}
+          data-motion
+          key={currentQuestion.id}
+        >
+          <DiagnosticQuestionCard
+            question={currentQuestion}
+            selectedOptionId={currentAnswer?.selectedOptionId}
+            onSelectAnswer={handleSelectAnswer}
+          />
+        </div>
 
         <DiagnosticNavigation
           canGoBack={currentQuestionIndex > 0}
@@ -109,7 +123,7 @@ export function DiagnosticProgress({
         aria-valuenow={progress}
       >
         <div
-          className="h-full rounded-full bg-primary transition-[width]"
+          className="h-full rounded-full bg-primary transition-[width] duration-[var(--motion-control)] ease-[var(--motion-ease-premium)]"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -161,7 +175,7 @@ export function DiagnosticOption({
     <button
       aria-pressed={selected}
       className={cn(
-        "grid min-h-[72px] cursor-pointer grid-cols-[22px_36px_1fr] items-center gap-3 rounded-[14px] border px-4 py-3 text-left transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 sm:min-h-[84px] sm:grid-cols-[24px_40px_1fr] sm:px-5",
+        "grid min-h-[72px] cursor-pointer grid-cols-[22px_36px_1fr] items-center gap-3 rounded-[14px] border px-4 py-3 text-left transition-[background-color,border-color,box-shadow] duration-[var(--motion-fast)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45 sm:min-h-[84px] sm:grid-cols-[24px_40px_1fr] sm:px-5",
         selected
           ? "border-primary bg-primary/10 ring-2 ring-primary/25"
           : "border-border bg-card hover:border-primary/45 hover:bg-primary/5",
@@ -171,12 +185,12 @@ export function DiagnosticOption({
     >
       <span
         className={cn(
-          "flex h-5 w-5 items-center justify-center rounded-full border transition",
+          "flex h-5 w-5 items-center justify-center rounded-full border transition-[background-color,border-color,transform] duration-[160ms]",
           selected ? "border-primary bg-card text-primary" : "border-border bg-card",
         )}
         aria-hidden="true"
       >
-        {selected && <span className="h-2.5 w-2.5 rounded-full bg-primary" />}
+        {selected && <span className="h-2.5 w-2.5 rounded-full bg-primary motion-safe:animate-[motion-indicator_160ms_var(--motion-ease-premium)_both]" />}
       </span>
       <span
         className={cn(
@@ -232,7 +246,7 @@ export function DiagnosticNavigation({
         </button>
       )}
       <button
-        className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[10px] bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
+        className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[10px] bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-[background-color,border-color,opacity] duration-[var(--motion-fast)] hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45"
         disabled={!canGoNext}
         onClick={onNext}
         type="button"

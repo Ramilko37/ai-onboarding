@@ -14,7 +14,7 @@ export function cn(...classes: ClassValue[]) {
 export const mayakSurface = {
   page: "relative min-h-screen overflow-x-hidden text-foreground lg:h-screen lg:overflow-hidden",
   shell:
-    "mx-auto flex min-h-[calc(100dvh-4rem)] w-[calc(100%-2rem)] max-w-[1200px] flex-col py-4 md:w-[calc(100%-3rem)] xl:w-[calc(100%-4rem)] lg:h-[calc(100dvh-4.75rem)] lg:min-h-0 lg:py-5 lg:overflow-hidden",
+    "mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-[1264px] flex-col px-4 py-4 md:px-6 xl:px-8 lg:h-[calc(100dvh-4.75rem)] lg:min-h-0 lg:py-5 lg:overflow-hidden",
   panel:
     "overflow-hidden rounded-[14px] border border-border bg-card shadow-[var(--shadow-card)]",
   interactive:
@@ -80,7 +80,7 @@ type MayakShellProps = {
 
 const mayakScrollableSurface = {
   page: "relative min-h-screen overflow-x-hidden text-foreground",
-  shell: "mx-auto flex min-h-[calc(100dvh-4rem)] w-[calc(100%-2rem)] max-w-[1200px] flex-col py-4 md:w-[calc(100%-3rem)] xl:w-[calc(100%-4rem)] lg:py-5",
+  shell: "mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-[1264px] flex-col px-4 py-4 md:px-6 xl:px-8 lg:py-5",
 } as const;
 
 export function MayakShell({
@@ -129,7 +129,7 @@ export function MayakTopBar({
         className,
       )}
     >
-      <div className="mx-auto flex h-16 w-[calc(100%-2rem)] max-w-[1200px] items-center justify-between gap-4 md:w-[calc(100%-3rem)] xl:w-[calc(100%-4rem)] lg:h-[76px]">
+      <div className="mx-auto flex h-16 w-full max-w-[1264px] items-center justify-between gap-4 px-4 md:px-6 xl:px-8 lg:h-[76px]">
         <div className="flex min-w-0 items-center gap-3">
           {icon && (
             <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-primary text-primary-foreground shadow-sm">

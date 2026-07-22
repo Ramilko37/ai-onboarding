@@ -6,6 +6,7 @@ import type { MentorSource } from "../../knowledge-base";
 import type { LearningRoute } from "../../onboarding-agent/model/learningRouteTypes";
 import { assistantSuggestions } from "../data";
 import type { PersonalSpaceProfile } from "../PersonalSpace";
+import { usePrefersReducedMotion } from "@/shared/lib/usePrefersReducedMotion";
 
 type AssistantMessage = {
   id: string;
@@ -39,13 +40,20 @@ export function Assistant({
   const [lastQuestion, setLastQuestion] = useState("");
   const isTyping = requestStatus === "loading";
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isNearBottomRef = useRef(true);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [messages, isTyping]);
+    const container = scrollRef.current;
+    if (!container) return;
+
+    if (isNearBottomRef.current) {
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+      });
+    }
+  }, [messages, isTyping, prefersReducedMotion]);
 
   async function send(text: string) {
     const trimmed = text.trim();
@@ -105,7 +113,7 @@ export function Assistant({
   }
 
   return (
-    <section className="flex min-h-[640px] w-full min-w-0 flex-col overflow-hidden p-5 sm:p-8 lg:min-h-[724px] lg:p-10">
+    <section className="flex min-h-[calc(100dvh-8rem)] w-full min-w-0 flex-col overflow-hidden p-5 sm:p-8 lg:min-h-[724px] lg:p-10">
       <header className="flex shrink-0 items-center gap-3 border-b border-border pb-5">
         <span className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
           <Compass className="h-4 w-4" aria-hidden="true" />
@@ -124,13 +132,20 @@ export function Assistant({
         </span>
       </header>
 
-      <div ref={scrollRef} className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto py-5">
+      <div
+        ref={scrollRef}
+        className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto py-5"
+        onScroll={(event) => {
+          const element = event.currentTarget;
+          isNearBottomRef.current = element.scrollHeight - element.scrollTop - element.clientHeight <= 80;
+        }}
+      >
         <div className="self-center font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
           Сегодня
         </div>
         {messages.map((message) =>
           message.author === "guide" ? (
-            <div key={message.id} className="flex items-end gap-2">
+            <div key={message.id} className="motion-message-enter flex items-end gap-2" data-motion>
               <div className="max-w-[88%] rounded-[14px] rounded-bl-md bg-secondary px-4 py-3 text-xs leading-relaxed text-secondary-foreground sm:max-w-[72%]">
                 <p className="whitespace-pre-line">{message.text}</p>
                 {message.sources && message.sources.length > 0 && (
@@ -151,7 +166,8 @@ export function Assistant({
           ) : (
             <p
               key={message.id}
-              className="ml-auto max-w-[88%] rounded-[14px] rounded-br-md bg-primary px-4 py-3 text-xs leading-relaxed text-primary-foreground sm:max-w-[72%]"
+              className="motion-message-enter ml-auto max-w-[88%] rounded-[14px] rounded-br-md bg-primary px-4 py-3 text-xs leading-relaxed text-primary-foreground sm:max-w-[72%]"
+              data-motion
             >
               {message.text}
             </p>
@@ -160,10 +176,10 @@ export function Assistant({
 
         {isTyping && (
           <div className="flex items-center gap-2">
-            <span className="flex gap-1 rounded-2xl rounded-bl-md bg-secondary px-3 py-2.5">
-              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/60 [animation-delay:-0.3s]" />
-              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/60 [animation-delay:-0.15s]" />
-              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/60" />
+            <span aria-label="Наставник отвечает…" className="flex gap-1 rounded-2xl rounded-bl-md bg-secondary px-3 py-2.5">
+              <span className="motion-typing-dot h-1.5 w-1.5 rounded-full bg-muted-foreground/60 [animation-delay:-0.3s]" aria-hidden="true" />
+              <span className="motion-typing-dot h-1.5 w-1.5 rounded-full bg-muted-foreground/60 [animation-delay:-0.15s]" aria-hidden="true" />
+              <span className="motion-typing-dot h-1.5 w-1.5 rounded-full bg-muted-foreground/60" aria-hidden="true" />
             </span>
           </div>
         )}
@@ -202,14 +218,15 @@ export function Assistant({
             value={input}
             onChange={(event) => setInput(event.target.value)}
             placeholder="Спросите про стандарт"
-            aria-label="Сообщение проводнику"
+            aria-label="Сообщение AI-наставнику"
             className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
           />
           <button
             type="submit"
             disabled={!input.trim() || isTyping}
             aria-label="Отправить"
-            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-primary text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            aria-busy={isTyping}
+            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-primary text-primary-foreground transition-[opacity,transform] duration-[var(--motion-fast)] hover:opacity-90 active:scale-[0.985] disabled:cursor-not-allowed disabled:opacity-40"
           >
             <Send className="h-4 w-4" aria-hidden="true" />
           </button>

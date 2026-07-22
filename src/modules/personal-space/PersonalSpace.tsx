@@ -6,6 +6,7 @@ import type {
 import { HeroGreeting } from "./ui/HeroGreeting";
 import { PersonalSpaceWorkspace } from "./ui/PersonalSpaceWorkspace";
 import { TopBar } from "./ui/TopBar";
+import type { WorkspaceRouteView } from "./lib/workspaceRoute";
 
 export type PersonalSpaceProfile = {
   name: string;
@@ -19,11 +20,15 @@ function PersonalSpaceContent({
   route,
   onUpdateTaskStatus,
   onCreateEscalation,
+  initialView,
+  initialTaskId,
 }: {
   profile?: PersonalSpaceProfile;
   route?: LearningRoute;
   onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
   onCreateEscalation?: (question: string) => void;
+  initialView?: WorkspaceRouteView;
+  initialTaskId?: string;
 }) {
   return (
     <div className="grid w-full min-w-0 gap-3 pb-20 lg:pb-0">
@@ -33,6 +38,8 @@ function PersonalSpaceContent({
         route={route}
         onUpdateTaskStatus={onUpdateTaskStatus}
         onCreateEscalation={onCreateEscalation}
+        initialView={initialView}
+        initialTaskId={initialTaskId}
       />
     </div>
   );
@@ -44,12 +51,16 @@ export function PersonalSpace({
   route,
   onUpdateTaskStatus,
   onCreateEscalation,
+  initialView,
+  initialTaskId,
 }: {
   embedded?: boolean;
   profile?: PersonalSpaceProfile;
   route?: LearningRoute;
   onUpdateTaskStatus?: (taskId: string, status: LearningTaskStatus) => void;
   onCreateEscalation?: (question: string) => void;
+  initialView?: WorkspaceRouteView;
+  initialTaskId?: string;
 }) {
   if (embedded) {
     return (
@@ -58,6 +69,8 @@ export function PersonalSpace({
         route={route}
         onUpdateTaskStatus={onUpdateTaskStatus}
         onCreateEscalation={onCreateEscalation}
+        initialView={initialView}
+        initialTaskId={initialTaskId}
       />
     );
   }
@@ -69,6 +82,8 @@ export function PersonalSpace({
         route={route}
         onUpdateTaskStatus={onUpdateTaskStatus}
         onCreateEscalation={onCreateEscalation}
+        initialView={initialView}
+        initialTaskId={initialTaskId}
       />
     </MayakShell>
   );
