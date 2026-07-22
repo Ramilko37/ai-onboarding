@@ -21,7 +21,7 @@ export function JourneyMap({
 
   return (
     <section
-      className="mx-auto flex w-full max-w-[900px] min-w-0 flex-col rounded-[20px] border border-border bg-card p-5 shadow-[var(--shadow-card)] sm:p-8 lg:p-10"
+      className="flex w-full min-w-0 flex-col p-5 sm:p-8 lg:p-10"
       id="route-plan"
     >
       <header className="mb-6">

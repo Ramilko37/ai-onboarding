@@ -7,6 +7,7 @@ import type {
   LearningTaskStatus,
 } from "../../onboarding-agent/model/learningRouteTypes";
 import { getEmployeeFocusSummary } from "../lib/getEmployeeFocusSummary";
+import { formatTodayLabel } from "../lib/formatTodayLabel";
 import type { PersonalSpaceProfile } from "../PersonalSpace";
 
 export function TodayFocus({
@@ -30,17 +31,18 @@ export function TodayFocus({
       ? Math.max(4, Math.round((doneCount / focus.totalTodayCount) * 100))
       : 100;
   const name = profile?.name.split(" ")[0] ?? "София";
+  const todayLabel = formatTodayLabel(new Date());
 
   function update(id: string, status: LearningTaskStatus) {
     onUpdateTaskStatus?.(id, status);
   }
 
   return (
-    <section className="mx-auto w-full min-w-0 rounded-[20px] border border-border bg-card p-5 shadow-[var(--shadow-card)] sm:p-8 lg:p-10">
+    <section className="w-full min-w-0 p-5 sm:p-8 lg:p-10">
       <header className="mb-7 flex items-end justify-between gap-6">
         <div className="min-w-0">
           <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
-            Вторник, 21 июля
+            {todayLabel}
           </p>
           <h1 className="mt-2 font-brand text-4xl leading-none tracking-tight text-foreground sm:text-5xl">
             Сегодня

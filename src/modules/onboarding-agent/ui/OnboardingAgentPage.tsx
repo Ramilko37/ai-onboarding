@@ -26,7 +26,7 @@ export function OnboardingAgentPage() {
       topBar={
         <MayakTopBar
           brand="Valle Sanchez"
-          subtitle="входное тестирование бариста"
+          subtitle="Персональная адаптация"
           icon={<Coffee className="h-5 w-5" aria-hidden="true" />}
           meta={
             showDevReset ? (

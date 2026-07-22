@@ -105,7 +105,7 @@ export function Assistant({
   }
 
   return (
-    <section className="mx-auto flex min-h-[640px] w-full max-w-[860px] min-w-0 flex-col overflow-hidden rounded-[20px] border border-border bg-card p-5 shadow-[var(--shadow-card)] sm:p-8 lg:min-h-[724px] lg:p-10">
+    <section className="flex min-h-[640px] w-full min-w-0 flex-col overflow-hidden p-5 sm:p-8 lg:min-h-[724px] lg:p-10">
       <header className="flex shrink-0 items-center gap-3 border-b border-border pb-5">
         <span className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
           <Compass className="h-4 w-4" aria-hidden="true" />

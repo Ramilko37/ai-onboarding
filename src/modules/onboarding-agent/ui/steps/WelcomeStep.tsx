@@ -14,11 +14,11 @@ export function WelcomeStep({ employee, action, onStart, onContinue }: {
   const handleAction = action.mode === "continue" && onContinue ? onContinue : onStart;
 
   return (
-    <section className="mx-auto w-full max-w-[800px]">
+    <section className="w-full">
       <MayakPanel
         variant="soft"
         padding="lg"
-        className="grid gap-8 lg:p-9"
+        className="grid gap-8 rounded-[24px] border-border bg-card shadow-[var(--shadow-card)] md:p-8 xl:p-12"
       >
         <div className="grid gap-6">
           <MayakSectionHeader

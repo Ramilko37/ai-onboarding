@@ -12,7 +12,7 @@ import {
   Sun,
 } from "lucide-react";
 import { useRef, useState, type KeyboardEvent } from "react";
-import { cn } from "@/shared/ui/mayak";
+import { cn, MayakWorkspaceSurface } from "@/shared/ui/mayak";
 import type {
   LearningTask,
   LearningRoute,
@@ -96,7 +96,7 @@ export function PersonalSpaceWorkspace({
       <div
         aria-label="Разделы личного кабинета"
         className={cn(
-          "mb-3 hidden h-14 items-stretch justify-center gap-1 border-b border-border bg-card px-3 lg:flex",
+          "mb-4 hidden w-full items-stretch gap-1 rounded-[16px] border border-border bg-secondary p-1 lg:flex",
           activeTab === "task" && "lg:hidden",
         )}
         role="tablist"
@@ -108,12 +108,12 @@ export function PersonalSpaceWorkspace({
           return (
             <button
               aria-controls={`${tab.id}-panel`}
+              aria-current={isActive ? "page" : undefined}
               aria-selected={isActive}
               className={cn(
-                "relative inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 px-5 text-sm font-medium text-muted-foreground transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
-                "after:absolute after:right-5 after:bottom-0 after:left-5 after:h-0.5 after:bg-transparent after:transition",
+                "inline-flex min-h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[12px] px-4 text-sm font-medium text-muted-foreground transition focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring/45",
                 isActive
-                  ? "text-primary after:bg-primary"
+                  ? "bg-card text-foreground shadow-[var(--shadow-card)]"
                   : "hover:text-foreground",
               )}
               id={`${tab.id}-tab`}
@@ -137,15 +137,17 @@ export function PersonalSpaceWorkspace({
       <div className="grid min-w-0 gap-3">
         {activeTab === "task" && selectedTask && (
           <section aria-label="Задача маршрута" className="contents">
-            <TaskDetail
-              task={selectedTask}
-              onBack={() => {
-                setActiveTab(previousTab);
-                requestAnimationFrame(() => tabRefs.current[previousTab]?.focus());
-              }}
-              onOpenMentor={() => handleOpenTab("mentor")}
-              onUpdateTaskStatus={onUpdateTaskStatus}
-            />
+            <MayakWorkspaceSurface>
+              <TaskDetail
+                task={selectedTask}
+                onBack={() => {
+                  setActiveTab(previousTab);
+                  requestAnimationFrame(() => tabRefs.current[previousTab]?.focus());
+                }}
+                onOpenMentor={() => handleOpenTab("mentor")}
+                onUpdateTaskStatus={onUpdateTaskStatus}
+              />
+            </MayakWorkspaceSurface>
           </section>
         )}
 
@@ -155,13 +157,13 @@ export function PersonalSpaceWorkspace({
           id="route-panel"
           role="tabpanel"
         >
-          <div className="order-1 min-w-0 lg:order-none">
+          <MayakWorkspaceSurface className="order-1 min-w-0 lg:order-none">
             <JourneyMap
               route={route}
               onOpenTask={handleOpenTask}
               onUpdateTaskStatus={onUpdateTaskStatus}
             />
-          </div>
+          </MayakWorkspaceSurface>
         </section>
 
         <section
@@ -173,30 +175,31 @@ export function PersonalSpaceWorkspace({
           id="mentor-panel"
           role="tabpanel"
         >
-          <div className="order-3 min-w-0 lg:order-none">
+          <MayakWorkspaceSurface className="order-3 min-w-0 lg:order-none">
             <Assistant profile={profile} route={route} onCreateEscalation={onCreateEscalation} />
-          </div>
+          </MayakWorkspaceSurface>
         </section>
 
         <section
           aria-labelledby="today-tab"
           className={panelClass(
             "today",
-            "lg:grid lg:grid-cols-[minmax(0,1.65fr)_minmax(260px,0.75fr)] lg:items-start lg:gap-6",
+            "lg:block",
           )}
           id="today-panel"
           role="tabpanel"
         >
-          <div className="order-4 min-w-0 lg:order-none" id="today-focus">
+          <MayakWorkspaceSurface
+            className="order-4 min-w-0 lg:order-none lg:grid lg:grid-cols-[minmax(0,1.65fr)_minmax(260px,0.75fr)] lg:items-start lg:gap-6"
+            id="today-focus"
+          >
             <TodayFocus
               profile={profile}
               route={route}
               onOpenTask={handleOpenTask}
               onUpdateTaskStatus={onUpdateTaskStatus}
             />
-          </div>
-
-          <aside className="hidden grid-cols-1 gap-3 lg:grid">
+          <aside className="hidden grid-cols-1 gap-3 py-5 pr-5 sm:py-8 sm:pr-8 lg:grid lg:py-10 lg:pr-10">
             <article className="rounded-[20px] bg-deep-surface p-6 text-deep-foreground shadow-[var(--shadow-card)]">
               <span className="mb-7 flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-secondary">
                 <Sparkles className="h-5 w-5" aria-hidden="true" />
@@ -230,6 +233,7 @@ export function PersonalSpaceWorkspace({
               <ArrowRight className="ml-auto h-4 w-4" aria-hidden="true" />
             </button>
           </aside>
+          </MayakWorkspaceSurface>
         </section>
       </div>
 
@@ -263,7 +267,7 @@ export function PersonalSpaceWorkspace({
 
       {isReasonOpen && (
         <div
-          className="fixed inset-0 z-40 flex items-end justify-center bg-deep/35 p-0 backdrop-blur-[2px] lg:absolute"
+          className="fixed inset-0 z-40 flex items-end justify-center bg-deep/35 p-0 backdrop-blur-[2px] lg:items-center lg:p-6"
           role="presentation"
           onClick={(event) => {
             if (event.target === event.currentTarget) {
@@ -336,7 +340,7 @@ function TaskDetail({
 
   return (
     <article
-      className="mx-auto w-full max-w-[760px] rounded-3xl border border-border bg-card/90 p-5 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8 lg:p-10"
+      className="mx-auto w-full max-w-[760px] p-5 sm:p-8 lg:p-10"
       id="task-detail"
       tabIndex={-1}
     >
